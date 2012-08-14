@@ -1,0 +1,40 @@
+{eval $_HEAD['title'] = $category[$pid]['name'].'的全部图片';}
+{template modoer_header}
+<div id="body">
+    <div class="link_path">
+        <em><a href="{url review/list/type/item_subject/catid/$pid}">最新点评</a>&nbsp;-&nbsp;<a href="{url item/top/catid/$pid}">{lang item_top_title}</a></em>
+        <a href="{url modoer/index}">{lang global_index}</a>&nbsp;&raquo;&nbsp;{print implode('&nbsp;&raquo;&nbsp;', $urlpath)}
+    </div>
+    <div class="category">
+		<div class="type">
+			<div class="class">
+                <!--{loop $category $key $val}-->
+                <!--{eval if($val[pid]) continue;}-->
+                <span{if $pid==$key} class="selected"{/if}><a href="{url item/allpic/catid/$key}">$val[name]</a></span>
+                <!--{/loop}-->
+			</div>
+			<h3>主题分类:</h3>
+		</div>
+        <div class="clear"></div>
+    </div>
+    <div class="mainrail rail-border-1">
+        <ul class="pictures">
+        <!--{if $total}-->
+            <!--{dbres $list $val}-->
+            <li>
+                <div><a href="{url item/pic/sid/$val[sid]}" target="_blank"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" /></a><b></b></div>
+                <p>
+                    <a href="{url item/detail/id/$val[sid]}" title="{print $val[name].$val[subname]}">{sublen $val[name].$val[subname],7,''}</a><a href="{url item/album/sid/$val[sid]}" target="_blank"><span class="font_2">($val[pictures]图)</span></a>
+                </p>
+            </li>
+            <!--{/dbres}-->
+        <!--{else}-->
+            <li>暂时没有图片。</li>
+        <!--{/if}-->
+        </ul>
+        <div class="clear"></div>
+    </div>
+    <div class="multipage">$multipage</div>
+</div>
+
+<!--{eval footer();}-->

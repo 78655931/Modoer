@@ -1,0 +1,45 @@
+<!--{eval
+    $_HEAD['title'] = ($catid>0?$category[$catid]['name']:'').lang('item_album_title');
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+<div class="item-content">
+
+    <div class="item-left mt10">
+
+        <div class="item-rail">
+            <h3 class="railtitle">相册</h3>
+
+            <div class="item-album-list mt10">
+                <ul>
+                    <!--{dbres $list $val}-->
+                    <li>
+                        <div class="thumb">
+                            <a href="{url item/album/id/$val[albumid]}" target="_blank" title="$val[name]"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" alt="$val[name]" /></a>
+                        </div>
+                        <div class="info">
+                            <h3><a href="{url item/album/id/$val[albumid]}" title="$val[name]">{sublen $val[name],10}</a></h3>
+                            <p>
+                                <span>图片数量：$val[num]&nbsp;张</span>
+                                <span>浏览量：$val[pageview]&nbsp;次</span>
+                                <span>最后更新：{date $val[lastupdate],'m-d H:i'}</span>
+                            </p>
+                        </div>
+                        <div class="clear"></div>
+                    </li>
+                    <!--{/dbres}-->
+                </ul>
+                <div class="clear"></div>
+                <!--{if !$total}--><div class="messageborder">暂时没有相册数据。</div><!--{/if}-->
+                <!--{if $multipage}--><div class="multipage">$multipage</div><!--{/if}-->
+            </div>
+
+        </div>
+    </div>
+
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+    </div>
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

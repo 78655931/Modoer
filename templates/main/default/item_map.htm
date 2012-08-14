@@ -1,0 +1,70 @@
+{template modoer_header}
+<div id="body">
+    <div class="link_path">
+        <a href="{url modoer/index}">首页</a>&nbsp;&raquo;&nbsp;<a href="{url item/category}">$MOD[name]</a>&nbsp;&raquo;&nbsp;地图搜索
+    </div>
+    <div class="mainrail">
+        <div class="list-filter">
+            <div class="list-filter-item">
+				<dl>
+					<dt>选择地区<b>:</b></dt>
+					<dd>
+						<ul>
+                            <li><span{if !$aid} class="selected"{/if}><a href="{url item/map/catid/$catid/aid/0}">全部地区</a></span></li>
+                            <!--{get:area val=area(pid/$_CITY[aid])}-->
+                            <li><span{if $val[aid]==$aid} class="selected"{/if}><a href="{url item/map/catid/$catid/aid/$val[aid]}">$val[name]</a></span></li>
+                            <!--{/get}-->
+						</ul>
+					</dd>
+					<div class="clear"></div>
+				</dl>
+            </div>
+        </div>
+        <div style="float:left;width:250px;">
+            <div id="subjects" class="mainrail rail-border-1">
+                <h2 class="rail-h-1 rail-h-bg-1">搜索结果</h2>
+                <!--{if $total}-->
+                <!--{eval $index=0;}-->
+                <!--{dbres $list $val}-->
+                <ul class="mapsearch-subject" id="subject_{$val[sid]}" onmouseover="$(this).css('background','#f0f8ff');" onmouseout="$(this).css('background','none');">
+                    <em><a href="{url item/detail/id/$val[sid]}">详情&raquo;</a></em>
+                    <h3 sid="$val[sid]" mappoint="{lng:'$val[map_lng]',lat:'$val[map_lat]'}"><a href="javascript:showMarker($val[sid],$index,true);">$val[name]{if $val[submane]}($val[submane]){/if}</a></h3>
+                    <!--{eval $reviewcfg = $_G['loader']->variable('config','review');}-->
+                    <li class="start start{print get_star($val[avgsort],$reviewcfg[scoretype])}">
+                        <!--{if $val[reviews]}-->
+                        好评率<span class="font_1">{print round($val[best]/$val[reviews]*100)}%</span>&nbsp;&nbsp;
+                        <!--{/if}-->
+                        <!--{if $catcfg[useprice]}-->
+                        <span class="font_2">$val[avgprice]</span> $catcfg[useprice_unit]
+                        <!--{/if}-->
+                    </li>
+                    <li><a href="{url item/detail/id/$val[sid]}#review"><span class="font_2">$val[reviews]</span> 条点评</a>, <a href="{url item/pic/sid/$val[sid]}"><span class="font_2">$val[pictures]</span> 张图</a>, <span class="font_2">$val[pageviews]</span>浏览</li>
+                </ul>
+                <!--{eval $index++;}-->
+                <!--{/dbres}-->
+                <!--{else}-->
+                <div>暂无数据</div>
+                <!--{/if}-->
+            </div>
+        </div>
+        <div style="float:right;width:700px;">
+            <div class="mainrail rail-border-1">
+                <div id="map_container" style="width:100%;height:800px;"></div>
+            </div>
+            <div style="text-align:center;">$multipage</div>
+        </div>
+        <div class="clear"></div>
+
+    </div>
+</div>
+<!--{eval
+list($city_p1,$city_p2) = explode(',', $_CITY[mappoint]);
+}-->
+<script type="text/javascript">
+var city_p1='$city_p1';
+var city_p2='$city_p2';
+var item_num=10;
+</script>
+<script type="text/javascript" language="javascript" src="{print get_mapapi()}"{if $_CFG[mapapi_charset]} charset="$_CFG[mapapi_charset]"{/if}></script>
+<script type="text/javascript" language="javascript" src="{URLROOT}/static/javascript/map/{$mapflag}_item.js?v=$version"></script>
+<!--{eval footer();}-->

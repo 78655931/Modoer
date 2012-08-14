@@ -1,0 +1,7 @@
+body{ font-size:12px; padding:0; width:800px; }
+h3 { font-size:14px; margin:10px 2px; padding:0; }
+.error p { padding:20px 10px; background:#ffffc4; }
+.debug {  }
+.trace { border:1px solid #ddd; width:100%; border-width:1px 0 0 1px; border-color:#ccc; border-style:solid; }
+.trace th { padding:5px; background:#f2f2f2; border-width:0 1px 1px 0; border-color:#ccc; border-style:solid;  }
+.trace td { padding:5px; border-width:0 1px 1px 0; border-color:#ccc; border-style:solid; }

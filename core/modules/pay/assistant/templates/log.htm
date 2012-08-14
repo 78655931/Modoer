@@ -1,0 +1,66 @@
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>充值订单/记录</h3>
+            <div class="mainrail">
+                <ul class="optabs">
+                    <li{if $op=='pay'} class="active"{/if}><a href="{url pay/member/ac/log/op/pay}">在线充值订单</a></li>
+                    <li{if $op=='card'} class="active"{/if}><a href="{url pay/member/ac/log/op/card}">积分卡充值记录</a></li>
+                    <li class="act"><a href="{url  pay/member/ac/pay}">在线充值</a></li>
+                    <div class="clear"></div>
+                </ul>
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                    <tr class="altbg1">
+                        <!--{if $op=='pay'}-->
+                        <th width="100">订单号</th>
+                        <th width="120">支付金额($MOD[pricename])</th>
+                        <th width="120">兑入金额</th>
+                        <th width="115">订单创建</th>
+                        <th width="115">交易时间</th>
+                        <th width="*">交易状态</th>
+                        <!--{else}-->
+                        <th width="200">充值卡号</th>
+                        <th width="100">金额</th>
+                        <th width="120">充值类型</th>
+                        <th width="*">充值时间</th>
+                        <!--{/if}-->
+                    </tr>
+                    <!--{dbres $list $val}-->
+                    <tr>
+                        <!--{if $op=='pay'}-->
+                        <td>$val[orderid]</td>
+                        <td>$val[price]</td>
+                        <td>$val[point] {if $val[cztype]=='rmb'}现金{else}{print:member point(point/$val[cztype])}{/if}
+                        <td>{date $val[dateline],'Y-m-d H:i'}</td>
+                        <td>{if $val[exchangetime]}{date $val[exchangetime],'Y-m-d H:i'}{else}-{/if}</td>
+                        <td>{print lang('pay_status_'.$val[status])}&nbsp;
+                        {if $val[status]==0}[<a href="{url pay/member/ac/pay/orderid/$val[orderid]}"><span class="font_1">现在支付</span></a>]{/if}
+                        </td>
+                        <!--{else}-->
+                        <td>$val[number]</td>
+                        <td>$val[price]</td>
+                        <td>{print lang('pay_type_'.$val[cztype])}</td>
+                        <td>{date $val[usetime],'Y-m-d H:i'}</td>
+                        <!--{/if}-->
+                    </tr>
+                    <!--{/dbres}-->
+                    <!--{if !$total}-->
+                    <tr><td colspan="9">暂无信息。</td></tr>
+                    <!--{/if}-->
+                </table>
+                <div class="multipage">$multipage</div>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

@@ -1,0 +1,23 @@
+<!-- 淘宝客产品推广展示 -->
+<!--{loop $taoke_product_field $field}-->
+<div class="info">
+    <em>[<a href="javascript:;" onclick="$('#taoke_product_$field[fieldid]').toggle();">收起/展开</a>]</em>
+    <h3><span class="arrow-ico">$field[title]</span></h3>
+    <ul class="taoke_product" id="taoke_product_$field[fieldid]">
+    <!--{get:item val=taoke_product(detail/$detail/field/$field/rows/$field[config][num]/cachetime/500)}-->
+    <li>
+        <div>
+            <a href="{if $val[click_url]}$val[click_url]{else}http://item.taobao.com/item.htm?id=$val[num_iid]{/if}" target="_blank"><img src="{if $val[pic_url]}$val[pic_url]{else}{URLROOT}static/images/noimg.gif{/if}" title="$val[title]" alt="$val[title]" /></a>
+        </div>
+        <p>
+            <h5><a href="{if $val[click_url]}$val[click_url]{else}http://item.taobao.com/item.htm?id=$val[num_iid]{/if}" target="_blank" title="$val[title]">{sublen strip_tags($val[title]),18,'...'}</a></h5>
+            <span class="price">￥$val[price]</span> 
+        </p>
+    </li>
+    <!--{getempty(val)}-->
+    <div class="messageborder">暂无数据提供.</div>
+    <!--{/get}-->
+    </ul>
+    <div class="clear"></div>
+</div>
+<!--{/loop}-->

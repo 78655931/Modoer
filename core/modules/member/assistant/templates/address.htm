@@ -1,0 +1,122 @@
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>收货地址{if $address[id]}[编辑地址]{/if}</h3>
+            <div class="mainrail">
+                <form method="post" id="addressfrm" action="{url member/index/ac/address/op/save}">
+                    {if $address[id]}<input type="hidden" name="id" value="$id">{/if}
+                    <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                        <tr>
+                            <td width="85" align="right"><span class="font_1">*</span>收货人姓名：</td>
+                            <td width="*">
+                                <input type="text" class="t_input" size="60" name="address[name]" value="$address[name]">
+                                <span class="font_1">{print $ADD->error[name]}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right"><span class="font_1">*</span>详细地址：</td>
+                            <td>
+                                <input type="text" class="t_input" size="60" name="address[addr]" value="$address[addr]">
+                                <span class="font_1">{print $ADD->error[addr]}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">邮政编码：</td>
+                            <td>
+                                <input type="text" class="t_input" size="30" name="address[postcode]" value="$address[postcode]">
+                                <span class="font_1">{print $ADD->error[postcode]}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right"><span class="font_1">*</span>手机号码：</td>
+                            <td>
+                                <input type="text" class="t_input" size="30" name="address[mobile]" value="$address[mobile]">
+                                <span class="font_1">{print $ADD->error[mobile]}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">设为默认：</td>
+                            <td><input type="checkbox" name="address[is_default]" value="1" {if $address[is_default]}checked="checked"{/if}></td>
+                        </tr>
+                        <tr>
+                            <td align="right"></td>
+                            <td>
+                                <button type="submit" name="dosubmit" value="yes">提交</button>
+                                {if $address[id]}<button type="button" onclick="jslocation('{url member/index/ac/$ac}');">放弃</button>{/if}
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="mainrail">
+                {eval $list = $ADD->get_list();}
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable" trmouse="Y">
+                    <tr class="thbg">
+                        <th>收货人</th>
+                        <th>详细地址</th>
+                        <th>邮编</th>
+                        <th>手机</th>
+                        <th>&nbsp;</th>
+                        <th>操作</th>
+                    </tr>
+                    {dbres $list $val}
+                    <tr id="address_$val[id]">
+                        <td width="100">$val[name]</td>
+                        <td width="*">$val[addr]</td>
+                        <td width="80">$val[postcode]</td>
+                        <td width="100">$val[mobile]</td>
+                        <td width="50">{if $val[is_default]}<span class="font_2">默认地址</span>{/if}</td>
+                        <td width="80">
+                            <a href="{url member/index/ac/$ac/op/edit/id/$val[id]}">编辑</a>
+                            |
+                            <a href="javascript:void(0);" onclick="address_delete($val[id]);">删除</a>
+                        </td>
+                    </tr>
+                    {/dbres}
+                    {if !$list}
+                    <tr><td colspan="5">暂无信息。</td></tr>
+                    {/if}
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<script type="text/javascript">
+$(function() {
+    $('input').each(function(i) {
+        $('#addressfrm').find('[type="text"]').bind('change',function(){
+            change_address_field(this);
+        })
+    });
+    {if $lastmessage}msgOpen('$lastmessage');{/if}
+});
+function change_address_field(obj) {
+    var val = $(obj).val();
+    if(val!='') $(obj).next().empty();
+}
+function address_delete(id) {
+    if(!window.confirm('您确定要删除这条地址信息吗？')) return;
+    $.post("{url member/index/ac/$ac/op/delete}", { 'id':id, 'in_ajax':1 },
+    function(result) {
+        if(result == null) {
+            alert('信息读取失败，可能网络忙碌，请稍后尝试。');
+        } else if (is_message(result)) {
+            myAlert(result);
+        } else if(result=='OK') {
+            $('#address_'+id).remove();
+            msgOpen('地址信息已删除。');
+        }
+    });
+}
+</script>
+<!--{eval footer();}-->

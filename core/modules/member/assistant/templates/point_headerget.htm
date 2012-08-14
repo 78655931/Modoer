@@ -1,0 +1,13 @@
+<style type="text/css">
+.point_headerget { margin:0;padding:5px 10px;list-style:none; color:#373737; }
+.point_headerget li { padding:3px; }
+.point_headerget li b { margin:0 2px; }
+</style>
+<ul class="point_headerget">
+    {get:member val=point_groups()}
+    {if $val[enabled]}
+    <li>$val[name]<b>:</b>{print $user->$val_k}</li>
+    {/if}
+    {/get}
+    <li>ож╫П<b>:</b>{print $user->rmb}</li>
+</ul>

@@ -1,0 +1,134 @@
+<!--{eval
+    $_HEAD['title'] = $subject[name] . '的交流区';
+}-->
+{template modoer_header}
+<script type="text/javascript" src="{URLROOT}/static/javascript/item.js"></script>
+<div id="body">
+    <div class="link_path">
+        <em>
+            <!--{loop $links $i $link}-->
+            {if $i} | {/if}<a href="$link[url]"{if $link[flag]=='discussion'} style="color:#ff6600;"{/if}>$link[title]</a>
+            <!--{/loop}-->
+        </em>
+        <a href="{url modoer/index}">{lang global_index}</a>&raquo;&nbsp;{print implode('&nbsp;&raquo;&nbsp;', $urlpath)}</span>
+    </div>
+
+    <div class="discussion_left">
+        <div class="mainrail rail-border-3">
+            <h3 class="rail-h-3 rail-h-bg-3">共有 <span class="font_2">$total</span> 个话题</h3>
+                <ul class="topiclist topiclist-title">
+                    <li class="subject">话题</li>
+                    <li class="author">来自</li>
+                    <li class="dateline">发布时间</li>
+                    <li class="replies">回复数量</li>
+                    <li class="dateline">回复时间</li>
+                </ul>
+                <!--{dbres $list $val}-->
+                <ul class="topiclist">
+                    <li class="subject{if $val[isownerpost]} ownerpost{/if}"><a title="$val[subject]" href="{url discussion/topic/id/$val[tpid]}">{sublen $val[subject],25,'...'}</a></li>
+                    <li class="author"><a href="{url space/index/uid/$val[uid]}" target="_blank">$val[username]</a></li>
+                    <li class="dateline">{date $val[dateline],'m-d H:i'}</li>
+                    <li class="replies">{$val[replies]}个回复</li>
+                    <li class="dateline">{date $val[replytime],'w2style'}</li>
+                </ul>
+                <!--{/dbres}-->
+            <div class="clear"></div>
+            <!--{if $multipage}--><div class="multipage">$multipage</div><!--{/if}-->
+            <!--{if !$total}-->
+            <div class="messageborder">没有任何讨论话题，<a href="#newtopic">我来发起第一个</a>。</div>
+            <!--{/if}-->
+        </div>
+
+        <div class="mainrail rail-border-3">
+            <h3 class="rail-h-3 rail-h-bg-3">发布话题</h3>
+            <div class="discussion_post" style="margin-top:10px;">
+                <script type="text/javascript" src="{URLROOT}/static/javascript/validator.js"></script>
+                <form action="{url discussion/member/ac/topic/op/post}" method="post" name="myform" onsubmit="return validator(this);">
+                    <input type="hidden" name="sid" value="$sid">
+                    <table border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td colspan="2">
+                                <input type="text" class="t_input" size="40" name="subject" validator="{'empty':'N','errmsg':'请填写话题标题'}" {if !$user->isLogin} onfocus="dialog_login();"{/if} >
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="500">
+                                <textarea name="content" id="topic_content" validator="{'empty':'N','errmsg':'请填写话题内容'}"{if !$user->isLogin} onfocus="dialog_login();"{elseif $MOD[topic_seccode]}onfocus="show_seccode();"{/if}></textarea>
+                            </td>
+                            <td width="*" valign="top">
+                                <div class="smilies">
+                                    <!--{loop $smilies $value}-->
+                                    <img src="{URLROOT}/static/images/smilies/{$value}.gif" width="20" height="20" onclick="insert_smilies('topic_content','$value');" />
+                                    <!--{/loop}-->
+                                </div>
+                            </td>
+                        </tr>
+                        <!--{if $user->isLogin}-->
+                        <tr>
+                            <td colspan="2">
+                                <div id="topic_images_foo">
+                                    <span class="update-img-ico"><a href="javascript:;" onclick="discuss_topic_upimg('topic_content');">上传图片</a></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <!--{/if}-->
+                        <!--{if $MOD[topic_seccode] && $user->isLogin}-->
+                        <tr>
+                            <td><div id="seccode" class="none" style="float:left;width:80px;position:relative;top:-3px;"></div>
+                                <input type="text" name="seccode" class="t_input" style="width:118px;" onblur="check_seccode(this.value);" onfocus="show_seccode();" validator="{'empty':'N','errmsg':'请输入注册验证码'}" />
+                                <span id="msg_seccode" class="formmessage none"></span>
+                            </td>
+                        </tr>
+                        <!--{/if}-->
+                        {if $user->isLogin} 
+                        <tr>
+                            <td colspan="2"><button type="submit" name="dosubmit">加上去</button></td>
+                        </tr>
+                        {/if}
+                    </table>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="discussion_right">
+        <div class="mainrail rail-border-3">
+            <h1 class="rail-h-3 rail-h-bg-3">{$model[item_name]}信息</h1>
+            <div class="side_subject">
+                <h2><a href="{url item/detail/id/$sid}" src="$subject[thumb]" onmouseover="tip_start(this,1);">$subject[name]&nbsp;$subject[subname]</a></h2>
+                <!--{eval $reviewcfg = $_G['loader']->variable('config','review');}-->
+                <p class="start start{print get_star($subject[avgsort],$reviewcfg[scoretype]);}"></p>
+                <table class="side_subject_field_list" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td colspan="2"><span class="font_2">$subject[reviews]</span>点评,
+                        <span class="font_2">$subject[guestbooks]</span>留言,
+                        <span class="font_2">$subject[pageviews]</span>浏览</td>
+                    </tr>
+                    $subject_field_table_tr
+                </table>
+                <a class="abtn1" href="{url review/member/ac/add/type/item_subject/id/$sid}"><span>我要点评</span></a>
+                <a class="abtn2" href="javascript:add_favorite($sid);"><span>关注</span></a>
+                <a class="abtn2" href="{url item/detail/id/$sid/view/guestbook}#guestbook"><span>留言</span></a>
+                <div class="clear"></div>
+            </div>
+        </div>
+    <!--{if $subject[favorites]}-->
+    <div class="mainrail rail-border-3">
+        <h2 class="rail-h-3 rail-h-bg-3">最近关注用户</h2>
+        <ul class="rail-faces">
+            <!--{get:modoer val=table(table/dbpre_favorites/where/idtype='subject'AND id=$sid/orderby/addtime DESC/rows/9)}-->
+            <li><div><img src="{print get_face($val[uid])}" /></div><span><a href="{url space/index/uid/$val[uid]}" target="_blank">$val[username]</a></span></li>
+            <!--{getempty(val)}-->
+            <li>暂无关注</li>
+            <!--{/get}-->
+        </ul>
+        <div class="clear"></div>
+    </div>
+    <!--{/if}-->
+    </div>
+
+    <div class="clear"></div>
+
+</div>
+<!--{eval footer();}-->

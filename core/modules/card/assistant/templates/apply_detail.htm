@@ -1,0 +1,55 @@
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>会员卡申请详细信息</h3>
+            <div class="mainrail">
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                    <tr>
+                        <td align="right" width="80">兑换编号：</td>
+                        <td width="*"><span class="font_2">$detail[applyid]</span></td>
+                    </tr>
+                    <tr>
+                        <td align="right">申请数量：</td>
+                        <td><span class="font_2">$detail[num]</span>&nbsp;张</td>
+                    </tr>
+                    <tr>
+                        <td align="right">花费{print:member point(point/$MOD[pointgroup])}：</td>
+                        <td><span class="font_2">{print $detail[coin]}</span>（单价:{print $detail[coin]/$detail[num]}）</td>
+                    </tr>
+                    <tr>
+                        <td align="right" valign="top" style="border-bottom:1px dashed #ccc;">联系信息：</td>
+                        <td style="border-bottom:1px dashed #ccc;color:#808080;">
+                            联系人：$detail[linkman]<br />
+                            {if $detail[tel]}电话：$detail[tel]<br />{/if}
+                            手机：$detail[mobile]<br />
+                            邮编：$detail[postcode]<br />
+                            地址：$detail[address]
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">订单状态：</td>
+                        <td>{print $status_array[$detail[status]]}</td>
+                    </tr>
+                    <tr>
+                        <td align="right" valign="top">处理说明：</td>
+                        <td>{print nl2br($detail[checkmsg])}</td>
+                    </tr>
+                </table>
+                <div class="text_center">
+                    <button type="button" onclick="history.go(-1);">返回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

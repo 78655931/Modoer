@@ -1,0 +1,43 @@
+<style type="text/css">
+.ajax_smilies img { margin:2px 0 2px 5px; cursor:pointer; }
+</style>
+<div class="mainrail" style="width:650px;">
+    <form method="post"name="frm_topic" id="frm_topic" action="{url discussion/member/ac/topic/op/post/in_ajax/$_G[in_ajax]}">
+    <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+        <tr>
+            <td colspan="2"><input type="text" class="t_input" name="subject" style="width:600px;" value="$detail[subject]"></td>
+        </tr>
+        <tr>
+            <td width="430">
+                <textarea name="content" id="topic_ajax_content" style="width:425px;height:120px;">$detail[content]</textarea>
+            </td>
+            <td width="210">
+                <div class="ajax_smilies">
+                    <!--{loop $smilies $value}-->
+                    <img src="{URLROOT}/static/images/smilies/{$value}.gif" width="20" height="20" onclick="insert_smilies('topic_ajax_content','$value');" />
+                    <!--{/loop}-->
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div id="topic_images_foo">
+                    <span class="update-img-ico"><a href="javascript:;" onclick="discuss_topic_upimg('topic_ajax_content');">上传图片</a></span>
+                </div>
+                <!--{eval $pictures = is_serialized($detail[pictures]) ? unserialize($detail[pictures]) : array();}-->
+                <!--{loop $pictures $key $val}-->
+                <div class="upimg" id="frm_img_$key"><img src="{URLROOT}/$val" />
+                    <input type="hidden" name="pictures[$key]" value="$val" />
+                    <a href="javascript:void(0);" onclick="discuss_topic_insertimg('topic_ajax_content', '$key');">插入</a> | <a href="javascript:void(0);" onclick="$('#frm_img_$key').remove();return false;">删除</a>
+                </div>
+                <!--{/loop}-->
+            </td>
+        </tr>
+    </table>
+    <div class="text_center">
+        <input type="hidden" name="edit" value="yes" />
+        <input type="hidden" name="tpid" value="$tpid" />
+        <button type="button" onclick="ajaxPost('frm_topic','','discussion_topic_save');">提交</button>
+    </div>
+    </form>
+</div>

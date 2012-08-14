@@ -1,0 +1,64 @@
+<!--{eval 
+    $_HEAD['title'] = $subject[name]. $_CFG['titlesplit'] . $field[title];
+}-->
+{template modoer_header}
+<div id="body">
+	<div class="related_left">
+    <div class="catefoot">
+        <div class="link_path">
+            <em><a href="{url review/list/type/item_subject/catid/$catid}">最新点评</a>&nbsp;-&nbsp;<a href="{url item/album/catid/$pid}">{print:item category(catid/$pid)}相册</a>&nbsp;-&nbsp;<a href="{url item/top/catid/$catid}">最佳排行</a>&nbsp;-&nbsp;<a href="{url item/detail/random/1}">随便看看</a></em>
+            <a href="{url modoer/index}">{lang global_index}</a>&nbsp;&raquo;&nbsp;{print implode('&nbsp;&raquo;&nbsp;', $urlpath)}<span class="font_3">($total)</span>
+        </div>
+    </div>
+
+    <div class="subrail">
+        数量: <!--{loop $numlist $val}-->
+        <span$active[num][$val]><a href="javascript:;" onclick="list_display('item_subject_num','$val')">$val</a></span>
+        <!--{/loop}-->&nbsp;|&nbsp;
+        排序:<!--{loop $orderlist $key $val}-->
+        <span$active[orderby][$key]><a href="javascript:;" onclick="list_display('item_subject_orderby','$key')">$val</a></span>
+        <!--{/loop}-->
+    </div>
+
+    <div class="mainrail">
+        <!--{if $total}-->
+        <ul class="relatedpics">
+        <!--{dbres $list $val}-->
+            <li>
+                <div id="item_pic_$val[sid]"><a href="{url item/detail/id/$val[sid]}"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" /></a></div>
+                <p><a href="{url item/detail/id/$val[sid]}">{sublen $val[name].$val[subname],12}</a></p>
+            </li>
+        <!--{/dbres}-->
+        </ul>
+        <div class="clear"></div>
+        <!--{else}-->
+            <div class="messageborder">
+                <span class="msg-ico">本板块暂时没有主题信息，<a href="{url item/member/ac/subject_add/pid/$pid}">我要添加</a>。</span>
+            </div>
+        <!--{/if}-->
+        </div>
+        <!--{if $multipage}--><div class="multipage">$multipage</div><!--{/if}-->
+    </div>
+
+    <div class="related_right">
+
+        <!--{template item_subject_side}-->
+
+        <!--{if $cookie_subjects}-->
+        <div class="mainrail rail-border-3" id="cookieitems">
+            <em><a href="javascript:clear_cookie_subject($pid);">清除记录</a></em>
+            <h3 class="rail-h-3 rail-h-bg-3">历史浏览</h3>
+            <ul class="rail-list">
+                <!--{loop $cookie_subjects $key $val}-->
+                <li><a href="{url item/detail/id/$key}" title="$val">$val</a></li>
+                <!--{/loop}-->
+            </ul>
+        </div>
+        <!--{/if}-->
+
+	</div>
+
+    <div class="clear"></div>
+
+</div>
+<!--{eval footer();}-->

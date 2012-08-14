@@ -1,0 +1,21 @@
+<!-- 最新兑换图片列表 -->
+<ul class="newexchanges">
+    <!--{loop $_QUERY[mydata] $key $val}-->
+    <li><div><a href="{url exchange/gift/id/$val[giftid]}"><img src="{URLROOT}/$val[thumb]" alt="$val[name]" title="$val[name]" /></a></div><p class="font_2">$val[price] 金币</p></li>
+    <!--{/loop}-->
+</ul>
+<div class="clear"></div>
+<script type="text/javascript">
+$(document).ready(function() {
+    if(!$.browser.msie) {
+        $("ul[class=newexchanges] > li > div").each(function(i) {
+            var d = $(this);
+            var dh = parseInt(d.css("height").replace("px",''));
+            var ih = parseInt(d.find("img").css("height").replace("px",''));
+            if(dh - ih < 3) return;
+            var top = Math.ceil((dh - ih) / 2);
+            d.find("img").css("margin-top",top+"px");
+        });
+    }
+});
+</script>

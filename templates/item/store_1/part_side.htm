@@ -1,0 +1,41 @@
+<div class="mainrail rail-border-3">
+    <div class="sub-mainrail">
+        <h3 class="sub-title">$subject[name]{if $subject[subname]}($subject[subname]){/if}</h3>
+        <!--{eval $reviewcfg = $_G['loader']->variable('config','review');}-->
+        <p class="site_subject_start start{print get_star($subject[avgsort],$reviewcfg[scoretype])}"></p>
+        <table class="side_subject_field_list" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td colspan="2">
+                    <span class="font_2">$subject[reviews]</span>点评,
+                    <span class="font_2">$subject[guestbooks]</span>留言,
+                    <span class="font_2">$subject[pageviews]</span>浏览
+                </td>
+            </tr>
+            $subject_field_table_tr
+        </table>
+    </div>
+</div>
+<!--{if $subject[mappoint] && !$hidemap}-->
+<div class="mainrail rail-border-3">
+    <!--{eval $mapparam = array(
+        'title' => $subject[name] . $subject[subname],
+        'show' => $subject[mappoint]?1:0,
+    );}-->
+    <iframe src="{url index/map/width/196/height/250/title/$mapparam[title]/p/$subject[mappoint]/show/$mapparam[show]}" frameborder="0" scrolling="no" style="width:196px;height:250px;"></iframe>
+    <div style="text-align:center;margin:5px 0;">
+        <!--{if !$subject['mappoint']}-->
+        <a href="javascript:post_map($subject[sid], $subject[pid]);">地图未标注，我来标注</a>
+        <!--{else}-->
+        <a href="javascript:show_bigmap();">查看大图</a>&nbsp;
+        <a href="javascript:post_map($subject[sid], $subject[pid]);">报错</a>
+        <!--{/if}-->
+    </div>
+</div>
+<script type="text/javascript">
+function show_bigmap() {
+    var src = "{url index/map/width/600/height/400/title/$mapparam[title]/p/$subject[mappoint]/show/$mapparam[show]}";
+    var html = '<iframe src="' + src + '" frameborder="0" scrolling="no" width="100%" height="400" id="ifupmap_map"></iframe>';
+    dlgOpen('查看大图', html, 600, 450);
+}
+</script>
+<!--{/if}-->

@@ -1,0 +1,145 @@
+<!--{eval 
+    $_HEAD['title'] = $detail[username] . '点评'. $detail[subject];
+}-->
+{template modoer_header}
+<div id="body">
+    <div class="link_path">
+        <a href="{url modoer/index}">{lang global_index}</a>&raquo;&nbsp;{print implode('&nbsp;&raquo;&nbsp;', $urlpath)}{if $detail[title]}&nbsp;&raquo;&nbsp;$detail[title]{/if}
+    </div>
+
+    <div class="review_left">
+        <div class="mainrail rail-border-3" style="padding-top:10px;">
+            <div class="review">
+                <div class="member m_w_item">
+                    <a href="{url space/index/uid/$val[uid]}"><img src="{print get_face($detail[uid])}" class="face"></a>
+                    <ul>
+                        <!--{if $detail[uid]}-->
+                        <li>{print:member group(groupid/$detail[groupid])}</li>
+                        <li>积分:<span>$detail[point]</span></li>
+                        <!--{else}-->
+                        <li>游客</li>
+                        <!--{/if}-->
+                    </ul>
+                </div>
+                <div class="field f_w_item">
+
+                    <div class="feed">
+
+                    <!--{if $detail[uid]}-->
+                        <em><a href="javascript:member_follow($detail[uid]);">加关注</a>, <a href="javascript:send_message($detail[uid]);">发短信</a>, <a href="javascript:add_friend($detail[uid]);">加好友</a>, <a href="javascript:add_flower($detail[rid]);">送鲜花</a></em>
+                        <span class="member-ico"><a href="{url space/index/uid/$val[uid]}">$detail[username]</a></span>&nbsp;
+                        <!--{else}-->
+                        <span class="font_3">游客({print preg_replace("/^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$/","\\1.\\2.*.*", $val[ip])})</span>
+                        <!--{/if}-->
+                        在&nbsp;{date $detail[posttime], 'w2style'}&nbsp;点评了&nbsp;<strong><a href="{print:review typeurl(idtype/$detail[idtype]/id/$detail[id])}">$detail[subject]</a></strong>
+                    </div>
+
+                    <!--{if display('review:viewdigest',array('digest'=>$detail[digest],'uid'=>$detail[uid],'rid'=>$detail[rid]))}-->
+                    <div class="info">
+                        <ul class="score">
+                            <!--{get:item _val=reviewopt(catid/$detail[pcatid])}-->
+                            <li>$_val[name]</li><li class="start{print cfloat($detail[$_val[flag]])}"></li>
+                            <!--{/get}-->
+                        </ul>
+                        <div class="clear"></div>
+                        <!--{if $detail[title]!=$detail[subject]}-->
+                        <h4 class="title"><a href="{url review/detail/id/$detail[rid]}">$detail[title]</a></h4>
+                        <!--{/if}-->
+                        <!--{if $detail[pictures]}-->
+                        <div class="pictures">
+                            <!--{eval $detail[pictures] = unserialize($detail[pictures]);}-->
+                            <!--{loop $detail[pictures] $pic}-->
+                            <a href="{URLROOT}/$pic[picture]"><img src="{URLROOT}/$pic[thumb]" onmouseover="tip_start(this);" /></a>
+                            <!--{/loop}-->
+                        </div>
+                        <!--{/if}-->
+                        <div style="min-height:50px;">
+                            <p>{print nl2br($detail[content])}</p>
+                            <ul class="params">
+                                <!--{if $val[price] && $catcfg['useprice']}-->
+                                <li>$catcfg[useprice_title]: <span class="font_2">$val[price]{$catcfg[useprice_unit]}</span></li>
+                                <!--{/if}-->
+                                <!--{eval $detail_tags = $val['taggroup'] ? @unserialize($val['taggroup']) : array();}-->
+                                <!--{loop $taggroups $_key $_val}-->
+                                    <!--{if $detail_tags[$_key]}-->
+                                        <li>$_val[name]:
+                                        <!--{loop $detail_tags[$_key] $tagid $tagname}-->
+                                            <a href="{url item/tag/tagname/$tagname}">$tagname</a>
+                                        <!--{/loop}-->
+                                        </li>
+                                    <!--{/if}-->
+                                <!--{/loop}-->
+                            </ul>
+                        </div>
+                        <div class="operation">
+                            <!--{if $_CFG[sharecode]}-->$_CFG[sharecode]<!--{/if}-->
+                            <span class="respond-ico">回应</span>(<span class="font_2" id="respond_$detail[rid]">$detail[responds]</span>条)&nbsp;
+                            <span class="flower-ico">鲜花(<span id="flower_$detail[rid]" class="font_2">$detail[flowers]</span>朵)</span>&nbsp;
+                            <a href="javascript:post_report($detail[rid], $detail[pcatid]);">举报</a>&nbsp;
+                        </div>
+                    </div>
+                    <!--{else}-->
+                    <div class="review-digest-message">
+                        <!--{if !$user->isLogin}-->
+                        <a href="javascript:dialog_login();">登录后查看精华点评</a>
+                        <!--{else}-->
+                        <a href="javascript:review_view_digst($detail[rid]);">查看精华点评</a>（第一次查看需要购买）
+                        <!--{/if}-->
+                    </div>
+                    <!--{/if}-->
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="resplods_list">
+                <ul id="resplod_ul">
+                {dbres $responds $val}
+                    <li id="respond_{$val[respondid]}_li" style="width:670px;border-bottom:1px dashed #ccc;">
+                        <div class="face"><a href="{url space/index/uid/$val[uid]}" target="_blank"><img src="{print get_face($val[uid])}"></a></div>
+                        <div class="content" style="width:600px;">
+                            <div class="title">
+                                <!--{if $user->uid == $val[uid]}-->
+                                <em><a href="javascript:delete_respond($val[respondid],$val[rid]);">删除</a></em>
+                                <!--{/if}-->
+                                <a href="{url space/index/uid/$val[uid]}" target="_blank">$val[username]</a>&nbsp;<span class="font_3">{date $val[posttime], 'w2style'}&nbsp;回复点评</span>
+                            </div>
+                            <div class="detail" id="respond_$val[respondid]">$val[content]</div>
+                        </div>
+                        <div class="clear"></div>
+                    </li>
+                {/dbres}
+                </ul>
+                <div class="page">$multipage</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="review_right">
+        <!--{template $typeinfo['side_block_name']}-->
+        <!--{if $detail[flowers]}-->
+        <div class="mainrail rail-border-3">
+            <h3 class="rail-h-3 rail-h-bg-3">最近送花会员</h3>
+            <ul class="rail-list">
+                <!--{get:review val=flowers(rid/$detail[rid]/orderby/fid DESC/row/10)}-->
+                <li><a href="{url space/uid/$val[uid]}">$val[username]</a> 在 {date $val[dateline],'w2style'} 送上1朵鲜花</li>
+                <!--{/get}-->
+            </ul>
+        </div>
+        <!--{/if}-->
+        <div class="mainrail rail-border-2">
+            <h3 class="rail-h-2 rail-h-bg-2">回复点评</h3>
+                <form method="post"name="frm_respond" id="frm_respond" action="{url review/member/ac/respond/op/save/in_ajax/1}" style="margin-left:10px;">
+                <input type="hidden" name="rid" value="$rid" />
+                <textarea name="content" style="width:95%;height:80px;margin-top:10px;" onkeyup="record_charlen(this,$MOD[respond_max],'respond_content');"></textarea>
+                <p>字数限制：$MOD[respond_min] - $MOD[respond_max]，当前字数：<span id="respond_content" class="font_1">0</span></p>
+                <button type="button" class="sbtn" onclick="ajaxPost('frm_respond','','document_reload');">提交</button>
+                <script type="text/javascript">
+                $('[name=content]').val('');
+                </script>
+                </form>
+        </div>
+    </div>
+
+    <div class="clear"></div>
+
+</div>
+<!--{eval footer();}-->

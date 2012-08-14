@@ -1,0 +1,50 @@
+<div class="dplist-subrail">
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="msg-ico"><a href="javascript:post_guestbook($sid);">我要留言</a></span>
+</div>
+<a name="guestbook"></a>
+<!--{if $detail[guestbooks] || $total}-->
+
+<!--{dbres $guestbooks $val}-->
+<div class="item-gblist-cnt" id="guestbook_$val[guestbookid]">
+
+    <div class="title">
+        <em>
+            <!--{if $is_owner}-->
+            <a href="javascript:reply_guestbook($val[guestbookid]);">回复</a>&nbsp;
+            <a href="javascript:delete_guestbook($val[guestbookid]);">删除</a>
+            <!--{elseif $user->uid==$val[uid]}-->
+            <a href="javascript:edit_guestbook($val[guestbookid]);">编辑</a>&nbsp;
+            <a href="javascript:delete_guestbook($val[guestbookid]);">删除</a>
+            <!--{/if}-->
+        </em>
+        <h2><span class="member-ico"><a href="{url space/index/uid/$val[uid]}">$val[username]</a></span>&nbsp;在&nbsp;{date $val[dateline],'Y-m-d H:i'}&nbsp;留言：</h2>
+    </div>
+
+    <div class="body">
+        <div class="content" id="guestbook_content_$val[guestbookid]">{print nl2br($val[content])}</div>
+        <!--{if $val[replytime]}-->
+        <div class="reply" id="guestbook_reply_$val[guestbookid]">回复：{print nl2br($val[reply])}&nbsp;&nbsp;<span class="font_3">{date $val[replytime],'m-d H:i'}</span></div>
+        <!--{/if}-->
+    </div>
+    
+</div>
+<!--{/dbres}-->
+
+<!--{if $multipage}-->
+<div class="multipage">$multipage</div>
+<!--{/if}-->
+
+<!--{else}-->
+<div class="messageborder"><span class="msg-ico">暂无留言信息，<a href="javascript:post_guestbook($sid);">发表您的留言信息</a>！</span></div>
+<!--{/if}-->
+
+<!--{if !$_G[in_ajax]}-->
+    </div>
+
+    <!--{if !$user->isLogin}-->
+        <div class="messageborder">
+            <span class="msg-ico">想要给<a href="#top"><span class="font_2">$detail[name].$detail[subname]</span></a>留言? 请先<a href="{url member/login}"><span class="font_2">登录</span></a>或<a href="{url membe/reg}"><span class="font_2">快速注册</span></a></span>
+        </div>
+    <!--{/if}-->
+
+<!--{/if}-->

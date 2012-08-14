@@ -1,0 +1,193 @@
+{template modoer_header}
+<script type="text/javascript" src="{URLROOT}/static/javascript/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+function change_password () {
+	$.post(Url('member/index/ac/myset/op/changepw'), {in_ajax:1}, 
+		function(result) {
+		if (result.match(/<form.+method="post".+>/)) {
+			dlgOpen('更改密码', result, 300, 170);
+		} else {
+			myAlert(result);
+		}
+	});
+}
+function change_mobile () {
+	$.post(Url('member/index/ac/myset/op/changemobile'), {in_ajax:1}, 
+		function(result) {
+		if (result.match(/<form.+method="post".+>/)) {
+			dlgOpen('更改手机号码', result, 410, 120);
+		} else {
+			myAlert(result);
+		}
+	});
+}
+
+function change_mobile_send () {
+    var mobile = $('#mobile').val().trim();
+    if(!mobile) {
+        msgOpen('对不起，您未填写手机号码。');
+        return;
+    }
+	$.post(Url('member/index/ac/myset/op/changemobile/do/mobile'), {mobile:mobile, in_ajax:1}, function(result) {
+		if (result=='OK') {
+			change_mobile_send_verify(mobile);
+		} else if(is_message(result)) {
+			myAlert(result);
+		} else {
+            msgOpen(result);
+        }
+	});
+}
+
+function change_mobile_send_verify (mobile) {
+	$.post(Url('member/index/ac/myset/op/changemobile/do/send'), {mobile:mobile, in_ajax:1}, function(result) {
+		if (result=='OK') {
+			msgOpen('手机号验证码已发送，请注意查收。');
+        } else if(is_numeric(result)) {
+            msgOpen('请等待 '+result+' 秒后再发送验证码。');
+		} else if(is_message(result)) {
+			myAlert(result);
+		} else {
+            msgOpen('手机号验证码发送失败。');
+        }
+	});
+}
+
+function change_mobile_check() {
+    var serial = $('#serial').val().trim();
+    if(!serial) {
+        msgOpen('对不起，您未输入验证码。');
+        return;
+    }
+	$.post(Url('member/index/ac/myset/op/changemobile/do/check'), {serial:serial, in_ajax:1}, function(result) {
+		if (result=='OK') {
+            msgOpen('手机验证成功！');
+            $('#mymobile').text($('#mobile').val().trim());
+            dlgClose();
+		} else if(is_message(result)) {
+			myAlert(result);
+		} else {
+            msgOpen('手机验证失败！');
+        }
+	});
+}
+
+function member_set_alipay() {
+    $.mytip.show('正在获取...');
+    $.post(Url('member/index/ac/myset/op/setalipay'), {in_ajax:1}, function(result) {
+        if(is_message(result)) {
+            myAlert(result);
+        } else if(is_email(result)) {
+            $('#myalipay').html(result);
+            $('#alipay_op').hide();
+            $.mytip.close('获取成功，已保存');
+        } else {
+            alert('啊哦，出错了。');
+        }
+    });
+}
+</script>
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>个人设置</h3>
+            <div class="mainrail">
+                <form method="post" action="{url member/index/ac/myset/op/save}">
+                    <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                        <tr><td align="right">用户名：</td><td>$user->username</td></tr>
+                        <tr><td width="80" align="right">电子邮件：</td><td>$user->email</td></tr>
+                        <tr>
+                            <td align="right">登录密码：</td>
+                            <td>*********&nbsp;<!--{if $user->passport['enable']}-->[<a href="$user->passport['cpwd_url']">修改</a>]<!--{else}-->[<a href="javascript:change_password();">更改</a>]<!--{/if}-->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">手机号码：</td>
+                            <td>
+                                <span id="mymobile">$user->mobile</span>
+                                {if $usdmobile}
+                                    {if $user->mobile}
+                                    <a href="javascript:change_mobile();">[更改]</a>
+                                    {else}
+                                    <a href="javascript:change_mobile();">添加</a>
+                                    {/if}
+                                {else}
+                                    <span class="font_3">系统未开启手机短信功能</span>
+                                {/if}
+                                <div id="change_mobile"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">支付宝：</td>
+                            <td>
+                                <span id="myalipay">$user->alipay</span>
+                                
+                                <span id="alipay_op">
+                                    {if $pstoken[taobao]}
+                                    <a href="javascript:void(0);" onclick="member_set_alipay()";>从淘宝获取/更新支付宝账号</a>
+                                    {elseif isset($pstoken[taobao])}
+                                    <a href="{url member/index/ac/passport/op/get_token/nop/token/psname/taobao}">获取/更新支付宝帐号(淘宝授权时间过期，请重新登录授权)</a>
+                                    {else}
+                                    <a href="{url member/index/ac/passport/op/get_token/nop/bind/psname/taobao}">通过绑定淘宝账号获取</a>
+                                    {/if}
+                                </span>
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">真实姓名：</td>
+                            <td><input type="text" name="profile[realname]" value="$user->realname" class="t_input" style="width:300px;"></td>
+                        </tr>
+                        <tr>
+                            <td align="right">性别：</td>
+                            <td>
+                                <select name="profile[gender]">
+                                    <option value="0">保密</option>
+                                    <option value="1"{if $user->gender==='1'}selected="selected"{/if}>男性</option>
+                                    <option value="2"{if $user->gender==='2'}selected="selected"{/if}>女性</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">生日：</td>
+                            <td><input type="text" name="profile[birthday]" value="$user->birthday" class="t_input" style="width:300px;" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})"></td>
+                        </tr>
+                        <tr>
+                            <td align="right">QQ：</td>
+                            <td><input type="text" name="profile[qq]" value="$user->qq" class="t_input" style="width:300px;"></td>
+                        </tr>
+                        </tr>
+                        <tr>
+                            <td align="right">MSN：</td>
+                            <td><input type="text" name="profile[msn]" value="$user->msn" class="t_input" style="width:300px;"></td>
+                        </tr>
+                        </tr>
+                        <tr>
+                            <td align="right">地址：</td>
+                            <td><input type="text" name="profile[address]" value="$user->address" class="t_input" style="width:300px;"></td>
+                        </tr>
+                        <tr>
+                            <td align="right">邮编：</td>
+                            <td><input type="text" name="profile[zipcode]" value="$user->zipcode" class="t_input" style="width:300px;"></td>
+                        </tr>
+                        <tr>
+                            <td align="right"></td>
+                            <td><button type="submit" name="dosubmit" value="yes">提交</button></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+ 
+<!--{eval footer();}-->

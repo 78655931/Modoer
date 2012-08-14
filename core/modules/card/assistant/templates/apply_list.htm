@@ -1,0 +1,51 @@
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>会员卡申请记录</h3>
+            <div class="mainrail">
+                <ul class="optabs"><!--{loop $status_array $k $v}--><li{if $status==$k} class="active"{/if}><a href="{url card/member/ac/$ac/status/$k}">$v({print (int)$status_group[$k]})</a></li><!--{/loop}--><!--{if $access_apply}--><li class="act"><a href="{url card/member/ac/apply}">申请会员卡</a></li><!--{/if}--></ul><div class="clear"></div>
+                <form method="post" name="myform" action="{url article/member/ac/article/rand/$_G[random]}">
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable" trmouse="Y">
+                    <tr class="thbg">
+                        <th width="50">编号</th>
+                        <th width="*">联系人</th>
+                        <th width="80">数量</th>
+                        <th width="150">申请时间</th>
+                        <th width="100">状态</th>
+                        <th width="80">操作</th>
+                    </tr>
+                    <!--{dbres $list $val}-->
+                    <tr>
+                        <td>$val[applyid]</td>
+                        <td>$val[linkman]</td>
+                        <td>$val[num]</td>
+                        <td>{date $val[dateline]}</td>
+                        <td>{print $status_array[$val[status]]}</td>
+                        <td><a href="{url card/member/ac/apply/op/detail/applyid/$val[applyid]}">查看</a></td>
+                    </tr>
+                    <!--{/dbres}-->
+                    <!--{if !$total}-->
+                    <tr>
+                        <td colspan="6">暂无信息。</td>
+                    </tr>
+                    <!--{/if}-->
+                </table>
+                <!--{if $total}-->
+                <div class="multipage">$multipage</div>
+                <!--{/if}-->
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

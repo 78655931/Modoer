@@ -1,0 +1,6 @@
+<ul class="rail-faces">
+<!--{loop $_QUERY[mydata] $val}-->
+<li><div><a href="{url space/index/uid/$val[uid]}"><img src="{print get_face($val[uid])}" /></a><a href="{url space/index/uid/$val[uid]}" title="$val[username]"></div><span>$val[username]</span></a></li>
+<!--{/loop}-->
+</ul>
+<div class="clear"></div>

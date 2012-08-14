@@ -1,0 +1,21 @@
+<?php
+/**
+* @author moufer<moufer@163.com>
+* @copyright (c)2001-2009 Moufersoft
+* @website www.modoer.com
+*/
+return array(
+
+    'exchangecp_gift_name_empty' => 'Î´ÌîÐ´ÀñÆ·Ãû³Æ£¬Çë·µ»ØÌîÐ´¡£',
+    'exchangecp_gift_price_empty' => 'Î´ÌîÐ´ÀñÆ·¼Û¸ñ£¬Çë·µ»ØÌîÐ´¡£',
+    'exchangecp_gift_num_empty' => 'Î´ÌîÐ´ÀñÆ·¿â´æÊýÁ¿£¬Çë·µ»ØÌîÐ´¡£',
+    'exchangecp_gift_picture_empty' => 'Î´ÉÏ´«ÀñÆ·Í¼Æ¬£¬Çë·µ»ØÉÏ´«¡£',
+    'exchangecp_gift_description_empty' => 'Î´ÌîÐ´ÀñÆ·½éÉÜ£¬Çë·µ»ØÌîÐ´¡£',
+    'exchangecp_gift_serial_empty' => 'Î´ÌîÐ´ÀñÆ·¿¨ÃÜÊý¾Ý£¬Çë·µ»ØÌîÐ´¡£',	
+    'exchangecp_cphome_title' => 'ÀñÆ·¶Ò»»',
+    'exchangecp_cphome_apply_title' => '´ý´¦Àí',
+	'exchangecp_serial_add_succeed' => '¿¨ÃÜÐÅÏ¢Ìí¼ÓÍê±Ï£¡',
+	'exchangecp_serial_add_empty' => '¶Ô²»Æð£¬ÄúÃ»ÓÐÊäÈëÈÎºÎ¿¨ÃÜÐÅÏ¢¡£',
+
+);
+?>

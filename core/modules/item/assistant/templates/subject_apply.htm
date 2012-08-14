@@ -1,0 +1,59 @@
+{template modoer_header}
+
+<div id="body">
+    <div class="myhead"></div>
+    <div class="mymiddle">
+        <div class="myleft">
+            <!--{template 'menu','member','member'}-->
+        </div>
+        <div class="myright">
+            <div class="myright_top"></div>
+            <div class="myright_middle">
+                <h3>认领{$model[item_name]}</h3>
+                <div class="mainrail">
+                    <form method="post" action="{url item/member/ac/$ac/rand/$_G[random]}" name="myfrom" enctype="multipart/form-data">
+                    <input type="hidden" name="sid" value="$sid" />
+                    <input type="hidden" name="modelid" value="$modelid" />
+                    <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                        <tr>
+                            <td align="right" width="100">认领$model[item_name]：</td>
+                            <td width="*"><a href="{url item/detail/id/$detail[sid]}" target="_blank">$detail[name]{if $detail[subname]}($detail[subname]){/if}</a></td>
+                        </tr>
+                        <tr>
+                            <td align="right"><span class="font_1">*</span>认领人：</td>
+                            <td><input type="text" name="applyname" class="text" size="40" /></td>
+                        </tr>
+                        <tr>
+                            <td align="right"><span class="font_1">*</span>联系方式：</td>
+
+                            <td><input type="text" name="contact" class="text" size="40" /></td>
+                        </tr>
+                        <!--{if $catcfg[subject_apply_uppic]}-->
+                        <tr>
+                            <td valign="top" align="right"><span class="font_1">*</span>$catcfg[subject_apply_uppic_name]：</td>
+                            <td><input type="file" name="pic" size="25" /><div>
+                                1.图片要能清晰辨认文字及编号等，图片模糊将不能被通过；<br />
+                                2.{$catcfg[subject_apply_uppic_name]}上的{$model[item_name]}名称必须和您{$model[item_name]}资料中的信息保持一致，否则不能被通过；<br />
+                                3.如认领的{$model[item_name]}与{$catcfg[subject_apply_uppic_name]}的上有所出入，但确为同一{$model[item_unit]}{$model[item_name]}，请在申请说明中注明。</div>
+                            </td>
+                        </tr>
+                        <!--{/if}-->
+                        <tr>
+                            <td valign="top" align="right"><span class="font_1">*</span>申请说明：</td>
+                            <td><textarea name="content" style="width:90%;height:100px;"></textarea></td>
+                        </tr>
+                    </table>
+                    <div class="text_center">
+                        <button type="submit" name="dosubmit" value="yes">提交认领申请</button>&nbsp;
+                        <button type="button" onclick="history.go(-1);">返回</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="mybottom"></div>
+</div>
+
+<!--{eval footer();}-->

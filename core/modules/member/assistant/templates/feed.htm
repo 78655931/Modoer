@@ -1,0 +1,27 @@
+
+<!--{dbres $list $val}-->
+    <li>
+        <!--{if $val[uid]}-->
+        <div class="member">
+            <a href="{url space/index/uid/$val[uid]}"><img src="{print get_face($val[uid])}" class="face"></a>
+        </div>
+        <!--{/if}-->
+        <div class="content">
+            <h4>$val[title]<span>{date $val[dateline],'w2style'}</span></h4>
+            <!--{if $val[images]}-->
+            <div class="content-images">
+            <!--{eval $images=unserialize($val[images]);}-->
+            <!--{loop $images $img}-->
+            <a href="$img[link]"><img src="$img[url]" /></a>
+            <!--{/loop}-->
+            </div>
+            <!--{else}-->
+            <p>$val[body]</p>
+            <!--{/if}-->
+        </div>
+        <div class="clear"></div>
+    </li> 
+<!--{/dbres}-->
+<!--{if $multipage}-->
+<div class="multipage">$multipage</div>
+<!--{/if}-->

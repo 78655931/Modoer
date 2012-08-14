@@ -1,0 +1,46 @@
+<!--{eval
+    $_HEAD['title'] = $detail[title] ? $detail[title] : ($_CITY[name].'公告');
+}-->
+{template modoer_header}
+<div id="body">
+
+    <!--{if $_GET['do']=='list'}-->
+
+    <style type="text/css">
+        .rail-list { margin:5px 10px; }
+        .rail-list li { line-height:30px; font-size:14px; border-bottom:1px dashed #ddd; }
+    </style>
+
+    <div class="link_path">
+        <div><a href="{url modoer/index}">$_CITY[name]</a>&nbsp;&raquo;&nbsp;<a href="{url index/announcement/do/list}">公告</a>&nbsp;&raquo;&nbsp;列表</div>
+    </div>
+
+    <div class="mainrail rail-border-3">
+        <ul class="rail-list">
+            <!--{dbres $list $val}-->
+            <li><cite>{date $val[dateline]}</cite><a href="{url index/announcement/id/$val[id]}">$val[title]</a></li>
+            <!--{/dbres}-->
+        </li>
+        <div class="multipage">$multipage</div>
+    </div>
+
+    <!--{else}-->
+
+    <div class="link_path">
+        <div><a href="{url modoer/index}">$_CITY[name]</a>&nbsp;&raquo;&nbsp;<a href="{url index/announcement/do/list}">公告</a>&nbsp;&raquo;&nbsp;$detail[title]&nbsp;&raquo;&nbsp;正文</div>
+    </div>
+
+    <div class="mainrail rail-border-3" style="background:#FDFDFD;">
+
+        <h1 style="text-align:center; font-size:24px; margin:20px 0 5px 0; padding:0;">$detail[title]</h1>
+        <div style="text-align:center; line-height:30px; margin-bottom:10px; color:#808080;">
+            发布时间：{date $detail[dateline]}
+        </div>
+        <div style="margin:20px;font-size:14px;line-height:200%;"><p>$detail[content]</p></div>
+        <div style="margin:10px;text-align:right">作者：$detail[author]</div>
+    </div>
+
+    <!--{/if}-->
+
+</div>
+<!--{eval footer();}-->

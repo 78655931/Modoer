@@ -1,0 +1,156 @@
+<!--{eval
+    $_HEAD['title'] = $detail[subject];
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+<div class="item-content">
+
+    <div class="item-left mt10">
+
+            <table border="0" cellspacing="0" cellpadding="0" class="party-info-table">
+                <tr>
+                    <td class="party-info-thumb" valign="top">
+                        <img src="{URLROOT}/{if $detail[thumb]}$detail[thumb]{else}static/images/noimg.gif{/if}" />
+                    </td>
+                    <td class="party-info-detail" width="*" valign="top">
+                        <h3>[{print lang('party_flag_'.$detail[flag])}]&nbsp;$detail[subject]</h3>
+                        <ul class="party-detail-ul">
+                            <li>报名截止：{date $detail[joinendtime]}</li>
+                            <li>活动时间：{date $detail[begintime]}&nbsp;~&nbsp;{date $detail[endtime]}</li>
+                            <li>活动地址：{print:modoer area(aid/$detail[aid])}&nbsp;$detail[address]</li>
+                            <li>性别限制：{print lang('party_sex_'.$detail[sex])}</li>
+                            <li>活动费用：$detail[price] 元人民币/人</li>
+                            <li>活动人数：$detail[plannum] 人，目前已有 <span class="font_1"><b>$detail[num]</b></span> 人报名</li>
+                        </ul>
+                    </td>
+                    <td width="70" valign="top" style="text-align:center;">
+                        <!--{if $detail[flag]==1 && !$joined && !$party_owner}-->
+                        <a class="abtn1" href="{url party/member/ac/apply/op/apply/id/$detail[partyid]}" onclick="return apply_party($detail[partyid]);"><span>我要报名</span></a>&nbsp;&nbsp;
+                        <!--{/if}-->
+                        <div>{if $joined}<span class="font_1">我已经报名</span>&nbsp;&nbsp;{/if}</div>
+                    </td>
+                </tr>
+            </table>
+
+        <ul class="party-tab" id="party-tab">
+            <li{if !$_GET[view]} class="selected"{/if} id="party_table_des"><a href="###" onclick="party_tab('party_table_des');" onfocus="this.blur()">活动介绍</a></li>
+            <li{if $_GET[view]=='apply'} class="selected"{/if} id="party_table_member"><a href="###" onclick="party_tab('party_table_member');" onfocus="this.blur()">已报名会员</a></li>
+            <li{if $_GET[view]=='pic'} class="selected"{/if} id="party_table_pic"><a href="###" onclick="party_tab('party_table_pic');" onfocus="this.blur()">活动图片</a></li>
+            <li{if $_GET[view]=='content'} class="selected"{/if} id="party_table_content"><a href="###" onclick="party_tab('party_table_content');" onfocus="this.blur()">精彩回顾</a></li>
+        </ul>
+        <div class="party-tab-line"></div>
+
+        <div class="party-tab-foo">
+            <div class="party-des{if $_GET[view]} none{/if}" id="party_table_des_foo">
+                $detail[des]
+            </div>
+            <div class="party-pictures{if $_GET[view]!='pic'} none{/if}" id="party_table_pic_foo">
+                <!--{if $joined || $party_owner}-->
+                <div class="party-pictures-upload"><span class="update-img-ico"><a href="{url party/member/ac/picture/op/upload/id/$detail[partyid]}">我要上传活动照片</a></span></div>
+                <!--{/if}-->
+                <ul class="party_picture_ul" id="party_picture_ul">
+                    <!--{dbres $pics $val}-->
+                    <li id="pic_$val[picid]">
+                        <div><a href="{URLROOT}/$val[pic]" target="_blank" title="$val[title] $val[username]"><img src="{URLROOT}/{$val[thumb]}" /></a></div>
+                        <p><span><a href="{url space/index/uid/$val[uid]}">$val[username]</a> 上传</span></p>
+                    </li>
+                    <!--{/dbres}-->
+                </ul>
+                <div class="clear"></div>
+                <!--{if multipage}--><div class="multipage">$pic_multipage</div><!--{/if}-->
+                <!--{if $pic_total}-->
+                <link rel="stylesheet" type="text/css" href="{URLROOT}/static/images/lightbox.css" />
+                <script type="text/javascript" src="{URLROOT}/static/javascript/lightbox.js"></script>
+                <script type="text/javascript">
+                    $(function() { $('#party_picture_ul li div a').lightBox(); });
+                </script>
+                <!--{/if}-->
+            </div>
+            <div class="party-content{if $_GET[view]!='content'} none{/if}" id="party_table_content_foo">
+                {if $content}
+                $content[content]
+                {else}
+                <div class="messageborder">组织者没有提交精彩回顾。</div>
+                {/if}
+            </div>
+            <div class="party-member{if $_GET[view]!='apply'} none{/if}" id="party_table_member_foo">
+                <ul>
+                    <!--{dbres $applys $val}-->
+                    <li><div><a href="{url space/index/uid/$val[uid]}" target="_blank"><img src="{print get_face($val[uid])}" /></a></div><p>$val[username]</p></li>
+                    <!--{/dbres}-->
+                </ul>
+                <div class="clear"></div>
+                <!--{if multipage}--><div class="multipage">$apply_multipage</div><!--{/if}-->
+            </div>
+        </div>
+
+        <div class="mainrail rail-border-3">
+            <h3 class="rail-h-3 rail-h-bg-3">咨询交流区</h3>
+            <div id="party-comment-all-foo">
+                <!--{if $comment_total}-->
+                <table class="party-comment-table" id="party-comment-table-foo">
+                    <!--{dbres $comments $val}-->
+                    <tr>
+                        <td valign="top">
+                            <!--{if $party_owner}--><em><span><a href="###" onclick="reply_party_comment($val[commentid],$_GET[page]);">回复</a></span></em><!--{/if}-->
+                            <div class="comment">
+                                <a href="{url space/index/uid/$val[uid]}">{$val[username]}</a>：$val[message]<span class="font_3">[{date $val[dateline]}]</span>
+                            </div>
+                            <div class="reply{if !$val[reply]} none{/if}" id="party_reply_$val[commentid]" reply="{if $val[reply]}1{else}0{/if}"><span class="font_2">组织者回复：</span>$val[reply]</div>
+                        </td>
+                    </tr>
+                    <!--{/dbres}-->
+                </table>
+                <!--{if $multipage}--><div class="multipage">$multipage</div><!--{/if}-->
+                <!--{/if}-->
+                <div class="party-comment-form none" id="party-reply-form-foo">
+                    <form id="frm_party_reply" method="post" action="{url party/member/ac/comment/op/reply/in_ajax/1}">
+                        <input type="hidden" name="commentid" id="commentid" value="0" />
+                        <div class="party-comment-form-enter">
+                            <textarea name="reply" onkeyup="record_charlen(this,100,'party-reply-strlen');"></textarea>
+                            <div class="party-comment-form-enter-status">
+                                限制输入100字，目前已输入<span class="font_2" id="party-reply-strlen">0</span>
+                            </div>
+                        </div>
+                        <button type="button" onclick="ajaxPost('frm_party_reply','$partyid','get_party_comment');">提交留言</button>
+                    </form>
+                </div>
+                <!--{if $user->isLogin}-->
+                <div class="party-comment-form" id="party-comment-form-foo">
+                    <form id="frm_party_comment" method="post" action="{url party/member/ac/comment/op/save/in_ajax/1}">
+                        <input type="hidden" name="op" value="save" />
+                        <input type="hidden" name="partyid" value="$detail[partyid]" />
+                        <input type="hidden" name="commentid" value="0" />
+                        <div class="party-comment-form-enter">
+                            <textarea name="message" onfocus="$('#party-comment-form-op').removeClass('none');" onkeyup="record_charlen(this,100,'party-coment-strlen');"></textarea>
+                            <div class="party-comment-form-enter-status">
+                                限制输入100字，目前已输入<span class="font_2" id="party-coment-strlen">0</span>
+                            </div>
+                        </div>
+                        <div id="party-comment-form-op" class="none">
+                            <!--{if $MOD[comment_seccode]}-->
+                            <div class="party-comment-seccode">验证码：<input type="text" name="seccode" class="t_input" /><span id="seccode"></span></div>
+                            <script type="text/javascript">
+                            show_seccode();
+                            </script>
+                            <!--{/if}-->
+                            <button type="button" onclick="ajaxPost('frm_party_comment','$partyid','get_party_comment');">提交留言</button>
+                        </div>
+                    </form>
+                </div>
+                <!--{else}-->
+                <div class="messageborder">
+                    想要咨询和加入本次活动，您必须先 <a href="{url member/reg}">注册</a> 或者 <a href="{url member/login}">登录</a> 。
+                </div>
+                <!--{/if}-->
+            </div>
+        </div>
+
+    </div>
+
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+    </div>
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

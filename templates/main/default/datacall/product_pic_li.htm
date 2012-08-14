@@ -1,0 +1,16 @@
+<ul class="rail-pic2">
+<!--{loop $_QUERY[mydata] $key $val}-->
+<li>
+    <div class="pic">
+        <a href="{url product/detail/pid/$val[pid]}"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/s_noimg.gif{/if}" alt="$val[subject]" /></a>
+    </div>
+    <div class="info">
+        <h2><a href="{url product/detail/pid/$val[pid]}" title="$val[subject]">{sublen $val[subject],14}</a></h2>
+        <span class="font_2">$val[comments]</span>ÆÀÂÛ,<span class="font_2">$val[pageview]</span>ä¯ÀÀ
+        <p class="start{print get_star($val[grade], 5)}" style="margin:0;padding:0;height:15px;"></p>
+        <p class="des">{sublen $val[description],20,'...'}</p>
+    </div>
+    <div class="clear"></div>
+</li>
+<!--{/loop}-->
+</ul>

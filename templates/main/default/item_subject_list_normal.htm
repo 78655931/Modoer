@@ -1,0 +1,46 @@
+<!--{if $total}-->
+<script type="text/javascript" src="{URLROOT}/static/javascript/swfobject.js"></script>
+<!--{eval $index=0;}-->
+<!--{dbres $list $val}-->
+    <div class="itemlist{if $val[finer]} itemfiner{/if}">
+        <div class="pic">
+            <div id="item_pic_$val[sid]"><a href="{url item/detail/id/$val[sid]}"><img{if $val[thumb]} onmouseover="tip_start(this);" {/if} src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" /></a><b></b></div>
+        </div>
+        <div class="item">
+            <div class="info">
+                <div>
+                    <h3 id="item_name_$val[sid]"><a href="{url item/detail/id/$val[sid]}">$val[name]&nbsp;$val[subname]</a></h3>
+                </div>
+                <table class="custom_field_list" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td>
+                            <!--{loop $reviewpot $_val}-->$_val[name]:<span
+                             class="font_2" style="font-size:16px;">{print cfloat($val[$_val[flag]])}</span><!--{/loop}-->&nbsp;综合得分:<span class="font_1" style="font-size:16px;"><strong>{print cfloat($val[avgsort])}</strong></span>
+                        </td>
+                    </tr>
+                    <!--{loop $custom_field $_val}-->
+                        <!--{print $FD->detail($_val, $val[$_val['fieldname']], $val[sid])."\r\n"}-->
+                    <!--{/loop}-->
+                </table>
+            </div>
+            <div class="stat">
+                <!--{eval $reviewcfg = $_G['loader']->variable('config','review');}-->
+                <li class="start{print get_star($val[avgsort],$reviewcfg[scoretype]);}"></li>
+                <!--{if $catcfg[useprice]}-->
+                <li><span class="font_2">$val[avgprice]</span> $catcfg[useprice_unit]</li>
+                <!--{/if}-->
+                <li><a href="{url item/detail/id/$val[sid]}#review"><span class="font_2">$val[reviews]</span> 条点评</a></li>
+                <li><a href="{url item/pic/sid/$val[sid]}"><span class="font_2">$val[pictures]</span> 张图</a></li>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+	<!--{if ++$index==2}-->
+	<div id="adv_1"></div>
+	<!--{/if}-->
+<!--{/dbres}-->
+<!--{else}-->
+    <div class="messageborder">
+        <span class="msg-ico">本板块暂时没有主题信息，<a href="{url item/member/ac/subject_add/pid/$pid}">我要添加</a>。</span>
+    </div>
+<!--{/if}-->

@@ -1,0 +1,77 @@
+<style type="text/css">
+.mtool h3 { float:left; font-size:16px; margin:5px 5px 5px 0; padding:0; }
+.mtool .start { float:left; margin:8px 10px 0 0; padding:0; height:15px; font-size:1px; }
+.mtool .custom_field { width:600px; clear:both; }
+.mtool .custom_field .key { width:100px; text-align:left; }
+.mtool .custom_field td { border-bottom:1px dashed #ddd; padding:4px 0; }
+.mtool .picture { float:left; margin-top:10px; margin-right:5px; width:85px; height:80px; }
+.mtool .picture img { max-width:85px; max-height:80px; _width:expression(this.width > 90 ? 90 : true); _height:expression(this.height > 80 ? 80 : true); margin-top:expression((100-this.height)/2);}
+.mtool .operation { margin-top:10px; clear:both; }
+.mtool .operation a { margin-right:10px; }
+
+.mtool a.abtn1 { background: transparent url('{url modoer}/{$_G[tplurl]}img/btn_right_bg.png') no-repeat scroll top right; color: #444; display:block; float:left; height:30px;margin-right:6px; padding-right:4px; text-decoration: none; }
+.mtool a.abtn1 span { background: transparent url('{url modoer}/{$_G[tplurl]}img/btn_left_bg.png') no-repeat; display:block; line-height:21px; padding: 5px 14px 5px 18px;color:#FFF;}
+
+.mtool a.abtn2 {background: transparent url('{url modoer}/{$_G[tplurl]}img/btn_right_bg.png') no-repeat scroll bottom right; color:#444; display:block;float: left;height: 30px;margin-right: 6px;padding-right:4px; text-decoration: none;}
+.mtool a.abtn2 span {background: transparent url('{url modoer}/{$_G[tplurl]}img/btn_left_bg.png') no-repeat scroll bottom left;display: block;line-height:20px;padding: 5px 14px 5px 18px; color:#737373;}
+
+.mtool .font_1 { color: #FF0000; padding: 0 1px; }
+.mtool .font_2 { color: #FF6600; padding: 0 1px; }
+
+.mtool .start0 { background:url('{url modoer}/{$_G[tplurl]}img/review_start.gif') no-repeat 0 -1px;  width:58px; height:12px; }
+.mtool .start1 { background:url('{url modoer}/{$_G[tplurl]}img/review_start.gif') no-repeat 0 -15px; width:58px; height:16px; }
+.mtool .start2 { background:url('{url modoer}/{$_G[tplurl]}img/review_start.gif') no-repeat 0 -29px; width:58px; height:16px; }
+.mtool .start3 { background:url('{url modoer}/{$_G[tplurl]}img/review_start.gif') no-repeat 0 -43px; width:58px; height:16px; }
+.mtool .start4 { background:url('{url modoer}/{$_G[tplurl]}img/review_start.gif') no-repeat 0 -57px; width:58px; height:16px; }
+.mtool .start5 { background:url('{url modoer}/{$_G[tplurl]}img/review_start.gif') no-repeat 0 -71px; width:58px; height:16px; }
+
+</style>
+<div class="mtool">
+	<h3>$detail[name]{if $detail[subname]}($detail[subname]){/if}</h3>
+    <!--{eval $reviewcfg = $_G['loader']->variable('config','review');}-->
+	<p class="start start{print get_star($detail[avgsort],$reviewcfg[scoretype]);}"></p>
+	<table class="custom_field" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td class='key'>得分：</td>
+			<td width="*">
+				<!--{get:item val=reviewopt(catid/$detail[pid])}-->
+				$val[name]:<span class="font_2" style="font-size:16px;">{print cfloat($detail[$val[flag]])}</span> 
+				<!--{/get}-->
+				综合得分:<span class="font_1" style="font-size:16px;"><strong>{print cfloat($detail[avgsort])}</strong></span>
+			</td>
+		</tr>
+		$detail_custom_field
+		<tr>
+			<td class='key'>{$model[item_name]}印象：</td>
+			<td width="*">
+				<span id="subject_impress">
+				<!--{get:item val=impress(sid/$sid/orderby/total DESC/rows/5)}-->
+				<span class="{print:item tagclassname(total/$val[total])}">$val[title]</span>&nbsp;
+				<!--{getempty(val)}-->
+				暂无信息
+				<!--{/get}-->
+				<!--{if count($_QUERY[get_val])>=4}-->
+				<span class="arrow-ico"><a href="javascript:item_impress_get($sid,1);">更多</a></span>
+				<!--{/if}-->
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td class='key' align='left'>数据统计：</td>
+			<td width="*">
+				<span class="font_2">$detail[pageviews]</span>次浏览,<span class="font_2">$detail[reviews]</span>条点评,<span class="font_2">$detail[guestbooks]</span>条留言,<span class="font_2">$detail[pictures]</span>张图片,<span class="font_2">$detail[favorites]</span>个关注{if $detail[products]},<span class="font_2">$detail[products]</span>个产品{/if}
+			</td>
+		</tr>
+	</table>
+	{if $detail[pictures]}
+	<div class="pictures">
+		{get:item val=picture(select/picid,uid,username,title,thumb,filename/sid/$detail[sid]/orderby/addtime DESC/rows/6)}
+		<div class="picture"><a href="{url item/album/sid/$detail[sid]}" target="blank"><img src="{url modoer}$val[thumb]" alt="$val[title]" /></a></div>
+		{/get}
+	</div>
+	{/if}
+	<div class="operation">
+		<a class="abtn1" href="{url review/member/ac/add/type/item_subject/id/$sid}" target="_blank"><span><b>我要点评</b></span></a>
+		<a class="abtn2" href="{url item/detail/id/$sid}" target="_blank"><span><b>查看详情</b></span></a>
+	</div>
+</div>

@@ -1,0 +1,125 @@
+<!--{eval
+    $_HEAD['title'] = (isset($catid)?$category[$catid][name]:'') . $MOD[name];
+}-->
+{template modoer_header}
+<div id="body">
+
+        <div class="link_path">
+			<em>共找到 <span class="font_2">$total</span> 个产品</em>
+            <a href="{url modoer/index}">{lang global_index}</a>&nbsp;&raquo;&nbsp;{print implode('&nbsp;&raquo;&nbsp;', $urlpath)}
+        </div>
+
+    <div class="product_left">
+
+		<div class="g-list-category">
+			<div class="g-list-category-type">
+				<h3>分类:</h3>
+				<ul class="g-list-category-class">
+					{get:product val=category(is_item/1)}
+					<li$active[catid][$val[catid]]><a href="{url product/index/catid/$val[catid]}">$val[name]</a></li>
+					{/get}
+				</ul>
+				<div class="clear"></div>
+                <!--{if $attcats}-->
+                <!--{eval $att_cats = $_G['loader']->variable('att_cat','item');}-->
+                <!--{loop $attcats $att_catid}-->
+                <!--{if $att_cats[$att_catid]}-->
+                <div class="g-list-category-type">
+                    <h3>{$att_cats[$att_catid][name]}:</h3>
+                    <!--{eval $att_url = product_att_url($att_catid,0,1);}-->
+                    <ul class="g-list-category-class">
+                        <!--{eval $ix=0;}-->
+                        <!--{get:item val=attlist(catid/$att_catid)}-->
+                        <!--{eval $att_url = product_att_url($att_catid,$val_k);}-->
+                        <li><span{if $atts[$att_catid]==$val_k} class="selected"{/if}><a href="{url product/index/catid/$catid/aid/$aid/att/$att_url}">$val[name]</a></span></li>
+                        <!--{/get}-->
+                    </ul>
+                    <div class="clear"></div>
+                </div>
+                <!--{/if}-->
+                <!--{/loop}-->
+                <!--{/if}-->
+			</div>
+		</div>
+
+		<div class="subrail">
+			显示方式:
+			<span$active[view][normal]><a href="javascript:;" onclick="list_display('product_view','normal')">列表</a></span>
+			<span$active[view][pic]><a href="javascript:;" onclick="list_display('product_view','pic')">图片</a></span>
+			|&nbsp;排序方式:
+			<span$active[orderby][pid]><a href="javascript:;" onclick="list_display('product_orderby','pid')">默认</a></span>
+			<span$active[orderby][pageview]><a href="javascript:;" onclick="list_display('product_orderby','pageview')">浏览量</a></span>
+		</div>
+		<div class="product_list product_box">
+			{dbres $list $val}
+			{if $view=='pic'}
+			<ul class="ppics">
+				<li>
+					<div><a href="{url product/detail/id/$val[pid]}"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" alt="$val[subject]" /></a></div>
+					<h3><a href="{url product/detail/id/$val[pid]}">$val[subject]</a></h3>
+					<p>
+						<a href="{url product/list/sid/$val[sid]}">$val[name]{if $val[subname]}($val[subname]){/if}</a><br />
+						价格：<span class="font_2">$val[price] 元</span>
+					</p>
+				</li>
+			</ul>
+			{else}
+			<ul class="plist">
+				<div class="thumb"><a href="{url product/detail/id/$val[pid]}"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" onmouseover="tip_start(this);" /></a></div>
+				<div class="info infox">
+					<p class="start start{print get_star($val[grade],5);}"></p>
+					<h3><a href="{url product/detail/id/$val[pid]}">$val[subject]</a></h3>
+					<div>
+						所属：<a href="{url product/list/sid/$val[sid]}">$val[name]{if $val[subname]}($val[subname]){/if}</a><br />
+						价格：<span class="font_2">$val[price] 元</span><br />
+					</div>
+					<p>简介：{sublen $val[description],42,'...'}</p>
+				</div>
+				<div class="clear"></div>
+			</ul>
+			{/if}
+			{/dbres}
+			<div class="multipage">$multipage</div>
+		</div>
+
+    </div>
+
+    <div class="product_right">
+
+		<div class="mainrail rail-border-3">
+			<h3 class="rail-h-3 rail-h-bg-3">搜索</h3>
+			<div class="product-side-search">
+				<form method="get" action="{URLROOT}/product.php">
+					<input type="hidden" name="catid" value="$catid" />
+					<input type="text" name="keyword" class="t_input" value="$keyword" />&nbsp;
+					<button type="submit" class="button">搜索</button>
+				</form>
+			</div>
+		</div>
+
+        <div class="mainrail rail-border-3">
+            <h3 class="rail-h-3 rail-h-bg-3">热门产品</h3>
+            <ul class="product-side-list">
+				{get:product val=getlist(city_id/_NULL_CITYID_/orderby/pageview DESC/rows/6/cachetime/0)}
+				<li>
+					<dl>
+						<dt><a href="{url product/detail/id/$val[pid]}"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/s_noimg.gif{/if}" alt="$val[subject]" /></a></dt>
+						<dd>
+							<span><a href="{url product/detail/id/$val[pid]}">$val[subject]</a></span><br />
+							价格:<span class="font_2">$val[price] 元</span>
+							<p class="start{print get_star($val[grade], 5)}" style="margin:0;padding:0;height:15px;"></p>
+						</dd>
+					</dl>
+					<div class="clear"></div>
+				</li>
+				<div class="clear"></div>
+				{/get}
+            </ul>
+        </div>
+
+    </div>
+
+	<div class="clear"></div>
+
+</div>
+<!--{eval footer();}-->

@@ -1,0 +1,8 @@
+<ul class="index_subject_pic">
+<!--{loop $_QUERY[mydata] $key $val}-->
+<li>
+    <div><a href="{url item/detail/id/$val[sid]}"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" alt="$val[name].$val[subname]" title="$val[name].$val[subname]" /></a></div>
+    <p><a href="{url item/detail/id/$val[sid]}" title="$val[name].$val[subname]">{sublen $val[name].$val[subname],10}</a></p>
+</li>
+<!--{/loop}-->
+</ul>

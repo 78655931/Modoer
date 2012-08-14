@@ -1,0 +1,100 @@
+{template modoer_header}
+<script type="text/javascript" src="{URLROOT}/static/javascript/validator.js"></script>
+<script type="text/javascript">
+loadscript("mdialog");
+
+function checkform(obj) {
+    return true;
+}
+var g;
+function reload() {
+    var obj = document.getElementById('reload');
+    var btn = document.getElementById('switch');
+    if(obj.innerHTML.match(/^<.+href=.+>/)) {
+        g = obj.innerHTML;
+        obj.innerHTML = '<input type="file" name="picture" size="20">';
+        btn.innerHTML = '取消上传';
+    } else {
+        obj.innerHTML = g;
+        btn.innerHTML = '重新上传';
+    }
+}
+</script>
+<div id="body">
+    <div class="myhead"></div>
+    <div class="mymiddle">
+        <div class="myleft">
+        <!--{eval !$mymenu && $mymenu = 'mmenu';}-->
+        <!--{template $mymenu,'member','member'}-->
+        </div>
+        <div class="myright">
+            <div class="myright_top"></div>
+            <div class="myright_middle">
+                <h3>添加/编辑产品</h3>
+                <div class="mainrail">
+                    <form method="post" name="myform" action="{url product/member/ac/$ac/op/post/rand/$_G[random]}" enctype="multipart/form-data" onsubmit="return validator(this);">
+                    <table width="95%" cellspacing="0" cellpadding="0" class="maintable">
+                        <tr>
+                            <td width="100" align="right"><span class="font_1">*</span>产品主题：</td>
+                            <td width="*"><select name="sid" id="sid"{if $detail[sid]} disabled="disabled"{/if} onchange="location.href=Url('product/member/ac/$ac/op/$op/sid/'+this.value);">
+                                    <option value="0" style="color:#CC0000">==选择产品主题==</option>
+                                    <!--{print form_item_mysubject($user->uid, $sid)}-->
+                                </select>
+                            </td>
+                            <!--{if $detail[sid]}-->
+                            <input type="hidden" name="sid" value="$detail[sid]" />
+                            <!--{/if}-->
+                        </tr>
+                        <!--{if $sid}-->
+                        <tr>
+                            <td align="right"><span class="font_1">*</span>产品分类：</td>
+                            <td><select name="catid" id="catid" validator="{'empty':'N','errmsg':'请选择产品分类。'}">
+                                    <option value="" style="color:#CC0000">==选择产品分类==</option>
+                                    <!--{if $sid}-->
+                                    <!--{print form_product_category($sid, $catid)}-->
+                                    <!--{/if}-->
+                                </select>&nbsp;
+                                <button type="button" onclick="create_product_category($('#sid').val());">新建类别</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right"><span class="font_1">*</span>产品名称：</td>
+                            <td><input type="text" name="subject" class="text" size="40" value="$detail[subject]" validator="{'empty':'N','errmsg':'请填写产品名称。'}" /></td>
+                        </tr>
+                        <tr>
+                            <td align="right">封面图片：</td>
+                            <td>
+                                <!--{if !$detail[thumb]}-->
+                                <input type="file" name="picture" size="20" />
+                                <!--{else}-->
+                                <span id="reload"><a href="{URLROOT}/$detail[picture]" target="_blank" src="{URLROOT}/$detail[thumb]" onmouseover="tip_start(this);">$detail[thumb]</a></span>&nbsp;&nbsp;[<a href="javascript:reload();" id="switch">重新上传</a>]
+                                <!--{/if}-->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right" valign="top">简单介绍：</td>
+                            <td><textarea name="description" style="width:500px;height:40px;">$detail['description']</textarea></td>
+                        </tr>
+                        $custom_form
+                        <!--{/if}-->
+                    </table>
+                    <!--{if multipage}--><div class="multipage">$multipage</div><!--{/if}-->
+                    <div class="text_center">
+                        <!--{if $sid||$pid}-->
+                        <input type="hidden" name="do" value="$op" />
+                        {if $sid}<input type="hidden" name="sid" value="$sid" />{/if}
+                        {if $pid}<input type="hidden" name="pid" value="$pid" />{/if}
+                        <button type="submit" name="dosubmit" value="yes">提交</button>&nbsp;
+                        <!--{/if}-->
+                        <button type="button" onclick="history.go(-1);">返回</button>&nbsp;
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="mybottom"></div>
+</div>
+
+<!--{eval footer();}-->

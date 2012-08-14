@@ -1,0 +1,205 @@
+<!--{eval 
+    $_HEAD['title'] = '精彩点评';
+}-->
+{template modoer_header}
+<div id="body">
+
+    <div class="review_left">
+
+        <div class="mainrail rail-border-3 review-index-digst">
+            <h3 class="rail-h-3 rail-h-bg-3">精彩点评</h3>
+            <ul class="ul_split">
+                <!--{dbres $review_best $val}-->
+                <li>
+                    <h5><span class="handgood-ico"><a href="{url review/detail/id/$val[rid]}">{if $val[title]}$val[title]{else}$val[subject]{/if}</a></span></h5>
+                    <div class="review-index-digst-li-thumb"><div><a href="{url item/detail/id/$val[id]}"><img{if $val[thumb]} onmouseover="tip_start(this);" {/if} src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" /></a></div></div>
+                    <div class="review-index-digst-li-info">
+                        <!--{eval $reviewurl = '...<a href="' . url("review/detail/id/".$val[rid]) . '">查看全文</a>';}-->
+                        <p>{sublen $val[content],40,$reviewurl}</p>
+                        <div><span class="float_right"><a href="{url review/detail/id/$val[rid]}#respond">$val[responds]</a>&nbsp;回应</span>
+                        <span class="float_left">来自：{if $val[username]}<a href="{url space/index/uid/$val[uid]}">$val[username]</a>{else}游客{/if}</span></div>
+                    </div>
+                    <div class="clear"></div>
+                </li>
+                <!--{/dbres}-->
+            </ul>
+            <ul class="ul_split">
+                <!--{dbres $review_bad $val}-->
+                <li>
+                    <h5><span class="handbad-ico"><a href="{url review/detail/id/$val[rid]}">{if $val[title]}$val[title]{else}$val[subject]{/if}</a></span></h5>
+                    <div class="review-index-digst-li-thumb"><div><a href="{url item/detail/id/$val[id]}"><img{if $val[thumb]} onmouseover="tip_start(this);" {/if} src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" /></a></div></div>
+                    <div class="review-index-digst-li-info">
+                        <!--{eval $reviewurl = '...<a href="' . url("review/detail/id/".$val[rid]) . '">查看全文</a>';}-->
+                        <p>{sublen $val[content],40,$reviewurl}</p>
+                        <div><span class="float_right"><a href="{url review/detail/id/$val[rid]}#respond">$val[responds]</a>&nbsp;回应</span>
+                        来自：{if $val[username]}<a href="{url space/index/uid/$val[uid]}">$val[username]</a>{else}游客{/if}</div>
+                    </div>
+                    <div class="clear"></div>
+                </li>
+                <!--{/dbres}-->
+            </ul>
+            <div class="clear"></div>
+        </div>
+
+        <div class="mainrail rail-border-3 review-index-digst">
+            <!--{eval
+                $begintime = date('Ymd', $_G['timestamp'] - 30 * 24 * 3600);
+                $endtime = date('Ymd', $_G['timestamp']);
+            }-->
+            <h3 class="rail-h-3 rail-h-bg-3">点评达人</h3>
+            <ul class="rail-faces">
+                <!--{get:modoer val=sql(sql/SELECT uid,username,SUM(reviews) as reviews FROM dbpre_activity WHERE dateline BETWEEN $begintime AND $endtime GROUP BY username ORDER BY reviews DESC,subjects DESC/rows/9/cachetime/3600)}-->
+                <li><div><a href="{url space/index/uid/$val[uid]}"><img src="{print get_face($val[uid])}" /></a><a href="{url space/index/uid/$val[uid]}" title="$val[username]"></div><span>$val[username]</span></a></li>
+                <!--{/get}-->
+            </ul>
+            <div class="clear"></div>
+        </div>
+
+        <!--{if $review_digest}-->
+        <div class="mainrail rail-border-3 review-index-digst">
+            <h3 class="rail-h-3 rail-h-bg-3">精华点评</h3>
+            <ul class="ul_line">
+                <!--{dbres $review_digest $val}-->
+                <li>
+                    <h5><span class="handgood-ico"><a href="{url review/detail/id/$val[rid]}">{if $val[title]}$val[title]{else}$val[subject]{/if}</a></span></h5>
+                    <div class="review-index-digst-li-thumb"><div><a href="{url item/detail/id/$val[id]}"><img{if $val[thumb]} onmouseover="tip_start(this);" {/if} src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" /></a></div></div>
+                    <div class="review-index-digst-li-info">
+                        <!--{eval $reviewurl = '...<a href="' . url("review/detail/id/".$val[rid]) . '">查看全文</a>';}-->
+                        <p>{sublen $val[content],40,$reviewurl}</p>
+                        <div><span class="float_right"><a href="{url review/detail/id/$val[rid]}#respond">$val[responds]</a>&nbsp;回应</span>
+                        <span class="float_left">来自：{if $val[username]}<a href="{url space/index/uid/$val[uid]}">$val[username]</a>{else}游客{/if}</span></div>
+                    </div>
+                    <div class="clear"></div>
+                </li>
+                <!--{/dbres}-->
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <!--{/if}-->
+
+        <cite class="review-index-more-review"><span class="arrow-ico"><a href="{url review/list}">全部点评</a></span></cite>
+        <ul class="review-index-tab" id="review-index-tab">
+            <!--{loop $MOD['index_review_pids'] $i $pid}-->
+            <li{if !$i} class="selected"{/if} id="review-index-tab-new-$pid"><a href="###" onclick="review_tab('review-index-tab-new-$pid');" onfocus="this.blur()">{print:item category(catid/$pid)}点评</a></li>
+            <!--{/loop}-->
+            <!--{if $MOD[index_show_bad_review]}-->
+            <li id="review-index-tab-bad"><a href="###" onclick="review_tab('review-index-tab-bad');" onfocus="this.blur()">曝光台</a></li>
+            <!--{/if}-->
+        </ul>
+        <div class="review-index-tab-line"></div>
+        <div class="review-index-tab-foo">
+            <!--{loop $MOD['index_review_pids'] $i $pid}-->
+            <!--{eval
+                if(!$pid) break;
+                $model = $IB->get_model($pid,TRUE);
+                $cityids = $model[usearea] ? $_CITY[aid] : 0;
+            }-->
+            <div id="review-index-tab-new-$pid-foo"{if $i>0} class="none"{/if}>
+                <!--{get:modoer val=sql(sql/select r.*,s.thumb,s.catid from dbpre_review r left join dbpre_subject s on(r.id=s.sid) where r.city_id=$cityids and r.pcatid=$pid and r.status=1 order by $review_get_type/rows/$MOD[index_review_num]/cachetime/500)}-->
+                <div class="review" style="border-width:0;">
+                    <div class="member">
+                        <a href="{url space/index/uid/$val[uid]}"><img src="{print get_face($val[uid])}" class="face"></a>
+                        <center><!--{if $val[uid]}--><a href="{url space/index/uid/$val[uid]}">{sublen $val[username],6}</a><!--{else}-->游客<!--{/if}--></center>
+                    </div>
+                    <div class="field f_w_review_index">
+                        <div class="feed">
+                            <span class="{if $val[best]}handgood-ico{else}handbad-ico{/if}"><strong><a href="{url review/detail/id/$val[rid]}">{if $val[title]}$val[title]{else}$val[subject]{/if}</a></strong></span>
+                        </div>
+                        <h5 class="review-subject-name">[<a href="{url item/list/catid/$val[catid]}">{print:item category(catid/$val[catid])}</a>]&nbsp;<a href="{url item/detail/id/$val[id]}">$val[subject]</a></h5>
+                        <div class="info review-content">
+                            <!--{eval 
+                                $reviewurl = '...<a href="' . url("review/detail/id/".$val[rid]) . '">[查看全文]</a>';
+                                $val[content] = trimmed_title($val[content],120,$reviewurl);
+                            }-->
+                            <p>{print nl2br($val[content])}</p>
+                            <div class="review-content-operation">
+                                <span class="float_left">点评时间：{date $val[posttime],'Y-m-d H:i'}</span>
+                                <span class="float_right"><a href="{url review/detail/id/$val[rid]}#respond">回应($val[responds])</a> | <a href="{url review/detail/id/$val[rid]}#flower">鲜花($val[flowers])</a></span>
+                            </div>
+                        </div>
+                        <div class="subject-thumb">
+                            <a href="{url item/album/sid/$val[id]}"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" title="$val[subject]" alt="$val[subject]" /></a>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <!--{/get}-->
+            </div>
+            <!--{/loop}-->
+            <!--{if $MOD[index_show_bad_review]}-->
+            <div class="none" id="review-index-tab-bad-foo">
+                <!--{get:modoer val=sql(sql/select r.*,s.thumb,s.catid from dbpre_review r left join dbpre_subject s on(r.id=s.sid) where r.city_id IN (0,$_CITY[aid]) and r.best=0 and r.status=1 order by $review_get_type/rows/$MOD[index_review_num])}-->
+                <div class="review" style="border-width:0;">
+                    <div class="member">
+                        <a href="{url space/index/uid/$val[uid]}"><img src="{print get_face($val[uid])}" class="face"></a>
+                        <center><!--{if $val[uid]}--><a href="{url space/index/uid/$val[uid]}">$val[username]</a><!--{else}-->游客<!--{/if}--></center>
+                    </div>
+                    <div class="field f_w_review_index">
+                        <div class="feed">
+                            <span class="{if $val[best]}handgood-ico{else}handbad-ico{/if}"><strong><a href="{url review/detail/$val[rid]}">{if $val[title]}$val[title]{else}$val[subject]{/if}</a></strong></span>
+                        </div>
+                        <h5 class="review-subject-name">[<a href="{url item/list/catid/$val[catid]}">{print:item category(catid/$val[catid])}</a>]&nbsp;<a href="{url item/detail/id/$val[id]}">$val[subject]</a></h5>
+                        <div class="info review-content">
+                            <!--{eval 
+                                $reviewurl = '...<a href="' . url("review/detail/id/".$val[rid]) . '">[查看全文]</a>';
+                                $val[content] = trimmed_title($val[content],120,$reviewurl);
+                            }-->
+                            <p>{print nl2br($val[content])}</p>
+                            <div class="review-content-operation">
+                                <span class="float_left">点评时间：{date $val[posttime],'Y-m-d H:i'}</span>
+                                <span class="float_right"><a href="{url review/detail/id/$val[rid]}#respond">回应($val[responds])</a> | <a href="{url review/detail/id/$val[rid]}#flower">鲜花($val[flowers])</a></span>
+                            </div>
+                        </div>
+                        <div class="subject-thumb">
+                            <a href="{url item/album/sid/$val[id]}"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" title="$val[subject]" alt="$val[subject]" /></a>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <!--{/get}-->
+            </div>
+            <!--{/if}-->
+        </div>
+    </div>
+
+    <div class="review_right">
+		<div class="mainrail rail-border-3">
+			<h3 class="rail-h-3 rail-h-bg-3">搜索</h3>
+			<div class="review-side-search">
+				<form method="get" action="{URLROOT}/index.php">
+					<input type="hidden" name="m" value="review" />
+					<input type="hidden" name="act" value="list" />
+					<input type="text" name="keyword" class="t_input" value="$keyword" />&nbsp;
+					<button type="submit" class="button">搜索</button>
+				</form>
+			</div>
+		</div>
+        <div class="mainrail rail-border-3">
+            <h3 class="rail-h-3 rail-h-bg-3">点评专家</h3>
+            <ul class="rail-list">
+                <!--{get:modoer val=table(table/dbpre_members/select/uid,username,reviews/where/reviews>0/orderby/reviews DESC/rows/10/cachetime/3600)}-->
+                <li><img src="{print get_face($val[uid]);}" width="20" height="20" /><cite>$val[reviews]&nbsp;点评</cite><a href="{url space/index/uid/$val[uid]}">$val[username]</a></li>
+                <!--{/get}-->
+            </ul>
+            <div class="clear"></div>
+        </div>
+
+        <!--{loop $MOD['index_top_pids'] $i $pid}-->
+        <div class="mainrail rail-border-3">
+            <h3 class="rail-h-3 rail-h-bg-3">{print:item category(catid/$pid)}排行榜</h3>
+            <ul class="rail-list">
+                {get:item val=top(city_id/_NULL_CITYID_/pid/$pid/orderby/avgsort DESC/row/10)}
+                <li>{$val[index]}.&nbsp;<a href="{url item/detail/id/$val[sid]}" title="$val[fullname]">{sublen $val[fullname],20}</a></li>
+				{getempty(val)}
+				<li>暂无信息</li>
+                {/get}
+            </ul>
+        </div>
+        <!--{/loop}-->
+
+    </div>
+
+    <div class="clear"></div>
+
+</div>
+<!--{eval footer();}-->

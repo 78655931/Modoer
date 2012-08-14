@@ -1,0 +1,150 @@
+{template modoer_header}
+<script type="text/javascript" src="{URLROOT}/static/javascript/article.js?r=$MOD[jscache_flag]"></script>
+<script type="text/javascript" src="{URLROOT}/static/javascript/item.js"></script>
+<script type="text/javascript">
+var g;
+function reload() {
+    var obj = document.getElementById('reload');
+    var btn = document.getElementById('switch');
+    if(obj.innerHTML.match(/^<.+href=.+>/)) {
+        g = obj.innerHTML;
+        obj.innerHTML = '<input type="file" name="picture" size="20">';
+        btn.innerHTML = '取消上传';
+    } else {
+        obj.innerHTML = g;
+        btn.innerHTML = '重新上传';
+    }
+}
+
+function select_search(x) {
+    $('#search_result').css('display','').html(x);
+    $("#search_result li").each(function(i){ 
+        $(this).mouseover(function(){$(this).css("background","#C1EBFF")})
+            .mouseout(function(){$(this).css("background","#FFF")})
+            .click(function(){
+                $('#sid').val($(this).attr('sid'));
+                $('#span_sid').text($(this).attr('sid'));
+                $('#keyword').val($(this).attr('name'));
+                $('#search_result').hide();
+            });
+    });
+    $('#search_result').append('<div class="search-closed">[<a href="###" onclick="$(\'#search_result\').hide();">关闭</a>]</div>');
+    $('#search_result').show();
+}
+</script>
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>增加/编辑优惠券</h3>
+            <div class="mainrail">
+                <form method="post" name="myform" action="{url coupon/member/ac/$ac/op/save/rand/$_G[random]}" enctype="multipart/form-data">
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                    <tr>
+                        <td align="right" width="80"><span class="font_1">*</span>标题:</td>
+                        <td width="*"><input type="text" name="subject" class="t_input" size="50" value="$detail['subject']" /></td>
+                    </tr>
+                    <tr>
+                        <td align="right"><span class="font_1">*</span>分类:</td>
+                        <td>
+                            <select name="catid">
+                                {print form_coupon_category($detail['catid'])}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right"><span class="font_1">*</span>优惠券:</td>
+                        <td>
+                            {if !$detail['thumb']}
+                            <input type="file" name="picture" size="20" />
+                            {else}
+                            <span id="reload"><a href="$detail['picture']" target="_blank" src="$detail[thumb]" onmouseover="tip_start(this);">$detail[thumb]</a></span>&nbsp;
+                            [<a href="javascript:reload();" id="switch">重新上传</a>]
+                            {/if}
+                        </td>
+                    </tr>
+                    <!--{if $_GET['role']=='member'}-->
+                    <tr><input type="hidden" name="sid" id="sid" value="$detail[sid]" />
+                        <td align="right">关联主题:</td>
+                        <td>
+							<div id="subject_search">
+							{if $subject}
+							<a href="{url item/detail/id/$sid}" target="_blank">$subject[name]{if $subject['subname']}($subject[subname]){/if}</a>
+							{/if}
+							</div>
+							<script type="text/javascript">
+								$('#subject_search').item_subject_search({
+									sid:{if $detail[sid]}$detail[sid]{elseif $sid}$sid{else}0{/if},
+                                    sid_name:'fenlei[sid]',
+									input_class:'t_input',
+									btn_class:'btn2',
+									result_css:'item_search_result',
+									{if $detail[sid]}
+										sid:$detail[sid][sid],
+										current_ready:true,
+									{/if}
+									hide_keyword:true,
+									myreviewed:true,
+									myfavorite:true
+								});
+							</script>
+                        </td>
+                    </tr>
+                    <!--{elseif $_GET['role']=='owner'}-->
+                    <tr>
+                        <td align="right"><span class="font_1">*</span>我的主题:</td>
+                        <td>
+                            <select id="mysubject" name="sid" >
+                                <option value="0" style="color:#CC0000;">==关联主题==</option>
+                                <!--{print form_item_mysubject($user->uid, $detail[sid])}-->
+                            </select>
+                        </td>
+                    </tr>
+                    <!--{/if}-->
+                    <tr>
+                        <td align="right"><span class="font_1">*</span>有效期:</td>
+                        <td><input type="text" name="starttime" class="t_input" size="20" value="{date $detail[starttime],'Y-m-d'}" /> - <input type="text" name="endtime" class="t_input" size="20" value="{date $detail[endtime],'Y-m-d'}" /></td>
+                    </tr>
+                    <tr>
+                        <td align="right"><span class="font_1">*</span>优惠说明:</td>
+                        <td><input type="text" name="des" class="t_input" size="60" value="$detail[des]" /></td>
+                    </tr>
+                    <tr>
+                        <td align="right" valign="top"><span class="font_1">*</span>简介:</td>
+                        <td><textarea name="content" style="width:80%;height:100px;">$detail[content]</textarea></td>
+                    </tr>
+                    <!--{if $op=='add' && $MOD[seccode]}-->
+                    <tr>
+                        <td align="right"><span class="font_1">*</span>验证码：</td>
+                        <td>
+                            <div id="seccode" class="seccode none"></div>
+                            <input type="text" name="seccode" onfocus="show_seccode();" class="t_input" onblur="check_seccode(this.value);" />
+                            <span id="msg_seccode" class="formmessage none"></span>
+                        </td>
+                    </tr>
+                    <!--{/if}-->
+                </table>
+                <div class="text_center">
+                    {if $op=='edit'}
+                    <input type="hidden" name="couponid" value="$couponid" />
+                    {/if}
+                    <input type="hidden" name="do" value="$op" />
+                    <input type="hidden" name="role" value="$_GET[role]" />
+                    <input type="hidden" name="forward" value="{print get_forward()}" />
+                    <button type="submit" name="onsubmit" value="yes">提交操作</button>&nbsp;
+                    <button type="button" onclick="history.go(-1);">返回</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

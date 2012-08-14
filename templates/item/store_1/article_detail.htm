@@ -1,0 +1,79 @@
+<!--{eval
+    $_G['loader']->helper('misc','article');
+    $_HEAD['title'] = $detail[subject] . ($total>1?("（第".$_GET['page']."页）"):'') . $_CFG['titlesplit'] . misc_article::category_path($detail[catid],$_CFG['titlesplit']);
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+<div class="item-content">
+
+    <div class="item-left mt10">
+
+        <div class="aritcle-detail mainrail rail-border-3">
+
+            <h1 class="detail-title">$detail[subject]{if $_GET[page]>1}($_GET[page]){/if}</h1>
+            <div class="info">{date $detail[dateline]}&nbsp;&nbsp;&nbsp;&nbsp;{if $val[copyfrom]}来源：$detail[copyfrom]&nbsp;&nbsp;&nbsp;&nbsp;{/if}发布者：{$detail[author]}&nbsp;&nbsp;&nbsp;&nbsp;评论：<a href="#comment">$detail[comments]</a>&nbsp;&nbsp;&nbsp;&nbsp;浏览：$detail[pageview]</div>
+            <!--{if $_CFG[sharecode]}-->$_CFG[sharecode]<!--{/if}-->
+            <div class="clear content">
+                <p style="text-align:center;"><!--{if $detail[picture]}--><img src="{URLROOT}/$detail[picture]" /><!--{/if}--><p>
+                $detail[content]
+            </div>
+            <div class="multipage">$multipage</div>
+            <div class="digg">
+                <span id="digg_num">$detail[digg]</span>
+                <span id="digg_click"><a href="javascript:;" onclick="article_digg($articleid);">顶一下</a></span>
+                <script type="text/javascript">
+                    if(get_cookie('article_digg_$articleid')) {
+                        $('#digg_click').html('谢谢支持');
+                    }
+                </script>
+            </div>
+            <div class="operation">
+                <a href="javascript:window.print();">打印本页</a>&nbsp;&nbsp;
+                <a href="javascript:window.close();">关闭窗口</a>&nbsp;&nbsp;
+                <a href="javascript:window.scrollTo(0,0);">返回顶部</a>
+            </div>
+
+            <!--{if check_module('comment')}-->
+            <div class="comment_foo">
+                <style type="text/css">@import url("{URLROOT}/{$_G[tplurl]}css_comment.css");</style>
+                <script type="text/javascript" src="{URLROOT}/static/javascript/comment.js"></script>
+                <!--{eval $comment_modcfg = $_G['loader']->variable('config','comment');}-->
+                <!--{if $detail[comments]}-->
+                <!--{/if}-->
+                <a name="comment"></a>
+                <!--{if !$comment_modcfg['hidden_comment']}-->
+                <div class="mainrail rail-border-3">
+                    <em>评论总数:<span class="font_2">$detail[comments]</span>条</em>
+                    <h1 class="rail-h-3 rail-h-bg-3">网友评论</h1>
+                    <div id="commentlist" style="margin-bottom:10px;"></div>
+                    <script type="text/javascript">
+                    $(document).ready(function() { get_comment('article',$articleid,1); });
+                    </script>
+                </div>
+                <!--{/if}-->
+                {eval $_G['loader']->helper('form');}
+                <div id="comment_form">
+                    <!--{if $user->check_access('comment_disable', $_G['loader']->model(':comment'), false)}-->
+                        <!--{if $MOD[post_comment] && !$comment_modcfg['disable_comment'] && !$detail[closed_comment]}-->
+                        <!--{eval $idtype = 'article'; $id = $articleid; $title = 'Re:' . $detail[subject];}-->
+                        {template comment_post}
+                        <!--{else}-->
+                        <div class="messageborder">评论已关闭</div>
+                        <!--{/if}-->
+                    <!--{else}-->
+                    <div class="messageborder">如果您要进行评论信息，请先&nbsp;<a href="{url member/login}">登录</a>&nbsp;或者&nbsp;<a href="{url member/reg}">快速注册</a>&nbsp;。</div>
+                    <!--{/if}-->
+                </div>
+            </div>
+            <!--{/if}-->
+
+        </div>
+
+    </div>
+
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+    </div>
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

@@ -1,0 +1,56 @@
+<!--{eval
+    $_HEAD['title'] = $subject[name] . '的' . $MOD[name];
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+<div class="item-content">
+
+    <div class="item-left mt10">
+
+        <div class="item-rail">
+            <h3 class="railtitle">$MOD[name]</h3>
+            <div class="fenlei-list">
+                <!--{dbres $list $val}-->
+                <div class="fenlei-list-dv">
+                    <!--{eval $thumb = $val[thumb]?$val[thumb]:'static/images/s_noimg.gif';}-->
+                    <div class="thumb"><a href="{url fenlei/detail/id/$val[fid]}"><img src="{URLROOT}/$thumb" title="$val[subject]" /></a></div>
+                    <div class="foor">
+                        <div class="title">
+                            <!--{if $val[endtime]<=$_G['timestamp']}-->
+                            <em><span class="font_1">信息已过期</span></em>
+                            <!--{/if}-->
+                            <h3>
+                            <!--{if $val[top]&&$val[top_endtime]>$_G[timestamp]}-->[置顶]<!--{/if}-->
+                            [<a href="{url fenlei/list/catid/$val[catid]}">{print:fenlei category(catid/$val[catid])}</a></span>]
+                            <span class="title"><a href="{url fenlei/detail/id/$val[fid]}" {if $val[color_endtime]>$_G[timestamp]} style="color:$val[color];"{/if}>{sublen $val[subject],25,'...'}</a></span>
+                            </h3>
+                        </div>
+                        <table class="fenlei_field_table" border="0" cellspacing="0" cellpadding="0">
+                            <!--{loop $fenlei_field $_val}-->
+                            <!--{print $PFD->detail($_val, $val[$_val['fieldname']])}-->
+                            <!--{/loop}-->
+                        </table>
+                        <div class="introduce"><!--{sublen strip_tags($val[content]),50,'...'}--></div>
+                        <em><a href="{url fenlei/detail/id/$val[fid]}">阅读全文...</a></em>
+                        <div class="otherinfo">
+                            <span class="info">地区：<a href="{url fenlei/list/aid/$val[aid]}">{print:modoer area(aid/$val[aid])}</a></span>
+                            <span class="info">作者：{if $val[uid]}<a href="{url space/index/uid/$val[uid]}" target="_blank">$val[username]</a>{elseif $val[username]}$val[username]{else}游客{/if}</span>
+                            <span class="info">发表时间：<span class="font_2">{date $val[dateline],'m-d H:i'}</span></span>
+                            <span class="info">浏览量：<span class="font_2">$val[pageview]</span></span>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <!--{/dbres}-->
+                <!--{if $multipage}--><div class="multipage">$multipage</div><!--{/if}-->
+                <!--{if !$total}--><div class="messageborder">没有找到任何信息。</div><!--{/if}-->
+            </div>
+        </div>
+    </div>
+
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+    </div>
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

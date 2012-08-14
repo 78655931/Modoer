@@ -1,0 +1,47 @@
+{template modoer_header}
+
+<div id="body">
+    <div class="myhead"></div>
+    <div class="mymiddle">
+        <div class="myleft">
+            
+            <!--{template 'menu','member','member'}-->
+        </div>
+        <div class="myright">
+            <div class="myright_top"></div>
+            <div class="myright_middle">
+                <h3>发送新邮件</h3>
+                <div class="mainrail">
+                    <form method="post" action="{url member/index/ac/$ac/op/send/rand/$_G[random]}">
+                        <table width="100%" cellspacing="0" cellpadding="0" class="maintable" style="margin-top:10px;">
+                            <tr>
+                                <td width="80" align="right">发送对象：</td>
+                                <td width="*"><input type="text" class="t_input" name="recv_users" value="$recv_username" size="50" /> 多对象，用","分开</td>
+                            </tr>
+                            <tr>
+                                <td align="right">短信主题：</td>
+                                <td><input type="text" class="t_input" name="subject" value="$subject" size="50" /> 限<span class="font_1">60</span>字符</td>
+                            </tr>
+                            <tr>
+                                <td align="right" valign="top">短信内容：</td>
+                                <td>    
+                                    <textarea name="content" style="height:150px;width:450px;display:block;margin-bottom:5px;" /></textarea>
+                                    短信内容限<span class="font_1">500</span>个字符以内。
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="multipage">$multipage</div>
+                        <div class="text_center">
+                            <button type="submit" name="sendsubmit" value="yes" onclick="allchecked();">发送短消息</button>&nbsp;
+                            <button type="button" onclick="history.go(-1);">返回</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="mybottom"></div>
+</div>
+
+<!--{eval footer();}-->

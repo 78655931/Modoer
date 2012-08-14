@@ -1,0 +1,115 @@
+{template modoer_header}
+<div id="body">
+    <div class="myhead"></div>
+    <div class="mymiddle">
+        <div class="myleft">
+            <!--{template 'menu','member',MOD_FLAG}-->
+        </div>
+        <div class="myright">
+            <div class="myright_top"></div>
+            <div class="myright_middle">
+                <h3>网站任务</h3>
+                <div class="mainrail">
+                    <!--{eval $ops = array('new'=>'新任务','doing'=>'进行中的任务','done'=>'已完成的任务','failed'=>'失败的任务');}-->
+                    <ul class="optabs"><!--{loop $ops $k $v}--><li><a href="{url member/index/ac/$ac/op/$k}">$v</a></li><!--{/loop}--></ul><div class="clear"></div>
+                    <table cellspacing="0" cellpadding="0" class="maintable tasktable">
+                        <tr class="thbg"><th colspan="4" style="height:1px;*height:2px;_font-size:1px;"></th></tr>
+                        <tr>
+                            <td width="80" align="right">任务名称：</td>
+                            <td width="*">$detail[title]</td>
+                        </tr>
+                        <tr>
+                            <td align="right" valign="top">任务说明：</td>
+                            <td>
+                                <!--{if $detail[period]}-->
+                                <div style="color:#808080;">
+                                <!--{if !$detail[period_unit]}-->
+                                每 $detail[period] 小时
+                                <!--{elseif $detail[period_unit]=='1'}-->
+                                每 $detail[period] 天
+                                <!--{elseif $detail[period_unit]=='2'}-->
+                                每周 {print numtoweek($detail[period],false)}
+                                <!--{elseif $detail[period_unit]=='2'}-->
+                                每月 $detail[period] 号
+                                <!--{/if}-->
+                                允许申请一次
+                                </div>
+                                <!--{/if}-->
+                                <div>$detail[des]</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">奖励：</td>
+                            <td><span class="font_2">{print:member point(point/$detail[pointtype])}&nbsp;$detail[point]</span></td>
+                        </tr>
+                        <tr>
+                            <td align="right">申请条件：</td>
+                            <td>
+                                {if !$detail[access]}注册用户
+                                {elseif $detail[access]=='1'}普通用户(不包含系统用户组)
+                                {elseif $detail[access]=='2'}用户组：{print:member group(groupid/$detail[access_groupids])}
+                                {/if}
+                            </td>
+                        </tr>
+                        <!--{if $mytask}-->
+                        <tr>
+                            <td align="right">申请时间：</td>
+                            <td>{date $mytask['applytime'],'Y-m-d H:i:s'}</td>
+                        </tr>
+                        <!--{/if}-->
+                        <!--{if $mytask && !$mytask[status]}-->
+                        <tr>
+                            <td align="right">任务进度：</td>
+                            <td class="info">
+                                <div class="progress"><p style="width:{print ($progress/100)*380}px;"></p></div>
+                                <div class="progress_num">{$progress}%</div>
+                                <div class="clear"></div>
+                            </td>
+                        </tr>
+                        <!--{/if}-->
+                        <tr>
+                            <td align="right"></td>
+                            <td height="40">
+                            <!--{if $mytask}-->
+                                <!--{if !$mytask[status]}-->
+                                {if $progress==100}<button type="button" onclick="document.location='{url member/index/ac/task/op/finish/taskid/$detail[taskid]}'">领取奖励</button>{else}<button type="button" class="disable" disabled="disabled">领取奖励</button>{/if}
+                                <button type="button" onclick="if(confirm('您确定要放弃这个任务吗?')) document.location='{url member/index/ac/task/op/delete/taskid/$val[taskid]}';">放弃任务</button>
+                                <!--{elseif $mytask[status]=='1'}-->
+                                <span class="done">完成于 {date $mytask[dateline],'w2style'}</span>
+                                    <!--{if $mytask[apply_again] >= 0}-->
+                                    <span class="done">
+                                        <!--{if $mytask[apply_again] <= 1}-->
+                                        <button type="button" onclick="document.location='{url member/index/ac/task/op/apply/taskid/$detail[taskid]}'">再次申请任务</button>
+                                        <!--{else}-->
+                                        {print nextapplytime($mytask[apply_again])} 后可以再次申请
+                                        <!--{/if}-->
+                                    </span>
+                                    <!--{/if}-->
+                                <!--{/if}-->
+                            <!--{else}-->
+                            {if $access}<button type="button" onclick="document.location='{url member/index/ac/task/op/apply/taskid/$detail[taskid]}'">申请任务</button>{else}<button type="button" class="disable" disabled="disabled">申请任务</button>{/if}
+                            <!--{/if}-->
+                            </td>
+                        </tr>
+                        <!--{if $detail[applys]}-->
+                        <tr>
+                            <td align="right"></td>
+                            <td>
+                                <span class="font_3">最近参与本任务的会员</span>
+                                <ul class="faces">
+                                    <!--{get:modoer val=sql(sql/select * from dbpre_mytask where taskid=$taskid order by dateline desc/rows/10)}-->
+                                    <li><div><a href="{url space/index/uid/$val[uid]}"><img src="{print get_face($val[uid])}" title="{date $val[dateline],'w2style'}参与"/></a></div><span>$val[username]</span></li>
+                                    <!--{/get}-->
+                                </ul>
+                            </td>
+                        </tr>
+                        <!--{/if}-->
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

@@ -1,0 +1,42 @@
+<!--{if !defined('IN_AJAX')}-->
+<!--{eval 
+    $_HEAD['title'] = $subject['name'].$subject['subname'] . '的产品' . ($catid ? $_CFG['titlesplit'] . $category[$catid]['name'] : '');
+}-->
+{template modoer_header}
+<script type="text/javascript">
+loadscript('item');
+</script>
+<div id="body">
+    <div class="link_path">
+        <a href="{url modoer/index}">首页</a>&nbsp;&raquo;&nbsp;{print implode('&nbsp;&raquo;&nbsp;', $urlpath)}<span class="font_3">($total)</span>
+    </div>
+<!--{/if}-->
+
+<!--{if $total}-->
+<!--{eval !isset($cinfo_width) && $cinfo_width=500;}-->
+<ul class="comment_list">
+<!--{dbres $list $val}-->
+    <li>
+        <div class="cface">
+            {if $val[uid]}<a href="{url space/index/uid/$val[uid]}"><img src="{print get_face($val[uid])}" alt="$val[username]" /></a>{else}<img src="{print get_face($val[uid])}" />{/if}
+        </div>
+        <div class="cinfo" style="width:{$cinfo_width}px;">
+            <div class="start start{print get_star($val[grade],5)}"></div>
+            <div class="ctitle">$val[username]{if !$val[uid]}(游客){/if} 在 {date $val[dateline],'w2style'} 发表评论</div>
+            <h2>$val[title]</h2>
+            <p class="ccontent">$val[content]</p>
+        </div>
+        <div class="clear"></div>
+    </li>
+<!--{/dbres}-->
+    <a name="commentend"></a>
+</ul>
+{if $multipage}<div class="multipage">$multipage</div>{/if}
+<!--{else}-->
+<div class="messageborder">暂时没有评论信息。</div>
+<!--{/if}-->
+
+<!--{if !defined('IN_AJAX')}-->
+</div>
+<!--{eval footer();}-->
+<!--{/if}-->

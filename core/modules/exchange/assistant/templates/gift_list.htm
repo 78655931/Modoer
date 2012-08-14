@@ -1,0 +1,50 @@
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>我的礼品</h3>
+            <div class="mainrail">
+                <ul class="optabs"><!--{loop $status_name $k $v}--><li{if $status==$k} class="active"{/if}><a href="{url exchange/member/ac/$ac/status/$k}">$v({print (int)$status_group[$k]})</a></li><!--{/loop}--><li><a href="{url exchange/member/ac/lottery}"><span class="font_1">我中的奖品</span></a></li></ul><div class="clear"></div>
+                <input type="hidden" name="giftid" value="$giftid" />
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable" trmouse="Y">
+                    <tr class="thbg">
+                        <th width="40">编号</th>
+                        <th width="*">礼品名称</th>
+                        <th width="80">兑换数量</th>
+                        <th width="100">花费</th>
+                        <th width="110">兑换时间</th>
+                        <th width="60">状态</th>
+                        <th width="60">操作</th>
+                    </tr>
+                    <!--{dbres $list $val}-->
+                    <tr>
+                        <td>$val[exchangeid]</td>
+                        <td><a href="{url exchange/gift/id/$val[giftid]}" target="_blank">$val[giftname]</a></td>
+                        <td>$val[number]</td>
+                        <td>{print $val[price]*$val[number]}&nbsp;{print:member point(point/$val[pointtype])}</td>
+                        <td>{date $val[exchangetime],'Y-m-d H:i'}</td>
+                        <td>{print $status_name[$val[status]]}</td>
+                        <td><a href="{url exchange/member/ac/m_gift/exchangeid/$val[exchangeid]}">详情</a></td>
+                    </tr>
+                    <!--{/dbres}-->
+                    <!--{if !$total}-->
+                    <tr>
+                        <td colspan="6">暂无信息。</td>
+                    </tr>
+                    <!--{/if}-->
+                </table>
+                <div class="multipage">$multipage</div>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

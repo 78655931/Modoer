@@ -1,0 +1,9 @@
+.comment_list { margin:0 5px; padding:0; list-style:none; }
+.comment_list li { margin:5px 0 0; border-bottom:1px dashed #ccc;min-height:10px;height:auto !important;height:10px;overflow:hidden !important;overflow: visible; }
+.comment_list li .cface { float:left; width:80px; text-align:center;margin-bottom:8px; }
+.comment_list li .cface img { margin-top:8px; border:1px solid #ccc; padding:1px; }
+.comment_list li .cinfo { float:left; }
+.comment_list li .cinfo .start { float:right; height:15px; }
+.comment_list li .cinfo .ctitle { margin:5px 0; padding:0; font-size:12px; color:#808080; font-weight:normal; }
+.comment_list li .cinfo h2 { margin:5px 0; padding:2px 0; font-size:12px; color:#808080; }
+.comment_list li .cinfo .ccontent { margin:5px 0 10px; padding:0; color:#808080; line-height:150%; }

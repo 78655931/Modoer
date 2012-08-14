@@ -1,0 +1,21 @@
+<!--{eval $i=0;}-->
+<!--{dbres $list $val}-->
+<div class="wf-container">
+    <div class="thumb">
+        <div class="picnumber">{$val[reviews]}µ„∆¿</div>
+        <a href="{url item/detail/id/$val[sid]}" target="_blank">
+            <img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" alt="$val[name]{if $val[subname]}($val[subname]){/if}" />
+        </a>
+    </div>
+    <div class="info">
+        <h3><a href="{url item/detail/id/$val[sid]}" title="$val[name]">$val[name]{if $val[subname]}($val[subname]){/if}</a></h3>
+        <p>
+            <!--{loop $reviewpot $_val}-->
+            $_val[name]:<span class="font_2">{print cfloat($val[$_val[flag]])}</span>
+            <!--{/loop}-->
+        </p>
+    </div>
+</div>
+<!--{/dbres}-->
+<!--{if $multipage}--><div class="multipage" id="multipage">$multipage</div><!--{/if}-->
+<!--{if $wf_multipage}--><div class="multipage" id="wf_multipage">$wf_multipage</div><!--{/if}-->

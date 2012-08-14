@@ -1,0 +1,25 @@
+<style type="text/css">
+.ajax_smilies img { margin:2px 0 2px 5px; cursor:pointer; }
+</style>
+<div class="mainrail">
+    <form method="post"name="frm_topic" id="frm_topic" action="{url discussion/member/ac/reply/op/post/in_ajax/$_G[in_ajax]}">
+    <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+        <tr>
+            <td width="310">
+                <textarea name="content" id="topic_ajax_content" style="width:300px;height:120px;">$detail[content]</textarea>
+            </td>
+            <td width="*"><div class="ajax_smilies">
+                    <!--{loop $smilies $value}-->
+                    <img src="{URLROOT}/static/images/smilies/{$value}.gif" width="20" height="20" onclick="insert_smilies('topic_ajax_content','$value');" />
+                    <!--{/loop}-->
+            </div></td>
+        </tr>
+    </table>
+    <div class="text_center">
+        <input type="hidden" name="edit" value="yes" />
+        <input type="hidden" name="rpid" value="$rpid" />
+        <button type="button" onclick="ajaxPost('frm_topic','$rpid','discussion_reply_reload');">Ã·Ωª</button>&nbsp;
+        <button type="button" onclick="dlgClose();">πÿ±’</button>
+    </div>
+    </form>
+</div>

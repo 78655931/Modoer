@@ -1,0 +1,40 @@
+<!--{eval $_HEAD['title'] = $member[username] . '的好友' . $_CFG['titlesplit'] . $space['spacename'];}-->
+{template modoer_header}
+<script type="text/javascript">
+loadscript('item');
+</script>
+<div id="body">
+<div class="link_path">
+    <em>
+        <!--{loop $space_menus $val}-->
+        <!--{eval $val['url']=str_replace('(uid)', $uid, $val['url']);}-->
+        <a href="{url $val[url]}"{if SCRIPTNAV==$val[scriptnav]} class="active"{/if}>$val[title]</a>&nbsp;|
+        <!--{/loop}-->
+        已浏览：<span class="font_2">$space[pageview]</span>
+    </em>
+    <a href="{url modoer/index}">首页</a>&nbsp;&raquo;&nbsp;<a href="{url space/index/uid/$uid}">$member[username]</a>&nbsp;&raquo;&nbsp;我的好友
+</div>
+<div id="space_left">
+    {template space_side}
+</div>
+<div id="space_right">
+    <div class="mainrail rail-border-1">
+        <h3 class="rail-h-1 rail-h-bg-1">我的好友</h3>
+        <!--{if $friends}-->
+        <ul class="friend_list">
+        <!--{loop $friends $val}-->
+            <li><div><img src="{print get_face($val[friend_uid])}" /></div><p><a href="{url space/index/uid/$val[friend_uid]}" target="_blank">$val[username]</a><br />{print:member group(groupid/$val[groupid])}</p></li>
+        <!--{eval $i++;}-->
+        <!--{/loop}-->
+        </ul>
+        <div class="clear"></div>
+        <!--{if $multipage}--><div class="multipage">$multipage</div><!--{/if}-->
+        <!--{else}-->
+        <div class="messageborder">
+            <span class="msg-ico">暂时没有信息。</span>
+        </div>
+        <!--{/if}-->
+    </div>
+</div>
+</div>
+<!--{eval footer();}-->

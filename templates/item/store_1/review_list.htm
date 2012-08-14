@@ -1,0 +1,134 @@
+<!--{eval
+    $_HEAD['title'] = $fullname . '的' . $filter_arr_lng[$filter] . '点评列表';
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+<div class="item-content">
+
+    <div class="item-left mt10">
+
+        <div class="item-rail">
+            <h3 class="railtitle">点评</h3>
+
+            <div class="mainrail review-view">
+                <!--{dbres $list $val}-->
+                <div class="review">
+                    <div class="member m_w_item">
+                        <a href="{url space/index/uid/$val[uid]}"><img src="{print get_face($val[uid])}" class="face"></a>
+                        <ul>
+                            <!--{if $val[uid]}-->
+                            <li>{print:member group(groupid/$val[groupid])}</li>
+                            <li>积分:<span>$val[point]</span></li>
+                            <!--{else}-->
+                            <li>游客</li>
+                            <!--{/if}-->
+                        </ul>
+                    </div>
+                    <div class="field f_w_item">
+
+                        <div class="feed">
+
+                        <!--{if $val[uid]}-->
+                            <em><a href="javascript:member_follow($val[uid]);">加关注</a>, <a href="javascript:send_message($val[uid]);">发短信</a>, <a href="javascript:add_friend($val[uid]);">加好友</a></em>
+                            <span class="member-ico"><a href="{url space/index/uid/$val[uid]}">$val[username]</a></span>&nbsp;
+                            <!--{else}-->
+                            <span class="font_3">游客({print preg_replace("/^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$/","\\1.\\2.*.*", $val[ip])})</span>
+                            <!--{/if}-->
+                            在&nbsp;{date $val[posttime], 'w2style'}&nbsp;点评了&nbsp;<strong><a href="{print:review typeurl(idtype/$val[idtype]/id/$val[id])}">$val[subject]</a></strong>
+                        </div>
+
+                        <!--{if display('review:viewdigest',array('digest'=>$val[digest],'uid'=>$val[uid]))}-->
+                        <div class="info{if $val[digest]} review-digest{/if}">
+                            <ul class="score">
+                                <!--{get:item _val=reviewopt(catid/$val[pcatid])}-->
+                                <li>$_val[name]</li><li class="start{print cfloat($val[$_val[flag]])}"></li>
+                                <!--{/get}-->
+                            </ul>
+                            <div class="clear"></div>
+                            <!--{if $val[title]!=$val[subject]}-->
+                            <h4 class="title"><a href="{url review/detail/id/$val[rid]}">$val[title]</a></h4>
+                            <!--{/if}-->
+                            <!--{if $val[pictures]}-->
+                            <div class="pictures">
+                                <!--{eval $val[pictures] = unserialize($val[pictures]);}-->
+                                <!--{loop $val[pictures] $pic}-->
+                                <a href="{URLROOT}/$pic[picture]"><img src="{URLROOT}/$pic[thumb]" onmouseover="tip_start(this);" /></a>
+                                <!--{/loop}-->
+                            </div>
+                            <!--{/if}-->
+                            <div style="min-height:50px;">
+                                <!--{eval 
+                                    $reviewurl = '...<a href="' . url("review/detail/id/".$val[rid]) . '">[查看全文]</a>';
+                                    $val[content] = trimmed_title($val[content],500,$reviewurl);
+                                }-->
+                                <p>{print nl2br($val[content])}</p>
+                                <ul class="params">
+                                    <!--{if $val[price] && $catcfg['useprice']}-->
+                                    <li>$catcfg[useprice_title]: <span class="font_2">$val[price]{$catcfg[useprice_unit]}</span></li>
+                                    <!--{/if}-->
+                                    <!--{eval $detail_tags = $val['taggroup'] ? @unserialize($val['taggroup']) : array();}-->
+                                    <!--{loop $taggroups $_key $_val}-->
+                                        <!--{if $detail_tags[$_key]}-->
+                                            <li>$_val[name]:
+                                            <!--{loop $detail_tags[$_key] $tagid $tagname}-->
+                                                <a href="{url item/tag/tagname/$tagname}">$tagname</a>
+                                            <!--{/loop}-->
+                                            </li>
+                                        <!--{/if}-->
+                                    <!--{/loop}-->
+                                </ul>
+                            </div>
+                            <div id="flowers_$val[rid]"></div>
+                            <div id="responds_$val[rid]"></div>
+                            <div class="operation">
+                                <span class="respond-ico"><a href="javascript:get_respond('$val[rid]');">回应</a></span>(<span class="font_2" id="respond_$val[rid]">$val[responds]</span> 条)&nbsp;
+                                <span class="flower-ico"><a href="javascript:add_flower($val[rid], $val[pcatid]);">鲜花</a>(<a href="javascript:get_flower($val[rid], $val[pcatid]);"><span id="flower_$val[rid]" class="font_2">$val[flowers]</span> 朵</a>)</span>&nbsp;
+                                <a href="javascript:post_report($val[rid], $val[pcatid]);">举报</a>&nbsp;
+                            </div>
+                        </div>
+                        <!--{else}-->
+                        <div>
+                            <!--{eval $val[content] = trimmed_title($val[content],50,'...');}-->
+                            <p style="margin:10px;color:#323232;line-height:18px;">$val[content]</p>
+                        </div>
+                        <div class="review-digest-message">
+                            <!--{if !$user->isLogin}-->
+                            <a href="javascript:dialog_login();">登录后查看精华点评</a>
+                            <!--{else}-->
+                            <a href="javascript:review_view_digst($val[rid]);">查看精华点评</a>（第一次查看需要购买）
+                            <!--{/if}-->
+                        </div>
+                        <!--{/if}-->
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <!--{/dbres}-->
+                <!--{if $multipage}--><div class="multipage">$multipage</div><!--{/if}-->
+
+                <!--{if !$total}-->
+                <div class="messageborder">近期没有会员进行点评</a>。</div>
+                <!--{/if}-->
+            </div>
+
+        </div>
+
+        <!--{if $review_enable}-->
+        <div class="item-rail mt10">
+                <h3 class="railtitle">发布点评</h3>
+            <div id="review_post_foo" style="margin-top:10px;"></div>
+            <script type="text/javascript">
+            <!--
+                post_review('item_subject', $subject['sid'],'review_post_foo');
+            //-->
+            </script>
+        </div>
+        <!--{/if}-->
+
+    </div>
+
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+    </div>
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

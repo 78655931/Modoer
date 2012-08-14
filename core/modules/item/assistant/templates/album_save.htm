@@ -1,0 +1,49 @@
+{template modoer_header}
+<script type="text/javascript" src="{URLROOT}/static/javascript/validator.js"></script>
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{eval !$mymenu && $mymenu = 'mmenu';}-->
+        <!--{template $mymenu,'member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3><cite>当前操作的主题:<span class="font_2">$_G[manage_subject][name]{if $_G[manage_subject][subname]}($_G[manage_subject][subname]){/if}</span>[<a href="javascript:void(0);" onclick="item_subject_manage();">更换</a>]</cite>添加相册</h3>
+            <div class="mainrail">
+                <ul class="optabs"><li><a href="{url item/member/ac/$ac}">相册管理</a></li><li class="active"><a href="{url item/member/ac/$ac/op/add}">添加相册</a></li></ul><div class="clear"></div>
+				<div style="border-bottom:1px solid #eee;"></div>
+                <form method="post" name="myform" action="{url item/member/ac/$ac/op/save/rand/$_G[random]}" onsubmit="return validator(this);">
+				<input type="hidden" name="sid" value="$_G[manage_subject][sid]" />
+				<table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+					<tr>
+						<td width="80" align="right">添加主题：</td>
+						<td width="*"><a href="{url item/detail/id/$_G[manage_subject][sid]}" target="_blank">$_G[manage_subject][name].$_G[manage_subject][subname]</a></td>
+					</tr>
+					<tr>
+						<td align="right"><span class="font_1">*</span>相册名称：</td>
+						<td><input type="text" name="name" value="$detail[name]" class="t_input" size="40" validator="{'empty':'N','errmsg':'请填写相册名称。'}" /></td>
+					</tr>
+					<tr>
+						<td align="right" valign="top">相册简介：</td>
+						<td><textarea name="des" style="width:400px;height:80px;">$detail[des]</textarea></td>
+					</tr>
+				</table>
+                <div class="text_center">
+					<input type="hidden" name="do" value="$op" />
+					{if $op=='edit'}<input type="hidden" name="albumid" value="$albumid" />{/if}
+					<input type="hidden" name="forward" value="{print get_forward()}" />
+                    <button type="submit" name="dosubmit" value="yes">提交</button>&nbsp;
+                    <button type="button" onclick="history.go(-1);">返回</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+
+<!--{eval footer();}-->

@@ -1,0 +1,63 @@
+<!--{eval
+    $_HEAD['title'] = $MOD[name] . $_CFG['titlesplit'] . 
+    str_replace('&nbsp;&raquo;&nbsp;',$_CFG['titlesplit'],strip_tags($subtitle));
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+<div class="item-content">
+
+    <div class="item-left mt10">
+
+        <div class="item-rail ask-list">
+            <em class="ask-filter">
+                筛选:
+                <span $active[key][0]><a href="{url ask/list/catid/$catid/sid/$sid}">全部</a></span>&nbsp;
+                <span $active[key][success]><a href="{url ask/list/catid/$catid/sid/$sid/key/success}">已解决</a></span>&nbsp;
+                <span $active[key][unsuccess]><a href="{url ask/list/catid/$catid/sid/$sid/key/unsuccess}">待解决</a></span>&nbsp;
+                <span $active[key][zero]><a href="{url ask/list/catid/$catid/sid/$sid/key/zero}">零回答</a></span>&nbsp;
+                <span $active[order][reward]><a href="{url ask/list/catid/$catid/sid/$sid/key/reward/order/reward}">高分</a></span>&nbsp;
+            </em>
+            <h3 class="railtitle">$MOD[name]</h3>
+            <div class="askbox">
+                <dl class="asktitle">
+                    <dd class="biaoti">标题</dd>
+                    <dd class="jifen">悬赏</dd>
+                    <dd class="zhuangtai">状态</dd>
+                    <dd class="huida">回答数</dd>
+                    <dd class="shijian">时间</dd>
+                </dl>
+                <!--{if $list}-->
+                {dbres $list $val}
+                <dl class="asklist">
+                    <dd class="biaoti">
+                        <a href="{url ask/detail/id/$val[askid]}">$val[subject]</a><span>[<a href="{url ask/list/catid/$catid}">{print:ask category(catid/$val[catid])}</a>]</span>
+                    </dd>
+                    <dd class="jifen">
+                        <img src="{URLROOT}/{$_G[tplurl]}images/ask/ico_23.gif" width="12" height="13" /> $val[reward]
+                    </dd>
+                    <dd class="zhuangtai">
+                        <!--{if $val[success] == 0}-->
+                        <img src="{URLROOT}/templates/main/default/images/ask/qa_ico_1.gif" width="44" height="19" />
+                        <!--{else}-->
+                        <img src="{URLROOT}/{$_G[tplurl]}images/ask/qa_ico_2.gif" width="44" height="19" />
+                        <!--{/if}-->
+                    </dd>
+                    <dd class="huida">$val[replies]</dd>
+                    <dd class="shijian">{date $val[dateline],'Y-m-d'}</dd>
+                </dl>
+                {/dbres}
+                <div class="multipage">$multipage</div>
+                <!--{else}-->
+                <div class="messageborder">没有找到任何信息。</div>
+                <!--{/if}-->
+            </div>
+        </div>
+
+    </div>
+
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+    </div>
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

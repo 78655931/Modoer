@@ -1,0 +1,106 @@
+<!--{eval
+    $_HEAD['title'] = $subject[name] . '的交流区';
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+<div class="item-content">
+
+    <div class="item-left mt10">
+
+        <div class="item-rail pb10">
+            <h3 class="railtitle">交流区</h3>
+            <div class="mb10">
+                <ul class="topiclist topiclist-title">
+                    <li class="subject">话题</li>
+                    <li class="author">来自</li>
+                    <li class="dateline">发布时间</li>
+                    <li class="replies">回复数量</li>
+                    <li class="dateline">回复时间</li>
+                </ul>
+                <!--{dbres $list $val}-->
+                <ul class="topiclist ">
+                    <li class="subject{if $val[isownerpost]} ownerpost{/if}"><a title="$val[subject]" href="{url discussion/topic/id/$val[tpid]}">{sublen $val[subject],25,'...'}</a></li>
+                    <li class="author"><a href="{url space/index/uid/$val[uid]}" target="_blank">$val[username]</a></li>
+                    <li class="dateline">{date $val[dateline],'m-d H:i'}</li>
+                    <li class="replies">{$val[replies]}个回复</li>
+                    <li class="dateline">{date $val[replytime],'w2style'}</li>
+                </ul>
+                <!--{/dbres}-->
+                <div class="clear"></div>
+            </div>
+            <!--{if $multipage}--><div class="multipage">$multipage</div><!--{/if}-->
+            <!--{if !$total}--><div class="messageborder">没有任何讨论话题。</div><!--{/if}-->
+        </div>
+
+        <div class="item-rail mt10">
+            <h3 class="railtitle">发布话题</h3>
+            <div class="discussion_post" style="margin-top:10px;">
+                <script type="text/javascript" src="{URLROOT}/static/javascript/validator.js"></script>
+                <form action="{url discussion/member/ac/topic/op/post}" method="post" name="myform" onsubmit="return validator(this);">
+                    <input type="hidden" name="sid" value="$sid">
+                    <table border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td colspan="2"><input type="text" class="t_input" size="40" name="subject"validator="{'empty':'N','errmsg':'请填写话题标题'}" {if !$user->isLogin} onfocus="dialog_login();"{/if}></td>
+                        </tr>
+                        <tr>
+                            <td width="550">
+                                <textarea name="content" id="topic_content"{if !$user->isLogin} onfocus="dialog_login();"{elseif $MOD[topic_seccode]}onfocus="show_seccode();"{/if}></textarea>
+                            </td>
+                            <td width="*" valign="top">
+                                <div class="smilies">
+                                    <!--{loop $smilies $value}-->
+                                    <img src="{URLROOT}/static/images/smilies/{$value}.gif" width="20" height="20" onclick="insert_smilies('topic_content','$value');" />
+                                    <!--{/loop}-->
+                                </div>
+                            </td>
+                        </tr>
+                        <!--{if $user->isLogin}-->
+                        <tr>
+                            <td colspan="2">
+                                <div id="topic_images_foo">
+                                    <span class="update-img-ico"><a href="javascript:;" onclick="discuss_topic_upimg('topic_content');">上传图片</a></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <!--{/if}-->
+                        <!--{if $MOD[topic_seccode] && $user->isLogin}-->
+                        <tr>
+                            <td><div id="seccode" class="none" style="float:left;width:80px;position:relative;top:-3px;"></div>
+                                <input type="text" name="seccode" class="t_input" style="width:118px;" onblur="check_seccode(this.value);" onfocus="show_seccode();" validator="{'empty':'N','errmsg':'请输入注册验证码'}" />
+                                <span id="msg_seccode" class="formmessage none"></span>
+                            </td>
+                        </tr>
+                        <!--{/if}-->
+                        <!--{if $user->isLogin}-->
+                        <tr>
+                            <td colspan="2"><button type="submit" name="dosubmit">加上去</button></td>
+                        </tr>
+                        <!--{/if}-->
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--{eval $hidemap=true;}-->
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+        <!--{if $subject[favorites]}-->
+        <div class="mainrail rail-border-3">
+            <div class="sub-mainrail">
+                <h3 class="sub-title">关注这里的人</h3>
+                <ul class="rail-faces" style="margin-bottom:10px;">
+                    <!--{get:modoer val=table(table/dbpre_favorites/where/idtype='subject'AND id=$sid/orderby/addtime DESC/rows/9)}-->
+                    <li><div><a href="{url space/index/uid/$val[uid]}" target="_blank" title="$val[username]"><img src="{print get_face($val[uid])}" alt="$val[username]" /></a></div><span><a href="{url space/index/uid/$val[uid]}" target="_blank">$val[username]</a></span></li>
+                    <!--{getempty(val)}-->
+                    <div class="nothing">暂无搜藏会员</div>
+                    <!--{/get}-->
+                </ul>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <!--{/if}-->
+    </div>
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

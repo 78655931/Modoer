@@ -1,0 +1,131 @@
+{template modoer_header}
+
+<div id="body">
+    <div class="myhead"></div>
+    <div class="mymiddle">
+        <div class="myleft">
+            <!--{template 'menu','member',MOD_FLAG}-->
+        </div>
+        <div class="myright">
+            <div class="myright_top"></div>
+            <div class="myright_middle">
+                <h3>我的积分</h3>
+                <div class="mainrail">
+                    <table cellspacing="0" cellpadding="0" class="maintable">
+                        <tr style="background:#F6F6F6">
+                            <td width="12%"><center>等级积分</center></td>
+                            <td width="12%"><center>现金</center></td>
+                            {get:member val=point_groups()}
+                            {if $val[enabled]}
+                            <td width="12%"><center>$val[name]</center></td>
+                            {/if}
+                            {/get}
+                        </tr>
+                        <tr>
+                            <td><center>$user->point</center></td>
+                            <td><center>$user->rmb</center></td>
+                            {get:member val=point_groups()}
+                            {if $val[enabled]}
+                            <td><center><span id="my_$val_k">{print $user->$val_k}</span></center></td>
+                            {/if}
+                            {/get}
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="mainrail">
+					<form method="post" action="{url member/index/ac/point/op/exchange}" onsubmit="return exchange_submit();">
+                    <table cellspacing="0" cellpadding="0" class="maintable">
+                        <tr style="background:#F6F6F6">
+                            <td width="50" height="50">兑换</td>
+                            <td width="230"><input type="text" class="t_input" size="5" name="in_value" id="in_value" value="1" onkeyup="calc_rate();" /> 
+								<select name="in_point" id="in_point" onchange="calc_rate();">
+									{loop $POINT->group $key $val}
+									{if $val[enabled] && $val[in] && $val[rate]}
+									<option value="$key" rate="$val[rate]">$val[name]</option>
+									{/if}
+									{/loop}
+								</select>
+							</td>
+                            <td  width="50">所需</td>
+                            <td  width="230">
+								<input type="text" class="t_input" size="5" name="out_value" id="out_value" value="1" disabled="disabled" />
+								<select name="out_point" id="out_point" onchange="calc_rate();">
+									{loop $POINT->group $key $val}
+									{if $val[enabled] && $val[out] && $val[rate]}
+									<option value="$key" rate="$val[rate]">$val[name]</option>
+									{/if}
+									{/loop}
+								</select>
+							</td>
+							<td width="*">
+								<input type="submit" name="dosubmit" value="兑换" />
+							</td>
+                        </tr>
+                    </table>
+					</form>
+                </div>
+
+				<!--{if $total}-->
+				<div class="mainrail">
+					<table width="100%" cellspacing="0" cellpadding="0" class="maintable" style="margin-top:10px;" trmouse="Y">
+						<tr class="thbg">
+							<th width="120">时间</th>
+                            <th width="140">收入</th>
+							<th width="140">支出</th>
+							<th width="*">说明</th>
+						</tr>
+						<!--{dbres $list $val}-->
+						<tr>
+							<!--<td>$val[out_username]</td>-->
+							<td>{date $val[dateline]}</td>
+							<td style="color:green;">{if $val[in_value]>0}{print:member point(point/$val[in_point])} {print get_numeric($val[in_value])} {print $POINT->group[$val[in_point]][unit]}{/if}</td>
+							<td style="color:red;">{if $val[out_value]>0}{print:member point(point/$val[out_point])} {print get_numeric($val[out_value])} {print $POINT->group[$val[out_point]][unit]}{/if}</td>
+							<td style="color:#808080;">$val[des]</td>
+						</tr>
+						<!--{/dbres}-->
+					</table>
+				</div>
+				<!--{/if}-->
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="mybottom"></div>
+</div>
+<script type="text/javascript">
+function calc_rate() {
+	var invalue = $('#in_value').val();
+	if(!is_numeric(invalue) || invalue < 1) { $('#out_value').val(0); return; }
+	var inpoint = $('#in_point option:selected');
+	var in_rate = inpoint.attr('rate');
+
+	var outpoint = $('#out_point option:selected');
+	var out_rate = outpoint.attr('rate');
+
+	var needpoint = Math.ceil(in_rate / out_rate * invalue);
+	$('#out_value').val(needpoint);
+}
+
+function toInt(input) {
+    var s = parseInt(input);
+    return isNaN(s) ? 0 : s;
+}
+
+function exchange_submit() {
+    var inpoint = $('#in_point option:selected');
+    var outpoint = $('#out_point option:selected');
+    if(inpoint.text() == outpoint.text()) { alert('请选择不同的积分类型进行兑换。'); return false; }
+    var mypoint = $('#my_' + outpoint.attr('value')).text();
+    var outpoint_ex = parseInt($('#out_value').val());
+    if(mypoint < outpoint_ex) { 
+        alert('对不起，您兑换的积分不足。'); 
+        return false;
+    }
+    return confirm('您确定进行本次兑换吗?');
+}
+jQuery(document).ready(function($) {
+    calc_rate();
+});
+</script>
+<!--{eval footer();}-->

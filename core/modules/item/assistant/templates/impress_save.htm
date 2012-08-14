@@ -1,0 +1,55 @@
+<!--{if !defined('IN_AJAX')}-->
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>添加主题印象</h3>
+<!--{/if}-->
+            <div class="mainrail" id="review_foot">
+                <form method="post" name="frm_impress" id="frm_impress" action="{url item/member/ac/$ac/op/save/in_ajax/$_G[in_ajax]}">
+                <input type="hidden" name="sid" value="$subject[sid]" />
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                    <tr>
+                        <td width="100" align="right">主题名称：</td>
+                        <td width="*"><a href="{url item/detail/id/$subject[sid]}" target="_blank">$subject[name]&nbsp;$subject[subname]</a></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td align="right"><span class="font_1">*</span>添加印象：</td>
+                        <td><input type="text" name="tags" id="impress_tags" class="t_input" size="50" value="" />
+                            <div style="margin-top:5px;">
+                            <!--{get:item val=impress(sid/$subject[sid]/orderby/total DESC/rows/5)}-->
+                            <span><a href="javascript:addtag('impress_tags','$val[title]');">$val[title]</a></span>&nbsp;
+                            <!--{/get}-->
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="text_center" id="op_foot" style="margin-top:5px;">
+                    <!--{if defined('IN_AJAX')}-->
+                    <input type="hidden" name="dosubmit" value="yes" />
+                    <button type="button" class="button" onclick="ajaxPost('frm_impress', '$sid', 'item_impress_get');">提交</button>&nbsp;&nbsp;
+                    <button type="button" class="button" onclick="dlgClose();">关闭</button>
+                    <!--{else}-->
+                    <input type="hidden" name="forward" value="{print get_forward()}" />
+                    <button type="submit" name="dosubmit" value="yes">提交</button>&nbsp;&nbsp;
+                    <button type="button" onclick="history.go(-1);">返回</button>
+                    <!--{/if}-->
+                </div>
+                </form>
+            </div>
+<!--{if !defined('IN_AJAX')}-->
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->
+<!--{/if}-->

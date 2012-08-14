@@ -1,0 +1,286 @@
+<!--{template 'header', 'item', $detail[templateid]}-->
+<script type="text/javascript" src="{URLROOT}/static/javascript/swfobject.js"></script>
+<div class="item-content">
+    <div class="item-left">
+        <!--{eval if($tplsetting[bcastr]) $bcastrs=unserialize($tplsetting[bcastr]);}-->
+        <div class="item-index-bcastr mb10">
+            <script type="text/javascript" src="{URLROOT}/static/javascript/jquery.d.imagechange.js"></script>
+            <div class="l1_pics" id="l1_pics">
+                <!--{loop $bcastrs $val}-->
+                <a href="$val[url]" title="$val[title]" target="_blank"><img src="{URLROOT}/$val[picture]" height="200" width="740" /></a>
+                <!--{/loop}-->
+                <!--{if !$bcastrs}-->
+                <a href="#" title="上传橱窗图片"><img src="{ITEM_TPL_DIR}/images/bcastr.png" height="200" width="740" /></a>
+                <!--{/if}-->
+            </div>
+            <script type="text/javascript">
+                $('#l1_pics').d_imagechange({width:740,height:200,repeat:'repeat'});
+            </script>
+        </div>
+        <div class="item-index-picture">
+            <div class="pic">
+                <!--{if $detail[thumb]}-->
+                <img src="{URLROOT}/$detail[thumb]" />
+                <!--{else}-->
+                <img src="{URLROOT}/static/images/noimg.gif" />
+                <!--{/if}-->
+            </div>
+            <div class="op">
+                <span class="update-img-ico"><a href="{url item/member/ac/pic_upload/sid/$sid}">上传图片</a></span>
+                <!--{if $detail[pictures]}-->
+                <span class="view-img-ico"><a href="{url item/pic/sid/$detail[sid]}">$detail[pictures]图</a></span>
+                <!--{/if}-->
+            </div>
+        </div>
+        <div class="item-index-detail">
+            <table class="custom_field" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td class='key' align='left'>得分：</td>
+                    <td width="*">
+                        <!--{loop $reviewpot $val}-->$val[name]:<span class="font_2" style="font-size:16px;">{print cfloat($detail[$val[flag]])}</span><!--{/loop}-->&nbsp;综合得分:<span class="font_1" style="font-size:16px;"><strong>{print cfloat($detail[avgsort])}</strong></span>
+                    </td>
+                </tr>
+                $detail_custom_field
+                <!--{if $catcfg[useeffect]}-->
+                <tr>
+                    <td class='key' align='left'>会员参与：</td>
+                    <td width="*">
+                        <!--{if $catcfg[effect1]}-->
+                        有&nbsp;<span id="num_effect1" class="font_2">0</span>&nbsp;位会员{$catcfg[effect1]}(<a href="javascript:post_membereffect($sid,'effect1');">我{$catcfg[effect1]}</a>,<a href="javascript:get_membereffect($sid,'effect1','Y');">查看</a>) ,
+                        <!--{/if}-->
+                        <!--{if $catcfg[effect2]}-->
+                        有&nbsp;<span id="num_effect2" class="font_2">0</span>&nbsp;位会员{$catcfg[effect2]}(<a href="javascript:post_membereffect($sid,'effect2');">我{$catcfg[effect2]}</a>,<a href="javascript:get_membereffect($sid,'effect2','Y');">查看</a>) .
+                        <!--{/if}-->
+                    </td>
+                </tr>
+                <!--{/if}-->
+                <tr>
+                    <td class='key' align='left'>{$model[item_name]}印象：</td>
+                    <td width="*">
+                        <span id="subject_impress">
+                        <!--{get:item val=impress(sid/$sid/orderby/total DESC/rows/5)}-->
+                        <span class="{print:item tagclassname(total/$val[total])}">$val[title]</span>&nbsp;
+                        <!--{getempty(val)}-->
+                        暂无信息
+                        <!--{/get}-->
+                        <!--{if count($_QUERY[get_val])>=4}-->
+                        <span class="arrow-ico"><a href="javascript:item_impress_get($sid,1);">更多</a></span>
+                        <!--{/if}-->
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='key' align='left'>数据统计：</td>
+                    <td width="*">
+                        <span class="font_2">$detail[pageviews]</span>次浏览,<span class="font_2">$detail[reviews]</span>条点评,<span class="font_2">$detail[guestbooks]</span>条留言,<span class="font_2">$detail[pictures]</span>张图片,<span class="font_2">$detail[favorites]</span>个关注{if $detail[products]},<span class="font_2">$detail[products]</span>个产品{/if}
+                    </td>
+                </tr>
+                <!--{if $_CFG[sharecode]}-->
+                <tr>
+                    <td class='key' align='left'>内容分享：</td>
+                    <td width="*">
+                        $_CFG[sharecode]
+                    </td>
+                </tr>
+                <!--{/if}-->
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                        <a class="abtn1" href="{url review/member/ac/add/type/item_subject/id/$sid}"><span><b>我要点评</b></span></a>
+                        <a class="abtn2" href="javascript:item_impress_add($sid);"><span>添加印象</span></a>
+                        <a class="abtn2" href="javascript:post_log($detail[sid]);"><span>补充信息</span></a>
+                        <a class="abtn2" href="javascript:add_favorite($detail[sid]);"><span>关注</span></a>
+                        <!--{if !$detail[owner] && $catcfg[subject_apply]}-->
+                        <a class="abtn2" href="{url item/member/ac/subject_apply/sid/$detail[sid]}"><span>认领</span></a>
+                        <!--{/if}-->
+                        <div class="clear"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="clear"></div>
+
+        <!--{loop $relate_subject_field $field}-->
+        <!--{if $detail[$field[fieldname]]}-->
+        <div class="item-index-content mt10 bt_d">
+            <h3 class="mariltitle">$field[title]</h3>
+            <ul class="relate" id="relate_subject_$field[fieldid]">
+            <!--{get:item val=related(fieldid/$field[fieldid]/sid/$detail[sid]/rows/$field[config][savelen])}-->
+            <li>
+                <div class="relate_thumb">
+                    <a href="{url item/detail/id/$val[sid]}"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" title="$val[name]" alt="$val[name]" /></a>
+                </div>
+                <div class="relate_info">
+                    <h5><a href="{url item/detail/id/$val[sid]}" title="$val[name]&nbsp;$val[subname]">{sublen $val[name],7}</a></h5>
+                    <span class="relate_sp">{$val[reviews]}点评{if $val[reviews]}, 好评率{print round($val[best]/$val[reviews]*100)}%{/if}</span>
+                    <span class="relate_sp">分类: <a href="{url item/list/catid/$val[catid]}">{print:item category(catid/$val[catid])}</a></span>
+                    <span><a href="{url item/detail/id/$val[sid]}#review" class="font_2">点评</a></span> <span><a href="{url item/detail/id/$val[sid]/view/guestbook}#guestbook" class="font_2">留言</a></span> 
+                </div>
+            </li>
+            <!--{/get}-->
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <!--{/if}-->
+        <!--{/loop}-->
+
+        <div class="item-index-effect" id="effect_floor" style="display:none;">
+            <em>[<a href="javascript:;" onclick="$('#effect_floor').css('display','none');">关闭</a>]</em>
+            <h3><span class="arrow-ico">会员参与</span></h3>
+            <p class="members" id="effect"></p>
+        </div>
+
+        <!--{loop $textarea_field $field}-->
+        <!--{if $detail[$field[fieldname]]}-->
+        <div class="item-index-content mt10 bt_d">
+            <h3 class="mariltitle">$field[title]</h3>
+            <div class="content" id="content">$detail[$field[fieldname]]</div>
+        </div>
+        <!--{/if}-->
+        <!--{/loop}-->
+
+        <script type="text/javascript" src="{URLROOT}/static/javascript/review.js"></script>
+        <div class="item-dplist-container mt10">
+            <div class="dplist-tab" id="subtab">
+                <ul>
+                    <li{if $view=='review'} class="selected"{/if} id="tab_review"><a href="{url item/detail/id/$sid/view/review}#review" onfocus="this.blur()" onclick="return get_review('item_subject',$detail[sid]);">会员点评</a></li>
+                    <!--{if $catcfg[gusetbook]}-->
+                    <li{if $view=='guestbook'} class="selected"{/if} id="tab_guestbook"><a href="{url item/detail/id/$sid/view/guestbook}#guestbook" onfocus="this.blur()" onclick="return get_guestbook($detail[sid]);">会员留言</a></li>
+                    <!--{/if}-->
+                    <!--{if $catcfg[forum] && $detail['forumid'] > 0}-->
+                    <li{if $view=='forum'} class="selected"{/if} id="tab_forum"><a href="{url item/detail/id/$sid/view/forum}#forum" onfocus="this.blur()" onclick="return get_forum_threads($detail[forumid],1,$detail[sid]);">论坛讨论</a></li>
+                    <!--{/if}-->
+                </ul>
+            </div>
+
+            <div id="display">
+            <!--{if !$view||$view=='review'}-->
+                <!--{template 'part_review','item',$detail[templateid]}-->
+            <!--{elseif $view=='guestbook'}-->
+                <!--{template 'part_guestbook','item',$detail[templateid]}-->
+            <!--{elseif $view=='forum'}-->
+                <!--{template 'part_forum','item',$detail[templateid]}-->
+            <!--{/if}-->
+            </div>
+
+            <!--{if $review_enable}-->
+            <div class="item-rail">
+                <h3 class="railtitle">发布点评</h3>
+                <div id="review_post_foo" style="margin-top:10px;"></div>
+                <script type="text/javascript">
+                    post_review('item_subject', $subject['sid'],'review_post_foo');
+                </script>
+            </div>
+            <!--{/if}-->
+        </div>
+    </div>
+    <div class="item-right">
+        <!--{if $detail[video]}-->
+        <div class="mainrail" style="text-align:center;" id="video_foo"></div>
+        <script type="text/javascript">
+        $(document).ready(function() {
+            var so = new SWFObject("$detail[video]", 'video1', 200, 200, 7, '#FFF');
+            so.addParam("allowScriptAccess", "always");
+            so.addParam("allowFullScreen", "true");
+            so.addParam("wmode", "transparent");
+            so.write("video_foo");
+        });
+        </script>
+        <!--{/if}-->
+
+        <!--{if $model[usearea]}-->
+        <div class="mainrail rail-border-3">
+            <!--{eval $mapparam = array(
+                'title' => $detail[name] . $detail[subname],
+                'show' => $detail[mappoint]?1:0,
+            );}-->
+            <iframe src="{url index/map/width/196/height/250/title/$mapparam[title]/p/$detail[mappoint]/show/$mapparam[show]}" frameborder="0" scrolling="no" style="width:196px;height:250px;"></iframe>
+            <div style="text-align:center;margin:5px 0;">
+                <!--{if !$detail['mappoint']}-->
+                <a href="javascript:post_map($detail[sid], $detail[pid]);">地图未标注，我来标注</a>
+                <!--{else}-->
+                <a href="javascript:show_bigmap();">查看大图</a>&nbsp;
+                <a href="javascript:post_map($detail[sid], $detail[pid]);">报错</a>
+                <!--{/if}-->
+            </div>
+        </div>
+        <script type="text/javascript">
+        function show_bigmap() {
+            var src = "{url index/map/width/600/height/400/title/$mapparam[title]/p/$detail[mappoint]/show/$mapparam[show]}";
+            var html = '<iframe src="' + src + '" frameborder="0" scrolling="no" width="100%" height="400" id="ifupmap_map"></iframe>';
+            dlgOpen('查看大图', html, 600, 450);
+        }
+        </script>
+        <!--{/if}-->
+        <div class="mainrail rail-border-3">
+            <!--{if check_module('article')}-->
+            <div class="sub-mainrail">
+                <h3 class="sub-title">公告</h3>
+                <ul class="rail-list" style="margin-bottom:10px;">
+                    <!--{get:article val=getlist(sid/$sid/orderby/dateline DESC/rows/5)}-->
+                    <li><a href="{url article/detail/id/$val[articleid]}" title="$val[subject]">{sublen $val[subject],14}</a></li>
+                    <!--{getempty(val)}-->
+                    <li>暂无信息</li>
+                    <!--{/get}-->
+                </ul>
+            </div>
+            <!--{/if}-->
+            <!--{if $detail['coupons']>0 && check_module('coupon')}-->
+            <div class="sub-mainrail bt_d">
+                <em><span class="arrow-ico"><a href="{url coupon/list/sid/$sid}">更多</a></span></em>
+                <h3 class="sub-title">优惠券</h3>
+                <ul class="rail-list" style="margin-bottom:10px;">
+                    <!--{get:coupon val=list_subject(sid/$sid/orderby/dateline DESC/rows/5)}-->
+                    <li><cite>{date $val[dateline],'m-d'}</cite><a href="{url coupon/detail/id/$val[couponid]}" title="$val[subject]">{sublen $val[subject],16}</a></li>
+                    <!--{/get}-->
+                </ul>
+            </div>
+            <!--{/if}-->
+            <!--{eval $reviewcfg = $_G['loader']->variable('config','review');}-->
+            <!--{if $model[usearea]}-->
+            <div class="sub-mainrail bt_d">
+                <em><a href="{url item/list/catid/$detail[pid]/aid/$detail[aid]}">更多</a></em>
+                <h3 class="sub-title">附近{$model[item_name]}</h3>
+                <ul class="rail-list" style="margin-bottom:10px;">
+                    <!--{get:modoer val=table(table/dbpre_subject/where/pid=$detail[pid] AND aid=$detail[aid] AND sid!=$sid/orderby/reviews DESC/rows/6)}-->
+                    <li><cite class="start{print get_star($val[avgsort], $reviewcfg[scoretype])}" style="height:16px;"></cite><a href="{url item/detail/id/$val[sid]}" title="$val[name].$val[subname]">{sublen $val[name].$val[subname],9}</a></li>
+                    <!--{/get}-->
+                </ul>
+                <div class="clear"></div>
+            </div>
+            <!--{/if}-->
+            <div class="sub-mainrail bt_d">
+                <h3 class="sub-title">来过这里的人</h3>
+                <ul class="rail-faces" style="margin-bottom:10px;">
+                    <!--{get:modoer val=table(table/dbpre_visitor/where/sid=$sid/orderby/dateline DESC/rows/9)}-->
+                    <li><div><a href="{url space/index/uid/$val[uid]}" target="_blank" title="$val[username]"><img src="{print get_face($val[uid])}" alt="$val[username]" /></a></div><span><a href="{url space/index/uid/$val[uid]}" target="_blank">$val[username]</a></span></li>
+                    <!--{getempty(val)}-->
+                    <div>暂无来访会员</div>
+                    <!--{/get}-->
+                </ul>
+                <div class="clear"></div>
+            </div>
+            <div class="sub-mainrail bt_d">
+                <h3 class="sub-title">关注这里的人</h3>
+                <ul class="rail-faces" style="margin-bottom:10px;">
+                    <!--{get:modoer val=table(table/dbpre_favorites/where/idtype='subject'AND id=$sid/orderby/addtime DESC/rows/9)}-->
+                    <li><div><a href="{url space/index/uid/$val[uid]}" target="_blank" title="$val[username]"><img src="{print get_face($val[uid])}" alt="$val[username]" /></a></div><span><a href="{url space/index/uid/$val[uid]}" target="_blank">$val[username]</a></span></li>
+                    <!--{getempty(val)}-->
+                    <div class="nothing">暂无搜藏会员</div>
+                    <!--{/get}-->
+                </ul>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+    get_membereffect($sid, $modelid);
+    <!--{if $MOD['ajax_taoke'] && $taoke_product_field}-->
+    get_subject_taoke($sid);
+    <!--{/if}-->
+});
+</script>
+<!--{template 'footer', 'item', $detail[templateid]}-->

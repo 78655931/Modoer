@@ -1,0 +1,168 @@
+<!--{eval
+    $_HEAD['title'] = $subject[name].$subject[subname] . '的相册图片浏览';
+}-->
+{template modoer_header}
+<style type="text/css">@import url("{URLROOT}/static/images/gallery/gallery.css");</style>
+<script type="text/javascript" src="{URLROOT}/static/javascript/jquery.ad-gallery.pack.js"></script>
+<script type="text/javascript">
+  var current_index = 0;
+  var picid='$picid';
+  $(function() {
+  var   galleries = $('.ad-gallery').adGallery({
+        loader_image:'{URLROOT}/static/images/gallery/loader.gif',
+        callbacks: {
+            afterImageVisible: function() {
+                if(current_index==0&&picid>0){
+                    $('#gallery li').each(function(i) {
+                        if(this.id=='picid_$picid') current_index = i;
+                    });
+                    if(current_index>0) this.showImage(current_index);
+                }
+            }
+        }
+    });
+
+    $('#switch-effect').change(
+      function() {
+        galleries[0].settings.effect = $(this).val();
+        return false;
+      }
+    );
+    $('#toggle-slideshow').click(
+      function() {
+        galleries[0].slideshow.toggle();
+        return false;
+      }
+    );
+    $('#toggle-description').click(
+      function() {
+        if(!galleries[0].settings.description_wrapper) {
+          galleries[0].settings.description_wrapper = $('#descriptions');
+        } else {
+          galleries[0].settings.description_wrapper = false;
+        }
+        return false;
+      }
+    );
+
+  });
+</script>
+<div id="body">
+
+	<div class="link_path">
+		<em><span class="update-img-ico"><a href="{url item/member/ac/pic_upload/sid/$subject[sid]/albumid/$detail[albumid]}">上传图片</a></span></em>
+		<a href="{url modoer/index}">首页</a>&nbsp;&raquo;&nbsp;{print implode('&nbsp;&raquo;&nbsp;', $urlpath)}
+	</div>
+
+	<div id="pic_left">
+		<div id="gallery" class="ad-gallery">
+			<div class="ad-image-wrapper">
+			</div>
+			<div class="ad-controls">
+			</div>
+			<div class="ad-nav">
+				<div class="ad-thumbs">
+					<ul class="ad-thumb-list">
+						{eval $index=0;}
+						{dbres $list $val}
+						<li id="picid_$val[picid]">
+							<a href="{URLROOT}/$val[filename]"><img src="{URLROOT}/$val[thumb]" class="image{$index}" title="$val[title] / $val[username] / {date $val[addtime],'Y-m-d'}" alt="$val[comments]" longdesc="$val[url]"></a>
+						</li>
+						{eval $index++;}
+						{/dbres}
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<!--{if check_module('comment')}-->
+		<div class="comment_foo">
+			<style type="text/css">@import url("{URLROOT}/{$_G[tplurl]}css_comment.css");</style>
+			<script type="text/javascript" src="{URLROOT}/static/javascript/comment.js"></script>
+			<!--{eval $comment_modcfg = $_G['loader']->variable('config','comment');}-->
+			<!--{if $detail[comments]}-->
+			<!--{/if}-->
+			<a name="comment"></a>
+			{eval $_G['loader']->helper('form');}
+			<div id="comment_form">
+				<!--{if $user->check_access('comment_disable', $_G['loader']->model(':comment'), false)}-->
+					<!--{if $MOD[album_comment] && !$comment_modcfg['disable_comment']}-->
+					<!--{eval $idtype = 'album'; $id = $albumid; $title = 'Re:' . $detail[name];}-->
+					{template comment_post}
+					<!--{else}-->
+					<div class="messageborder">评论已关闭</div>
+					<!--{/if}-->
+				<!--{else}-->
+				<div class="messageborder">如果您要进行评论信息，请先&nbsp;<a href="{url member/login}">登录</a>&nbsp;或者&nbsp;<a href="{url member/reg}">快速注册</a>&nbsp;。</div>
+				<!--{/if}-->
+			</div>
+			<!--{if !$comment_modcfg['hidden_comment']}-->
+			<div class="mainrail rail-border-3">
+				<em>评论总数:<span class="font_2">$detail[comments]</span>条</em>
+				<h1 class="rail-h-3 rail-h-bg-3">网友评论</h1>
+				<div id="commentlist" style="margin-bottom:10px;"></div>
+				<script type="text/javascript">
+				$(document).ready(function() { get_comment('album',$albumid,1); });
+				</script>
+			</div>
+			<!--{/if}-->
+		</div>
+		<!--{/if}-->
+	</div>
+
+    <div id="pic_right">
+		<!--{if $subject}-->
+		<div class="mainrail rail-border-1">
+			<h2 class="rail-h-2 rail-h-bg-1"><b><a href="{url item/detail/id/$subject[sid]}"><span class="font_2">$subject[name]&nbsp;$subject[subname]</span></a></b></h2>
+			<div class="side_subject">
+				<!--{eval $reviewcfg = $_G['loader']->variable('config','review');}-->
+				<p class="start start{print get_star($subject[avgsort],$reviewcfg[scoretype])}"></p>
+				<table class="side_subject_field_list" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td colspan="2"><span class="font_2">$subject[reviews]</span>点评,
+						<span class="font_2">$subject[guestbooks]</span>留言,
+						<span class="font_2">$subject[pageviews]</span>浏览</td>
+					</tr>
+					$subject_field_table_tr
+				</table>
+				<a class="abtn1" href="{url review/member/ac/add/type/item_subject/id/$subject[sid]}"><span>我要点评</span></a>
+				<a class="abtn2" href="javascript:add_favorite($subject[sid]);"><span>关注</span></a>
+				<a class="abtn2" href="{url item/detail/id/$subject[sid]/view/guestbook}#guestbook"><span>留言</span></a>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<!--{/if}-->
+		<!--{if $detail['des']}-->
+		<div class="mainrail rail-border-1">
+            <h3 class="rail-h-1 rail-h-bg-1">相册说明</h3>
+			<div class="rail-text">$detail[des]</div>
+		</div>
+		<!--{/if}-->
+        <div class="mainrail rail-border-1">
+            <h3 class="rail-h-1 rail-h-bg-1">其他相册</h3>
+            <ul class="rail-album">
+                <!--{get:item val=album(sid/$subject[sid]/orderby/pageview DESC/rows/10/cachetime/3600)}-->
+                <li>
+					<div class="thumb">
+						<a href="{url item/album/id/$val[albumid]}">{if $val[thumb]}
+						<img src="{URLROOT}/$val[thumb]" />
+						{else}
+						<img src="{URLROOT}/static/images/noimg.gif" />
+						{/if}</a>
+					</div>
+					<div class="info">
+						<h3><a href="{url item/album/id/$val[albumid]}">$val[name]</a></h3>
+						<span><a href="{url item/detail/id/$val[sid]}">$val[sname]{if $val[subname]}($val[subname]){/if}</a></span>
+						<span>{date $val[lastupdate],'Y-m-d'}</span>
+					</div>
+				</li>
+                <!--{/get}-->
+            </ul>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+	<div class="clear"></div>
+
+</div>
+<!--{eval footer();}-->

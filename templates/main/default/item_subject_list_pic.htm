@@ -1,0 +1,15 @@
+<!--{if $total}-->
+<ul class="itempics">
+<!--{dbres $list $val}-->
+    <li>
+        <div id="item_pic_$val[sid]"><a href="{url item/detail/id/$val[sid]}"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" /></a></div>
+        <p><a href="{url item/detail/id/$val[sid]}">{sublen $val[name].$val[subname],12}</a></p>
+    </li>
+<!--{/dbres}-->
+</ul>
+<div class="clear"></div>
+<!--{else}-->
+    <div class="messageborder">
+        <span class="msg-ico">本板块暂时没有主题信息，<a href="{url item/member/ac/subject_add/pid/$pid}">我要添加</a>。</span>
+    </div>
+<!--{/if}-->

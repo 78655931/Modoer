@@ -1,0 +1,112 @@
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>申请会员卡</h3>
+            <div class="mainrail">
+                <form method="post" name="myform" action="{url card/member/ac/apply/op/apply/rand/$_G[random]}" onsubmit="return checkapply(this);">
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                    <tr>
+                        <td width="80" align="right">联系人：</td>
+                        <td width="*"><input type="text" name="linkman" class="t_input" />&nbsp;<span class="font_1">*</span></td>
+                        <td rowspan="8" width="230" valign="top">申请说明:<p>$MOD[applydes]</p></td>
+                    </tr>
+                    <!--{if $MOD['applynum']>1}-->
+                    <tr>
+                        <td align="right">申请数量：</td>
+                        <td><input type="text" name="num" value="1" size="5" class="t_input" />&nbsp;<span class="font_1">*</span> 至多申请 <span class="font_1">$MOD[applynum]</span> 张{if $MOD[pointgroup]}，每张需 <span class="font_1">$MOD[coin]</span> {print:member point(point/$MOD[pointgroup])}，您当前有 <span class="font_1">{print $user->$MOD[pointgroup]}</span> {print:member point(point/$MOD[pointgroup])}{/if}</td>
+                    </tr>
+                    <!--{else}-->
+                    <input name="num" type="hidden" value="1" />
+                    <!--{/if}-->
+                    <tr>
+                        <td align="right">联系电话：</td>
+                        <td><input type="text" name="tel" class="t_input" /></td>
+                    </tr>
+                    <tr >
+                        <td align="right">手机：</td>
+                        <td><input type="text" name="mobile" class="t_input" />&nbsp;<span class="font_1">*</span></td>
+                    </tr>
+                    <tr>
+                        <td align="right">邮编：</td>
+                        <td><input type="text" name="postcode" size="20" class="t_input" />&nbsp;<span class="font_1">*</span></td>
+                    </tr>
+                    <tr>
+                        <td align="right">联系地址：</td>
+                        <td><input type="text" name="address" size="40" class="t_input" />&nbsp;<span class="font_1">*</span></td>
+                    </tr>
+                    <!--{if $MOD[applyseccode]}-->
+                    <tr>
+                        <td align="right">验证码：</td>
+                        <td><div id="seccode" style="float:left;"></div><input type="text" name="seccode" size="10" onfocus="show_seccode();" class="t_input" />&nbsp;&nbsp;<span class="font_1">*</span></td>
+                    </tr>
+                    <!--{/if}-->
+                    <tr>
+                        <td align="right" valign="top">备注说明：</td>
+                        <td><textarea name="comment" rows="5" cols="50"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>注：<span class="font_1">*</span>为必填</td>
+                    </tr>
+                </table>
+                <div class="text_center">
+                    <button type="submit" name="onsubmit" value="yes">提交申请</button>&nbsp;
+                    <button type="button" onclick="history.go(-1);">返回</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<script type="text/javascript">
+function checkapply(form) {
+	//form = document.myform;
+	if(form.linkman.value.trim() == '') {
+		alert('未填写联系人。');
+		return false;
+	} else if(form.num.value.trim() == '') {
+		alert('未填写申请数量。');
+		return false;
+	} else if(!is_numeric(form.num.value.trim())) {
+		alert('申请数量不正确。');
+		return false;
+	} else if(form.num.value.trim() <= 0) {
+		alert('申请数量不能小于0。');
+		return false;
+	} else if(form.tel.value.trim() != '' && !form.tel.value.trim().match(/^[0-9\-\+]+$/)) {
+		alert('联系电话格式不正确。');
+		return false;
+	} else if(form.mobile.value.trim() == '') {
+		alert('未填写手机号码。');
+		return false;
+	} else if(!form.mobile.value.trim().match(/^[0-9\-\+]+$/)) {
+		alert('手机号码格式不正确。');
+		return false;
+	} else if(form.postcode.value.trim() == '') {
+		alert('未填写邮政编码。');
+		return false;
+	} else if(!form.postcode.value.trim().match(/^[0-9]+$/)) {
+		alert('邮政编码格式不正确。');
+		return false;
+	} else if(form.address.value.trim().length < 2) {
+		alert('未填写联系地址。');
+		return false;
+	} else if(form.seccode.value.trim() != '' && !form.seccode.value.trim().match(/^[0-9a-zA-Z]+$/)) {
+		alert('验证码格式不正确。');
+		return false;
+	} else {
+		return confirm('您确定提交本次申请吗？');
+	}
+}
+</script>
+<!--{eval footer();}-->

@@ -1,0 +1,79 @@
+<script type="text/javascript" src="{URLROOT}/include/javascript/myinfo.js"></script>
+<div id="body">
+<div class="link_path"><a href="{url modoer}">首页</a>&nbsp;&raquo;&nbsp;<a href="{$_modules[member][url]}index.php">我的助手</a>&nbsp;&raquo;&nbsp;积分兑换</div>
+<div id="my_left">
+<!--{template 'menu','member','./member/templates'}-->
+</div>
+<div id="my_right">
+    <form id="myform" method="post" action="member.php?ac=$ac&" onsubmit="return check_exchange(this);">
+    <div class="mainrail">
+        <h1>积分兑换</h1>
+        <table width="100%" id="changepw-table" class="maintable">
+            <tr>
+                <td width="60" align="right">我的家当：</td>
+                <td width="*"><span class="font_1">$user->coin</span>&nbsp;金币</td>
+            </tr>
+            <tr>
+                <td width="60" align="right">兑换比率：</td>
+                <td width="*"><span class="font_1"><span id="a_num">1</span></span>&nbsp;金币&nbsp;兑换&nbsp;<span class="font_1"><span id="r_num"></span></span>&nbsp;<span id="a_unit"></span><span id="a_title"></span></td>
+            </tr>
+            <tr>
+                <td align="right">支出：</td>
+                <td><input type="text" class="text" size="15" name="amount" id="amount" value="0" onkeyup="calcredit();" style="width:120px;" />
+                    <select name=""><option value="">金币</option></select>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">收入：</td>
+                <td><input type="text" class="text" id="desamount" style="width:120px;" disabled />
+                    <select name="tocredits" id="tocredits" onChange="calcredit();">
+                    <!--{loop $outextcredits $id $ecredits}-->
+                        <!--{if $ecredits[ratio]}-->
+                        <option value="$id" unit="$ecredits[unit]" title="$ecredits[title]" ratio="$ecredits[ratio]">$ecredits[title]</option>
+                        <!--{/if}-->
+                    <!--{/loop}-->
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">密码：</td>
+                <td><input type="password" name="password_credits" class="text" /></td>
+            </tr>
+        </table>
+    </div>
+    <div class="text_center">
+        <button type="submit" name="mysubmit" value="yes">&nbsp;兑&nbsp;换&nbsp;</button>
+    </div>
+    </form>
+</div>
+</div>
+<script type="text/javascript">
+function check_exchange(form) {
+    if(toInt(form.amount) <= 0) {
+        alert('支出的金币必须大于0.');
+        return false;
+    } else if(form.password_credits.value.length == 0) {
+        alert('未输入密码.');
+        return false;
+    }
+    return confirm('兑换操作恢复, 您确定进行本次兑换吗?');
+}
+
+function calcredit() {
+    var tocredits = document.getElementById('tocredits');
+    var tocredit = tocredits[tocredits.selectedIndex];
+    var ratio = Math.round(((1 / tocredit.getAttribute('ratio')) * 100)) / 100;
+    document.getElementById('amount').value = toInt(document.getElementById('amount'));
+    document.getElementById('a_unit').innerHTML = tocredit.getAttribute('unit');
+    document.getElementById('a_title').innerHTML = tocredit.getAttribute('title');
+    document.getElementById('r_num').innerHTML = ratio;
+    document.getElementById('desamount').value = Math.floor(1 / tocredit.getAttribute('ratio') * document.getElementById('amount').value);
+}
+
+function toInt(input) {
+    var s = parseInt(input.value);
+    return isNaN(s) ? 0 : s;
+}
+
+calcredit();
+</script>

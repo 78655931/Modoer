@@ -1,0 +1,265 @@
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>上传图片</h3>
+            <div class="mainrail">
+            <!--{if !$sid}-->
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                    <tr>
+                        <td width="150" align="right">搜索主题(输入关键字)：</td>
+                        <td width="*">
+							<div id="subject_search"></div>
+							<script type="text/javascript">
+								$('#subject_search').item_subject_search({
+									input_class:'t_input',
+									btn_class:'btn2',
+									result_css:'item_search_result',
+									hide_keyword:true,
+									myreviewed:true,
+									myfavorite:true,
+                                    location:"{url item/member/ac/$ac/sid/_SID_}"
+								});
+							</script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td><div id="search_result" style="display:none;"></div></td>
+                    </tr>
+                </table>
+            <!--{elseif $_GET['op'] == 'multi'}-->
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                    <tr>
+                        <td width="*">上传对象：<a href="{url item/detail/id/$subject[sid]}" target="_blank">$subject[name]&nbsp;$subject[subname]</a></td>
+                    </tr>
+                </table>
+				<!--{eval 
+					$_G['loader']->helper('form','item');
+					$album_option = form_item_alubm($_GET['sid'],$albumid);
+				}-->
+				<style type="text/css">
+					#upload { width:100%; }
+					.up_foo { float:left;width:380px;border:1px solid #eee; height:150px; }
+					.up_foo p { margin:10px 0; padding:0; }
+				</style>
+                <div id="upload">
+                    <div id="up_1" class="up_foo">
+                        <form method="post" name="myform[]" action="{url item/member/ac/$ac/in_ajax/1}" target="iframe_upload" enctype="multipart/form-data">
+                            <input type="hidden" name="multi" value="yes" />
+                            <input type="hidden" name="sid" value="$sid" />
+                            <input type="hidden" name="dosubmit" value="yes" />
+                            <div style="margin:5px;padding:0 10px;">
+								<p>
+                                    所属相册：<select name="albumid">{print $album_option}</select>
+                                    <button type="button" onclick="item_create_album($(this).prev());">新建相册</button>
+                                </p>
+								<p>图片标题：<input type="text" name="title" class="t_input" size="35" /></p>
+								<p>图片链接：<input type="text" name="url" size="35" class="t_input" value="http://" ></p>
+								<p>选择图片：<input type="file" name="picture" size="25" onchange="pic_name(this);" ></p>
+							</div>
+                        </form>
+                    </div>
+                </div>
+                <div style="clear:both;text-align:center;padding-top:10px;">
+                    <input type="hidden" id="sid" value="$sid" />
+                    <input type="hidden" id="forward" value="{print get_forward()}" />
+					<button type="button" onclick="pic_upload_add();">增加上传栏</button>&nbsp;
+                    <button type="button" onclick="pic_upload_start();">开始上传</button>&nbsp;
+                    <button type="button" onclick="location='{url item/member/ac/$ac/sid/$sid}'">返回单个上传</button>&nbsp;
+                </div>
+                <iframe name="iframe_upload" id="iframe_upload" style="display:none;"></iframe>
+                <script type="text/javascript">
+                var num = $multi_num;
+                var index = 1;
+                var errcount = 0;
+				var current = 1;
+				var currentform='';
+				$(document).ready(function() {
+					var formrail = $('#up_1').clone();
+                    $(formrail).attr('id','formrail').css('display','none');
+                    $(document.body).append(formrail);
+				});
+				function pic_name(obj) {
+                    var addupload = true; 
+                    $('#upload').find("[name='picture']").each(function() {
+                        if($(this).val() == '') {
+                            addupload = false;
+                            return false;
+                        }
+                    });
+                    if(addupload) pic_upload_add();
+                    //自动加文件名
+					var value = obj.value;
+					var box=$(obj).parent().parent().find("[name=title]");
+					if(box.val()!='')return;
+					var filename = value.substr(value.lastIndexOf('\\')+1);
+					box.val(filename.substr(0,filename.lastIndexOf('.')));
+				}
+				function pic_upload_add() {
+					if(current >= num) { alert('批量上传不可超过'+num+'张图片，请分批上传。'); return; }
+					var foo = $('<div></div>').attr('id','up_'+current).addClass('up_foo').append($('#formrail').html());
+					$('#upload').append(foo);
+					current++;
+				}
+                function pic_upload_start() {
+					pic_upload_remove();
+					if(!pic_upload_check()) return;
+                    $('#iframe_upload').load(pic_upload);
+					errcount = 0;
+					$('#upload form').each(function(i) {
+						$(this).attr('uploaded','N');
+					});
+					if(currentform = pic_upload_next()) {
+						currentform.submit();
+					}
+                }
+				function pic_upload_check() {
+					var xx = 0;
+					$('#upload form').each(function(i) {
+						xx++;
+						var form = $(this);
+						var title = form.find("[name=title]");
+						var empty_index = 0;
+						if(title.val()=='') {
+							empty_index++;
+							title.css('background','#FF66FF');
+						} else {
+							title.css('background','#FFF');
+						}
+						var file = form.find("[name=picture]");
+						if(file.val()=='') {
+							empty_index++;
+							file.css('background','#FF66FF');
+						} else {
+							file.css('background','#FFF');
+						}
+						if(empty_index=='1') {
+							alert('图片上传栏没有填写完整。');
+							return false;
+						}
+					});
+					if(!xx) {
+						pic_upload_add();
+						alert('没有任何图片，请先选择上传的图片。');
+						return false;
+					}
+					return true;
+				}
+				function pic_upload_remove() {
+					$('#upload form').each(function(i) {
+						if($(this).find("[name=title]").val()=='' && $(this).find("[name=picture]").val()=='') {
+							$(this).parent().remove();
+							current--;
+						}
+					});
+				}
+				function pic_upload_next() {
+					var form = null; 
+					var uploaded = true;
+					$('#upload form').each(function(i) {
+						if($(this).attr('uploaded')!='Y' && uploaded) {
+							uploaded = false;
+							form = this;
+						}
+					});
+					return form ? $(form) : false;
+				}
+                function pic_upload() {
+					currentform.attr('uploaded','Y');
+					var currentdiv = currentform.parent();
+                    var iframe = document.getElementById('iframe_upload');
+                    var data = $(iframe.contentWindow.document.body).html();
+                    if(data.match(/\{\s+caption:".*",message:".*".*\s*\}/)) {
+                        var mymsg = eval('('+data+')');
+                        if(data.indexOf('ERROR:') > 1) {
+                            errcount++;
+                            mymsg.message = mymsg.message.replace('ERROR:','');
+							var close = $('<a></a>').attr('href','javascript:void(0);').html('<center>[关闭]</center>').click(function() {
+								$(this).parent().remove();
+								return false;
+							});
+							var offset = currentdiv.position();
+							var msg = $('<div></div>').append(mymsg.message).append(close)
+								.css({position:'absolute',background:'#FFFFCC',textAlign:'center',
+								lineHeight:'180%',zIndex:'100',top:offset.top+1,width:'380px',color:'red'});
+							currentform.before(msg);
+                        } else {
+                            currentdiv.html('<p style="line-height:200%;">'+currentform.find('[name=title]').val() + '<br />' + mymsg.message+'</p>')
+							.css('text-align','center');
+                        }
+                    } else {
+                        currentdiv.html(data);
+                    }
+					currentform = pic_upload_next();
+                    if(currentform) {
+                        currentform.submit();
+                    } else if(!errcount) {
+                        if(confirm('图片上传成功，是否继续上传？')) {
+                            document.location.href = document.location.href;
+                        } else {
+                            document.location.href = Url('item/member/ac/m_picture');
+                        }
+                    }
+                }
+                </script>
+            <!--{else}-->
+                <form method="post" name="myform" action="{url item/member/ac/$ac/rand/$_G[random]}" enctype="multipart/form-data">
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                    <tr>
+                        <td width="100" align="right">{$model[item_name]}名称：</td>
+                        <td width="*"><a href="{url item/detail/id/$subject[sid]}" target="_blank">$subject[name]&nbsp;$subject[subname]</a></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td align="right"><span class="font_1">*</span>所属相册：</td>
+                        <td>
+							<select name="albumid" id="albumid">
+								{print form_item_alubm($sid, $albumid)}
+							</select>
+                            {if $access_create_album}<button type="button" onclick="item_create_album($('#albumid'));">新建相册</button>{/if}
+						</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td align="right" valign="top"><span class="font_1">*</span>选择图片：</td>
+                        <td><input type="file" name="picture" class="f_input"><br /><span class="font_3">最大允许上传的图片大小<span class="font_2">$_CFG[picture_upload_size]KB</span>，允许上传的图片格式 jpg、png、gif</span></td>
+                    </tr>
+                    <tr>
+                        <td align="right"><span class="font_1">*</span>图片标题：</td>
+                        <td><input type="text" name="title" size="35" class="t_input">&nbsp;<span class="font_3">&nbsp;限制<span class="font_2">30</span>个字符</span></td>
+                    </tr>
+                    <tr>
+                        <td align="right">图片链接：</td>
+                        <td><input type="text" name="url" size="45" class="t_input" value="http://">&nbsp;<span class="font_3">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td align="right">图片说明：</td>
+                        <td><input type="text" name="comments" size="45" class="t_input">&nbsp;<span class="font_3">&nbsp;限制<span class="font_2">60</span>个字符</span></td>
+                    </tr>
+                </table>
+                <div class="text_center">
+                    <input type="hidden" name="sid" value="$sid" />
+                    <input type="hidden" name="forward" value="{print get_forward()}" />
+                    <button type="submit" name="dosubmit" value="yes">开始上传</button>&nbsp;
+                    <!--{if $MOD['multi_upload_pic']}-->
+                    <button type="button" onclick="location='{url item/member/ac/$ac/op/multi/sid/$sid}'">批量上传</button>&nbsp;
+                    <!--{/if}-->
+                    <button type="button" onclick="history.go(-1);">返回</button>
+                </div>
+                </form>
+            <!--{/if}-->
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

@@ -1,0 +1,18 @@
+<form method="post" action="{url member/index/ac/myset/op/changemobile/do/submit}">
+<table class="table" width="100%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td width="100" height="30" align="right">新手机号码：</td>
+        <td width="*">
+            <input type="text" name="mobile" id="mobile" class="t_input" style="width:170px;" />
+            <button type="button" class="button" onclick="change_mobile_send();">获取验证码</button>
+        </td>
+    </tr>
+    <tr>
+        <td height="30" align="right">输入验证码：</td>
+        <td>
+            <input type="text" name="serial" id="serial" class="t_input" style="width:170px;" />
+            <button type="button" class="button" onclick="change_mobile_check();">提交验证码</button>
+        </td>
+    </tr>
+</table>
+</form>

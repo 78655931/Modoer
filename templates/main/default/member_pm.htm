@@ -1,0 +1,24 @@
+<form method="post" action="{url member/index/ac/pm/op/send}" id="pmform" class="post">
+<input type="hidden" name="in_ajax" value="1" />
+<table id="dlgsendmsg" class="table" width="100%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td width="80" align="right">发送对象：</td>
+        <td width="*"><input type="text" class="t_input" name="recv_users" value="$recv_username" size="30" /> 多对象，用","分开</td>
+    </tr>
+    <tr>
+        <td  align="right">短信主题：</td>
+        <td><input type="text" class="t_input" name="subject" value="$subject" size="40" /> 限<span class="font_1">60</span>字符</td>
+    </tr>
+    <tr>
+        <td valign="top"  align="right">短信内容：</td>
+        <td><textarea name="content" rows="7" style="width:350px;display:block;" /></textarea>短信内容限<span class="font_1">500</span>个字符以内。</td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td>
+            <button type="button" value="yes" name="sendsubmit" onclick="if(checkpm()) ajaxPost('pmform','','');">发送</button>&nbsp;
+            <button type="button" name="hide" name="hide" onclick="dlgClose();">取消</button>
+        </td>
+    </tr>
+</table>
+</form>

@@ -1,0 +1,49 @@
+<!--{eval 
+    $_HEAD['title'] = '搜索:' . _T($_GET['keyword']);
+}-->
+{template modoer_header}
+<div id="body">
+<div class="link_path">
+    <a href="{url modoer/index}">$_CITY[name]</a>&nbsp;&raquo;&nbsp;<a href="{url item/search}">搜索</a>&nbsp;&raquo;&nbsp;{print _T($_GET['keyword'])}<span class="font_3">($total)</span>
+</div>
+<div class="mainrail rail-border-1">
+<h1 class="rail-h-1 rail-h-bg-1">本地搜索</h1>
+    <table class="maintable" border="0" cellspacing="0" cellpadding="0">
+        <tr class="tblth">
+            <th width="*">名称</th>
+            <th width="140">所属板块</th>
+            <th width="50" class="num">点评量</th>
+            <th width="50" class="num">图片量</th>
+            <th width="50" class="num">浏览量</th>
+            <th width="50">点评</th>
+            <th width="50">关注</th>
+        </tr>
+        <!--{if !$total}-->
+        <tr><td colspan="10">
+            <div class="item-search-empty">
+                <p>没有找到主题 “<span class="font_2">{print _T($_GET['keyword'])}</span>” ，欢迎您创建这个主题，与今后来到这里的朋友交流点评。</p>
+                <ul>
+                <!--{get:item val=category(pid/0)}-->
+                <li><a href="{url item/member/ac/subject_add/pid/$val[catid]/name/$_GET[keyword]}">在 “ {$val[name]}” 中建立</a></li><br />
+                <!--{/get}-->
+                </ul>
+            </div>         
+        </td></tr>
+        <!--{/if}-->
+        <!--{dbres $list $val}-->
+        <tr>
+            <td><a href="{url item/detail/id/$val[sid]}" target="_blank">$val[name]&nbsp;$val[subname]</a></td>
+            <td><a href="{url item/list/catid/$val[pid]}">{print:item category(catid/$val[pid])}</a> &gt; <a href="{url item/list/catid/$val[catid]}">{print:item category(catid/$val[catid])}</a></td>
+            <td class="num">$val[reviews]</td>
+            <td class="num">$val[pictures]</td>
+            <td class="num">$val[pageviews]</td>
+            <td><a href="{url review/member/ac/add/type/item_subject/id/$val[sid]}">点评</a></td>
+            <td><a href="javascript:add_favorite($val[sid]);">关注</a></td>
+        </tr>
+        <!--{/dbres}-->
+    </table>
+</div>
+<div class="multipage">$multipage</div>
+</div>
+
+<!--{eval footer();}-->

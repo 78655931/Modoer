@@ -1,0 +1,57 @@
+<!--{eval
+    $_HEAD['title'] = $fullname . '的' . $MOD[name];
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+<div class="item-content">
+
+    <div class="item-left mt10">
+
+        <div class="item-rail">
+            <em class="ask-filter">
+                筛选:
+                <span $active[flag][0]><a href="{url party/item/sid/$sid/order/$order}">全部</a></span>&nbsp;
+                <span $active[flag][1]><a href="{url party/item/sid/$sid/order/$order/flag/1}">报名中</a></span>&nbsp;
+                <span $active[flag][2]><a href="{url party/item/sid/$sid/order/$order/flag/2}">进行中</a></span>&nbsp;
+                <span $active[flag][3]><a href="{url party/item/sid/$sid/order/$order/flag/3/}">已结束</a></span>&nbsp;
+            </em>
+            <h3 class="railtitle">$MOD[name]</h3>
+            <div class="party-list">
+                <!--{if $list}-->
+                {dbres $list $val}
+                    <div class="thumb"><a href="{url party/detail/id/$val[partyid]}"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" alt="$val[subject]"/></a><b></b></div>
+                    <div class="info">
+                        <ul>
+                            <h3><a href="{url party/detail/id/$val[partyid]}">$val[subject]</a></h3>
+                            <li>活动地址：$val[address]</li>
+                            <li>活动时间：{date $val[begintime], 'm月d日H:i'} ~ {date $val[endtime], 'm月d日H:i'}</li>
+                            <li>活动介绍：{sublen strip_tags($val[des]), 30}</li>
+                        </ul>
+                    </div>
+                    <div class="num">
+                        <p class="applynum">$val[num]</p>
+                        <div>
+                            <!--{if $val[flag]==1}-->
+                            <a href="{url party/member/ac/apply/op/apply/id/$val[partyid]}" alt="我要报名"><img src="{URLROOT}/{$_G[tplurl]}images/party/party_apply.gif" /></a>
+                            <!--{else}-->
+                            <img src="{URLROOT}/{$_G[tplurl]}images/party/party_apply_stop.gif" />
+                            <!--{/if}-->
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                {/dbres}
+                <div class="multipage">$multipage</div>
+                <!--{else}-->
+                <div class="messageborder">没有找到任何信息。</div>
+                <!--{/if}-->
+            </div>
+        </div>
+
+    </div>
+
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+    </div>
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

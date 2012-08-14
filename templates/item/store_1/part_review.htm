@@ -1,0 +1,103 @@
+<div class="dplist-subrail">
+    筛选：<span{if $review_filter=='all'} class="selected"{/if} id="review_filter_all"><a href="#" onclick="return get_review('item_subject',$id,'all','$review_orderby',1);" onfocus="this.blur();">综合</a></span>
+    <span{if $review_filter=='best'} class="selected"{/if} id="review_filter_best"><a href="#" onclick="return get_review('item_subject',$id,'best','$review_orderby',1);" onfocus="this.blur();">好评</a></span>
+    <span{if $review_filter=='bad'} class="selected"{/if} id="review_filter_bad"><a href="#" onclick="return get_review('item_subject',$id,'bad','$review_orderby',1);" onfocus="this.blur();">差评</a></span>
+    <span{if $review_filter=='pic'} class="selected"{/if} id="review_filter_pic"><a href="#" onclick="return get_review('item_subject',$id,'pic','$review_orderby',1);" onfocus="this.blur();">图文</a></span>
+    <span{if $review_filter=='digest'} class="selected"{/if} id="review_filter_digest"><a href="#" onclick="return get_review('item_subject',$id,'digest','$review_orderby',1);" onfocus="this.blur();">精华</a></span>
+    &nbsp;|&nbsp;&nbsp;排序：<span{if $review_orderby=='posttime'} class="selected"{/if} id="review_order_posttime"><a href="#" onclick="return get_review('item_subject',$id,'$review_filter','posttime',1);" onfocus="this.blur()">最新点评</a></span>
+    <span{if $review_orderby=='flower'} class="selected"{/if} id="review_order_flower"><a href="#" onclick="return get_review('item_subject',$id,'$review_filter','flower',1);" onfocus="this.blur()">最多鲜花</a></span>
+    <span{if $review_orderby=='respond'} class="selected"{/if} id="review_order_respond"><a href="#" onclick="return get_review('item_subject',$id,'$review_filter','respond',1);" onfocus="this.blur()">最多回应</a></span>
+</div>
+<a name="review"></a>
+<!--{if $detail[reviews] || $total}-->
+<!--{eval $index=1;}-->
+<!--{dbres $reviews $val}-->
+<div class="item-dplist-cnt">
+    <div class="dpMember mt10">
+        <!--{if $val[uid]}-->
+        <a href="{url space/index/uid/$val[uid]}" title="$val[username]"><img src="{print get_face($val[uid])}" class="face" alt="$val[username]"></a>
+        <!--{else}-->
+        <img src="{print get_face($val[uid])}" class="face">
+        <!--{/if}-->
+        <ul>
+            <!--{if $val[uid]}-->
+            <li><a href="{url space/index/uid/$val[uid]}">$val[username]</a></li>
+            <li>{print:member group(groupid/$val[groupid]/color/1)}</li>
+            <li>积分:<span>$val[point]</span></li>
+            <!--{else}-->
+            <li>游客</li>
+            <!--{/if}-->
+        </ul>
+    </div>
+    <div class="dpDetail">
+        <!--{if display('review:viewdigest',array('digest'=>$val[digest],'uid'=>$val[uid]))}-->
+        <div class="dpPoint">
+            <ul>
+                <li>总体评价：<span class="font_2">{if $val[best]}好{else}不好{/if}</span></li>
+                <!--{loop $reviewpot $_val}-->
+                <li>$_val[name]：<span class="font_2">{$val[$_val[flag]]}</span></li>
+                <!--{/loop}-->
+                <!--{if $val[price] && $catcfg['useprice']}-->
+                <li>$catcfg[useprice_title]：<span class="font_2">$val[price]{$catcfg[useprice_unit]}</span></li>
+                <!--{/if}-->
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <div class="dpContent{if $val[digest]} review-digest{/if}">
+            {if $val[title]}<h4 class="title"><a href="{url review/detail/id/$val[rid]}">$val[title]</a></h4>{/if}
+            <!--{eval 
+                $reviewurl = '...<a href="' . url("review/detail/id/".$val[rid]) . '">[查看全文]</a>';
+                $val[content] = trimmed_title($val[content],500,$reviewurl);
+            }-->
+            <p>{print nl2br($val[content])}</p>
+            <!--{if $val[pictures]}-->
+            <div class="pictures">
+                <!--{eval $val[pictures] = unserialize($val[pictures]);}-->
+                <!--{loop $val[pictures] $pic}-->
+                <a href="{URLROOT}/$pic[picture]"><img src="{URLROOT}/$pic[thumb]" onmouseover="tip_start(this);" /></a>
+                <!--{/loop}-->
+            </div>
+            <!--{/if}-->
+        </div>
+        <div id="flowers_$val[rid]" class="ajax_c"></div>
+        <div id="responds_$val[rid]" class="ajax_c"></div>
+        <div class="dpOp">
+            <em>
+                <!--{if $user->isLogin && $user->uid==$val[uid]}-->
+                <span class="review-ico"><a href="{url review/member/ac/edit/op/edit/rid/$val[rid]}">编辑</a></span>&nbsp;
+                <!--{/if}-->
+                <span class="respond-ico"><a href="javascript:get_respond('$val[rid]');">回应</a></span>(<span class="font_2" id="respond_$val[rid]">$val[responds]</span> 条)&nbsp;
+                <span class="flower-ico"><a href="javascript:add_flower($val[rid]);">鲜花</a>(<a href="javascript:get_flower($val[rid]);"><span id="flower_$val[rid]" class="font_2">$val[flowers]</span> 朵</a>)</span>&nbsp;
+                <a href="javascript:post_report($val[rid]);">举报</a>
+            </em>
+            <div>发布于 {date $val[posttime]}</div>
+        </div>
+        <!--{else}-->
+        <div>
+            <!--{eval $val[content] = trimmed_title($val[content],50,'...');}-->
+            <p style="margin:10px;color:#323232;line-height:18px;">$val[content]</p>
+        </div>
+        <div class="review-digest-message">
+            <!--{if !$user->isLogin}-->
+            <a href="javascript:dialog_login();">登录后查看精华点评</a>
+            <!--{else}-->
+            <a href="javascript:review_view_digst($val[rid]);">查看精华点评</a>（第一次查看需要购买）
+            <!--{/if}-->
+        </div>
+        <!--{/if}-->
+    </div>
+    <div class="clear"></div>
+</div>
+<!--{if $index==1}-->
+<div id="adv_1"></div>
+<!--{/if}-->
+<!--{eval $index++;}-->
+<!--{/dbres}-->
+
+<!--{if $multipage}-->
+<div class="multipage">$multipage</div>
+<!--{/if}-->
+
+<!--{else}-->
+<div class="messageborder"><span class="msg-ico">暂无点评，<a href="{url review/member/ac/add/type/item_subject/id/$id}">发表您的点评信息</a>！</span></div>
+<!--{/if}-->

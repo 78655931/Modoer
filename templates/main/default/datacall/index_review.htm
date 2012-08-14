@@ -1,0 +1,28 @@
+<!--{eval $item_category =  $_G['loader']->variable('category','item');}-->
+<!--{loop $_QUERY[mydata] $key $val}-->
+<div class="review">
+    <div class="member">
+        <a href="{url space/index/uid/$val[uid]}"><img src="{print get_face($val[uid])}" class="face"></a>
+    </div>
+    <div class="field">
+        <div class="feed">
+            <!--{if $val[uid]}-->
+            <span class="member-ico"><a href="{url space/index/uid/$val[uid]}">$val[username]</a></span>&nbsp;在&nbsp;{date $val[posttime], 'w2style'}
+            <!--{else}-->
+            <span class="font_3">游客({print preg_replace("/^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$/","\\1.\\2.*.*", $val[ip])})</span>
+            <!--{/if}-->
+            点评了&nbsp;<strong><a href="{url item/detail/id/$val[sid]}">$val[name].$val[subname]</a></strong>
+        </div>
+        <div class="info">
+            <ul class="score">
+                <!--{get:item _val=reviewopt(catid/$val[pid])}-->
+                <li>$_val[name]</li><li class="start{print cfloat($val[$_val[flag]])}"></li>
+                <!--{/get}-->
+            </ul>
+            <div class="clear"></div>
+            <p>{sublen $val[content],45,'...'}</p>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<!--{/loop}-->

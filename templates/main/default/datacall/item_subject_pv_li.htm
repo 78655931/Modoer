@@ -1,0 +1,16 @@
+<!--{eval $reviewcfg = $_G['loader']->variable('config','review');}-->
+<ul class="rail-pic">
+<!--{loop $_QUERY[mydata] $key $val}-->
+<li>
+    <div class="pic">
+        <a href="{url item/detail/id/$val[sid]}"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/s_noimg.gif{/if}" alt="$val[name] $val[subname]" /></a>
+    </div>
+    <div class="info">
+        <a href="{url item/detail/id/$val[sid]}" title="$val[name] $val[subname]">{sublen $val[name].$val[subname],12}</a><br />
+        <span class="font_2"><b>$val[pageviews]</b></span>‰Ø¿¿,<span class="font_2"><b>$val[reviews]</b></span>µ„∆¿
+        <p class="start{print get_star($val[avgsort], $reviewcfg[scoretype])}" style="margin:0;padding:0;height:15px;"></p>
+    </div>
+    <div class="clear"></div>
+</li>
+<!--{/loop}-->
+</ul>

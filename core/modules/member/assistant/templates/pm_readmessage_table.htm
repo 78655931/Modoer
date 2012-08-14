@@ -1,0 +1,4 @@
+<table cellspacing="0" cellpadding="0" id="readmsg" class="readmsgtable">
+    <tr><td>$msg[content]</td></tr>
+    <tr><td class="control"><!--{if $folder=='inbox' && $msg['senduid'] != 0}-->[<a href="{url member/index/ac/$ac/op/write/recvuid/$msg[senduid]/subject/Re:$msg[subject]}">»Ø¸´</a>]&nbsp;<!--{/if}-->[<a href="javascript:deletemsg($msg[pmid]);">É¾³ý</a>]<!--{if $msg[uid]>0}-->&nbsp;[<a href="{url space/index/uid/$msg[uid]}">¿Õ¼ä</a>]<!--{/if}-->&nbsp;[<a href="javascript:;" onclick="document.getElementById('pmid_$msg[pmid]_content').style.display='none';">¹Ø±Õ</a>]</td></tr>
+</table>

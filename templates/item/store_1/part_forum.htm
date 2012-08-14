@@ -1,0 +1,21 @@
+<div class="dplist-subrail item-forum-th">
+    <ul>
+        <li class="title"><cite>回复/点击</cite><a href="$_CFG[forum_url]" target="_blank">进入论坛讨论区</a></li>
+    </ul>
+</div>
+<a name="forum"></a>
+<div class="item-forum-cnt">
+    <!--{if $forums}-->
+        <ul>
+		<!--{loop $forums $val}-->
+			<li><cite>$val[replies]/$val[views]</cite><a href="$val[url]" target="_blank">$val[subject]</a></li>
+        <!--{/loop}-->
+        </ul>
+        <!--{if $multipage}-->
+        <div class="multipage">$multipage</div>
+        <!--{/if}-->
+
+    <!--{else}-->
+        <div class="messageborder"><span class="msg-ico">暂无论坛帖子，<a href="$_CFG[forum_url]" target="_blank">发表您的帖子</a>！</span></div>
+    <!--{/if}-->
+</div>

@@ -1,0 +1,108 @@
+<!--{eval
+    $_HEAD['title'] = $detail[subject];
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+
+<script type="text/javascript">
+function copyToClipboard(txt) {   
+     if(window.clipboardData) {   
+         window.clipboardData.clearData();   
+         window.clipboardData.setData("Text", txt);   
+     } else if(navigator.userAgent.indexOf("Opera") != -1) {   
+          window.location = txt;   
+     } else if (window.netscape) {   
+          try {   
+               netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");   
+          } catch (e) {   
+               alert("被浏览器拒绝！\n请在浏览器地址栏输入'about:config'并回车\n然后将'signed.applets.codebase_principal_support'设置为'true'");   
+                return;
+          }
+          var clip = Components.classes['@mozilla.org/widget/clipboard;1'].createInstance(Components.interfaces.nsIClipboard);   
+          if (!clip)   
+               return;   
+          var trans = Components.classes['@mozilla.org/widget/transferable;1'].createInstance(Components.interfaces.nsITransferable);   
+          if (!trans)   
+               return;   
+          trans.addDataFlavor('text/unicode');   
+          var str = new Object();   
+          var len = new Object();   
+          var str = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);   
+          var copytext = txt;   
+          str.data = copytext;   
+          trans.setTransferData("text/unicode",str,copytext.length*2);   
+          var clipid = Components.interfaces.nsIClipboard;   
+          if (!clip)   
+               return false;   
+          clip.setData(trans,null,clipid.kGlobalClipboard);   
+     }
+     alert("已复制到剪贴板。");
+}
+function AddFavorite(sURL, sTitle) { 
+    try { 
+         window.external.addFavorite(sURL, sTitle); 
+     } catch (e) { 
+        try { 
+             window.sidebar.addPanel(sTitle, sURL, ""); 
+         } catch (e) { 
+             alert("加入收藏失败，请使用Ctrl+D进行添加"); 
+         } 
+     } 
+}
+</script>
+
+<div class="item-content">
+
+    <div class="item-left mt10">
+
+        <div class="fenlei-detail mainrail rail-border-3">
+            <div class="field">
+                <div class="head">
+                    <!--{if $detail[endtime]<=$_G['timestamp']}-->
+                    <em><span class="font_1"><strong>信息已过期</strong></span></em>
+                    <!--{/if}-->
+                    <h1>$detail[subject]</h1>
+                    <div class="op">
+                        发布者：<a href="{url space/index/uid/$val[uid]}">$detail[username]</a>&nbsp;&nbsp;&nbsp;
+                        发布时间：{date $detail[dateline],'Y-m-d H:i'}&nbsp;&nbsp;&nbsp;
+                        过期时间：{date $detail[endtime],'Y-m-d'}&nbsp;&nbsp;&nbsp;
+                        <a href="#" onclick="AddFavorite(window.location.href,'$detail[subject]')">收藏</a>&nbsp;&nbsp;&nbsp;
+                        <a href="#" onclick="copyToClipboard(window.location.href);">分享</a>&nbsp;&nbsp;&nbsp;
+                        <a href="#" onclick="window.print();">打印</a></span>
+                    </div>
+                </div>
+                <!--{if $detail_custom_field}-->
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    $detail_custom_field
+                </table>
+                <!--{/if}-->
+            </div>
+            <div class="info">{print nl2br($detail[content])}</div>
+            <ul class="pics">
+            <!--{eval $pictures = is_serialized($detail[pictures]) ? unserialize($detail[pictures]) : array();}-->
+            <!--{loop $pictures $pic}-->
+            <!--{eval $thumbpic = dirname($pic) . '/thumb_' . basename($pic); }-->
+                <li><a href="{URLROOT}/$pic" target="_blank"><img src="{URLROOT}/$thumbpic" /></a></li>
+            <!--{/loop}-->
+            </ul>
+            <div class="clear"></div>
+            <div class="contcat">
+                <ul>
+                    <li>联&nbsp;&nbsp;系&nbsp;&nbsp;人：$detail[linkman]</li>
+                    <li>联系电话：$detail[contact]</li>
+                    <li>电子邮箱：$detail[email]</li>
+                    <li>QQ/MSN：$detail[im]</li>
+                    <li>联系地址：$detail[address]</li>
+                </ul>
+                <div class="waring"><center>免责声明：本站只提供信息交流平台，各交易者自己审辨真假，本站不承担由此引起的法律责任。</center></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+    </div>
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

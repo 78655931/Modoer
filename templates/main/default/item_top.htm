@@ -1,0 +1,90 @@
+<!--{eval 
+    $_HEAD['title'] = $category[$pid][name] . ($sort == 'all' ? '综合' : $reviewpot[$sort][name]) . '排行榜';
+}-->
+{template modoer_header}
+<div id="body">
+    <div id="list_left">
+        <div class="catefoot">
+
+            <div class="link_path">
+                <em><a href="{url review/list/type/item_subject/catid/$pid}">最新点评</a>&nbsp;-&nbsp;<a href="{url item/allpic/catid/$pid}">{lang item_allpic_title}</a></em>
+                <a href="{url modoer/index}">$_CITY[name]</a>&nbsp;&raquo;&nbsp;{print implode('&nbsp;&raquo;&nbsp;', $urlpath)}
+            </div>
+
+            <ul class="cate">
+                <h2>按分类查找:</h2>
+                <!--{loop $category $key $val}-->
+                <!--{eval if($val[pid]) continue;}-->
+                <li><span{if $pid==$key} class="selected"{/if}><a href="{url item/top/catid/$key/sort/$sort}">$val[name]</a></span></li>
+                <!--{/loop}-->
+            </ul>
+            <div class="clear"></div>
+            <ul class="cate">
+                <h2>按类型排行:</h2>
+                <li><span{if $sort=='all'} class="selected"{/if}><a href="{url item/top/catid/$pid/sort/all}">综合</a></span></li>
+                <!--{loop $reviewpot $key $val}-->
+                <li><span{if $sort==$val[flag]} class="selected"{/if}><a href="{url item/top/catid/$pid/sort/$val[flag]}">$val[name]</a></span></li>
+                <!--{/loop}-->
+            </ul>
+            <div class="clear"></div>
+        </div>
+
+        <div class="mainrail rail-border-2">
+            <h1 class="rail-h-2 rail-h-bg-2">{$model[item_name]}排行</h1>
+            <!--{if $total}-->
+            <!--{eval $index = 0;}-->
+            <!--{dbres $list $val}-->
+            <div class="subject_top" id="subject_$value[sid]">
+                <!--{eval $i = $index + 1 + ($_GET[page]-1) * $offset;}-->
+                <em><a href="{url item/detail/id/$val[sid]}">查看</a>，<a href="javascript:add_favorite($val[sid]);">关注</a>，<a href="{url review/member/ac/add/type/item_subject/id/$val[sid]}">点评</a></em>
+                <h3 id="subject_h_$val[sid]"><span class="font_2">$i. </span><a href="{url item/detail/id/$val[sid]}" target="_blank">$val[name]&nbsp;$val[subname]</a></h3>
+                <p><!--{loop $reviewpot $_val}-->$_val[name]:<span class="font_2" style="font-size:16px;">{print cfloat($val[$_val[flag]])}</span><!--{/loop}-->&nbsp;综合得分:<span class="font_1" style="font-size:16px;"><strong>{print cfloat($val[avgsort])}</strong></span></p>
+            </div>
+            <!--{eval $index++;}-->
+            <!--{/dbres}-->
+            <div class="multipage">$multipage</div>
+            <!--{else}-->
+            <div class="messageborder">暂时没有{$model[item_name]}，<a href="{url item/member/ac/subject_add/sid/$val[sid]}">我来做第一个添加者</a>。</div>
+            <!--{/if}-->
+        </div>
+    </div>
+
+    <div id="list_right">
+        <div class="mainrail">
+            <h3 class="rail-h-1 rail-h-bg-5">热门$model[item_name]</h3>
+            <div id="subject1">
+                <!--{eval $itemcfg=$_G['loader']->variable('config','item');}-->
+                <ul class="rail-pic">
+                    {get:modoer val=table(table/dbpre_subject/select/sid,pid,catid,name,subname,reviews,avgsort,pageviews,thumb/where/pid='$pid' AND pageviews>0/orderby/pageviews DESC/rows/5)}
+                    <li>
+                        <div class="pic">
+                            <a href="{url item/detail/id/$val[sid]}"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/s_noimg.gif{/if}" alt="$val[name] $val[subname]" /></a>
+                        </div>
+                        <div class="info">
+                            <a href="{url item/detail/id/$val[sid]}" title="$val[name] $val[subname]">{sublen $val[name].$val[subname],12}</a><br />
+                            <span class="font_2"><b>$val[pageviews]</b></span>浏览,<span class="font_2"><b>$val[reviews]</b></span>点评
+                            <!--{eval $reviewcfg = $_G['loader']->variable('config','review');}-->
+                            <p class="start{print get_star($val[avgsort], $reviewcfg[scoretype])}" style="margin:0;padding:0;height:15px;"></p>
+                        </div>
+                        <div class="clear"></div>
+                    </li>
+                    {/get}
+                </ul>
+            </div>
+        </div>
+        <div class="mainrail">
+            <h3 class="rail-h-1 rail-h-bg-5">热门分类</h3>
+            <div id="hot_category">
+                <ul class="rail-list">
+                    {get:modoer val=table(table/dbpre_category/select/catid,pid,name,total/where/pid=$pid AND total>0/orderby/total DESC/rows/10)}
+                    <li><cite>$val[total]&nbsp;个</cite><a href="{url item/list/catid/$val[catid]}">$val[name]</a></li>
+                    {/get}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clear"></div>
+</div>
+
+<!--{eval footer();}-->

@@ -1,0 +1,87 @@
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{eval !$mymenu && $mymenu = 'mmenu';}-->
+        <!--{template $mymenu,'member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3><cite>当前操作的主题:<span class="font_2">$_G[manage_subject][name]{if $_G[manage_subject][subname]}($_G[manage_subject][subname]){/if}</span>[<a href="javascript:void(0);" onclick="item_subject_manage();">更换</a>]</cite>$path_title</h3>
+            <div class="mainrail">
+                <ul class="optabs"><li class="active"><a href="{url item/member/ac/$ac/albumid/$albumid}">$album[name]</a></li><li><a href="{url item/member/ac/g_album}">相册管理</a></li><li class="act"><a href="{url item/member/ac/pic_upload/albumid/$albumid}">上传图片</a></li></ul><div class="clear"></div>
+                <form method="post" name="myform" action="{url item/member/ac/$ac/rand/$_G[random]}">
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable" trmouse="Y">
+                    <tr>
+                        <th width="20" align="center"><input type="checkbox" onclick="checkbox_checked('picids[]',this);" /></th>
+                        <th width="110">图片</th>
+                        <th width="*">标题/说明</th>
+                        <th width="80">尺寸/大小</th>
+                        <th width="60">状态</th>
+                        <th width="150">上传时间</th>
+                    </tr>
+                    <!--{if $total}-->
+					<!--{eval 
+						$_G['loader']->helper('form','item');
+						$album_option = form_item_alubm($_G['manage_subject']['sid'],$albumid);
+					}-->
+                    <!--{dbres $list $val}-->
+                    <tr>
+                        <td><input type="checkbox" name="picids[]" value="$val[picid]" /></td>
+                        <td class="picthumb">
+							<a href="{URLROOT}/$val[filename]" target="_blank"><img src="{URLROOT}/$val[thumb]" width="120" style="padding:5px 0;" /></a>
+							{if $val[status]}<button type="button" value="tes" class="btn2" onclick="pic_set_thumb($val[picid]);">设为封面</button>{/if}
+						</td>
+                        <td>
+							相册: <select name="picture[{$val[picid]}][albumid]" style="margin:4px 0;">
+								{print $album_option}
+							</select><br />
+                            标题: <input type="text" class="t_input" style="width:230px;margin-bottom:4px;" value="$val[title]" name="picture[{$val[picid]}][title]" /><br />						
+                            链接: <input type="text" class="t_input" style="width:230px;margin-bottom:4px;" value="$val[url]" name="picture[{$val[picid]}][url]" /><br />						
+                            说明: <textarea name="picture[{$val[picid]}][comments]" style="width:230px;height:20px;">$val[comments]</textarea>
+                        </td>
+                        <td>{$val[width]}×{$val[height]}<br />{print round($val[size]/1024)} KB</td>
+                        <td>{if $val[status]}已审核{else}<span class="font_1">未审核</span>{/if}</td>
+                        <td>{date $val[addtime], 'Y-m-d H:i'}</td>
+                    </tr>
+                    <!--{/dbres}-->
+                    <!--{else}-->
+                    <tr><td colspan="7">暂无信息。</td></tr>
+                    <!--{/if}-->
+                </table>
+                <!--{if $total}-->
+                <div class="multipage">$multipage</div>
+                <div class="text_center">
+                    <input type="hidden" name="dosubmit" value="yes" />
+                    <input type="hidden" name="op" value="update" />
+                    <button type="button" onclick="easy_submit('myform','update',null);">更新修改</button>&nbsp;
+                    <button type="button" onclick="easy_submit('myform','delete','picids[]');">删除所选</button>
+                </div>
+                <!--{/if}-->
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<script type="text/javascript">
+function pic_set_thumb(picid) {
+    if (!is_numeric(picid)) {
+        alert('无效的picid'); 
+		return;
+    }
+	$.post(Url("item/member/ac/$ac/op/setthumb"), {picid:picid,in_ajax:1}, function(result) {
+		if (result.match(/\{\s+caption:".*",message:".*".*\s*\}/)) {
+            myAlert(result);
+        } else {
+		    //alert(result);
+			alert('AJAX解析失败.')
+		}
+	});
+}
+</script>
+<!--{eval footer();}-->

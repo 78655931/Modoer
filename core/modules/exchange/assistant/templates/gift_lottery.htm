@@ -1,0 +1,45 @@
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>我的奖品</h3>
+            <div class="mainrail">
+                <ul class="optabs"><li class="active"><a href="{url exchange/member/ac/lottery}">我的抽奖</li><li><a href="{url exchange/member/ac/m_gift}"><span>我的兑换</span></a></li></ul><div class="clear"></div>
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable" trmouse="Y">
+                    <tr class="thbg">
+                        <th width="40">编号</th>
+                        <th width="*">礼品名称</th>
+                        <th width="100">兑奖状态</th>
+                        <th width="110">中奖时间</th>
+                        <th width="60">操作</th>
+                    </tr>
+                    <!--{dbres $list $val}-->
+                    <tr>
+                        <td>$val[lid]</td>
+                        <td><a href="{url exchange/gift/id/$val[giftid]}" target="_blank">$val[name]</a></td>
+                        <td>{if $val[status]==1}已兑奖{else}未兑奖{/if}</td>
+                        <td>{date $val[dateline],'Y-m-d H:i'}</td>
+                        <td>{if $val[status]==1}已兑奖{else}<a href="{url exchange/member/ac/exchange/giftid/$val[giftid]/lid/$val[lid]/pattern/2/rcode/$val[lotterycode]}"><span class="font_1">前去兑奖</span></a>{/if}</td>
+                    </tr>
+                    <!--{/dbres}-->
+                    <!--{if !$total}-->
+                    <tr>
+                        <td colspan="6">暂无信息。</td>
+                    </tr>
+                    <!--{/if}-->
+                </table>
+                <div class="multipage">$multipage</div>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

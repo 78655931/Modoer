@@ -1,0 +1,39 @@
+<div id="body">
+<div class="link_path"><a href="{url modoer/index}">首页</a>&nbsp;&raquo;&nbsp;<a href="{url member/index}">我的助手</a>&nbsp;&raquo;&nbsp;我的留言板</div>
+<div id="my_left">
+<!--{template 'menu','member','./member/templates'}-->
+</div>
+<div id="my_right">
+    <form method="post" action="member.php?ac=$ac&" onsubmit="return checkbox_check();">
+    <div class="mainrail">
+        <h1>我的留言板</h1>
+        <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+            <tr>
+                <th width="20">删</th>
+                <th width="*" width>留言内容</th>
+                <th width="80">留言者</th>
+                <th width="120">留言时间</th>
+            </tr>
+            <!--{loop $gbooks $gbook}-->
+            <tr>
+                <td valign="top"><input type="checkbox" name="gbookIds[]" value="$gbook[gid]"></td>
+                <td>$gbook[content]</td>
+                <td valign="top"><!--{if $gbook[gbuid]}--><a href="{url space/index/uid/$gbook[gbuid]}">$gbook[gbusername]</a><!--{else}-->$gbook[gbusername](游客)<!--{/if}--></td>
+                <td valign="top">{date $gbook[posttime],'Y-m-d H:i'}</td>
+            </tr>
+            <!--{/loop}-->
+            <!--{if !$total}-->
+            <tr><td colspan="4">暂无信息</td></tr>
+            <!--{/if}-->
+        </table>
+    </div>
+    <!--{if $total>0}-->
+    <div class="multipage">$multipage</div>
+    <div class="text_center">
+        <button type="button" onclick="allchecked();">反选</button>&nbsp;
+        <button type="submit" name="mysubmit" value="yes">提交</button>
+    </div>
+    <!--{/if}-->
+    </form>
+</div>
+</div>

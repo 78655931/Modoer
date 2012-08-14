@@ -1,0 +1,115 @@
+<!--{eval
+    $_HEAD['title'] = ($catid>0?$category[$catid]['name']:'').lang('item_album_title');
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+<style type="text/css">@import url("{URLROOT}/static/images/gallery/gallery.css");</style>
+<script type="text/javascript" src="{URLROOT}/static/javascript/jquery.ad-gallery.pack.js"></script>
+<script type="text/javascript">
+var current_index = 0;
+var picid='$picid';
+$(function() {
+    var galleries = $('.ad-gallery').adGallery({
+    loader_image:'{URLROOT}/static/images/gallery/loader.gif',
+        callbacks: {
+            afterImageVisible: function() {
+                if(current_index==0&&picid>0){
+                    $('#gallery li').each(function(i) {
+                        if(this.id=='picid_$picid') current_index = i;
+                    });
+                    if(current_index>0) this.showImage(current_index);
+                }
+            }
+        }
+    });
+    $('#switch-effect').change(
+        function() {
+            galleries[0].settings.effect = $(this).val();
+            return false;
+        }
+    );
+    $('#toggle-slideshow').click(
+        function() {
+            galleries[0].slideshow.toggle();
+            return false;
+        }
+    );
+    $('#toggle-description').click(
+        function() {
+            if(!galleries[0].settings.description_wrapper) {
+                galleries[0].settings.description_wrapper = $('#descriptions');
+            } else {
+                galleries[0].settings.description_wrapper = false;
+            }
+            return false;
+        }
+    );
+});
+</script>
+<div class="item-content">
+
+    <div class="item-left mt10">
+
+		<div id="gallery" class="ad-gallery" style="margin:0 auto;width:680px;">
+			<div class="ad-image-wrapper">
+			</div>
+			<div class="ad-controls">
+			</div>
+			<div class="ad-nav">
+				<div class="ad-thumbs">
+					<ul class="ad-thumb-list">
+						{eval $index=0;}
+						{dbres $list $val}
+						<li id="picid_$val[picid]">
+							<a href="{URLROOT}/$val[filename]"><img src="{URLROOT}/$val[thumb]" class="image{$index}" title="$val[title] / $val[username] / {date $val[addtime],'Y-m-d'}" alt="$val[comments]" longdesc="$val[url]"></a>
+						</li>
+						{eval $index++;}
+						{/dbres}
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<!--{if check_module('comment')}-->
+		<div class="comment_foo">
+			<style type="text/css">@import url("{URLROOT}/{$_G[tplurl]}css_comment.css");</style>
+			<script type="text/javascript" src="{URLROOT}/static/javascript/comment.js"></script>
+			<!--{eval $comment_modcfg = $_G['loader']->variable('config','comment');}-->
+			<!--{if $detail[comments]}-->
+			<!--{/if}-->
+			<a name="comment"></a>
+			<!--{if !$comment_modcfg['hidden_comment']}-->
+			<div class="mainrail rail-border-3">
+				<em>评论总数:<span class="font_2">$detail[comments]</span>条</em>
+				<h1 class="rail-h-3 rail-h-bg-3">网友评论</h1>
+				<div id="commentlist" style="margin-bottom:10px;"></div>
+				<script type="text/javascript">
+				$(document).ready(function() { get_comment('album',$albumid,1); });
+				</script>
+			</div>
+			<!--{/if}-->
+			{eval $_G['loader']->helper('form');}
+			<div id="comment_form">
+				<!--{if $user->check_access('comment_disable', $_G['loader']->model(':comment'), false)}-->
+					<!--{if $MOD[album_comment] && !$comment_modcfg['disable_comment']}-->
+					<!--{eval $idtype = 'album'; $id = $albumid; $title = 'Re:' . $detail[name];}-->
+					{template comment_post}
+					<!--{else}-->
+					<div class="messageborder">评论已关闭</div>
+					<!--{/if}-->
+				<!--{else}-->
+				<div class="messageborder">如果您要进行评论信息，请先&nbsp;<a href="{url member/login}">登录</a>&nbsp;或者&nbsp;<a href="{url member/reg}">快速注册</a>&nbsp;。</div>
+				<!--{/if}-->
+			</div>
+		</div>
+		<!--{/if}-->
+
+    </div>
+
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+    </div>
+
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

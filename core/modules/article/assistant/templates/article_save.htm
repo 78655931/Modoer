@@ -1,0 +1,156 @@
+{template modoer_header}
+<script type="text/javascript" src="{URLROOT}/data/cachefiles/article_category.js?r=$MOD[jscache_flag]"></script>
+<script type="text/javascript" src="{URLROOT}/static/javascript/item.js"></script>
+<script type="text/javascript" src="{URLROOT}/static/javascript/validator.js"></script>
+<script type="text/javascript">
+var role = "$_GET[role]";
+window.onload = function() {
+    {if !$detail['catid']}article_select_category(document.getElementById('pid'),'catid');{/if}
+}
+function article_save_succeed () {
+    if(role=='owner') {
+        jslocation('{url article/member/ac/g_article}');
+    } else {
+        jslocation('{url article/member/ac/m_article}');
+    }
+}
+function delete_article_thumb() {
+    $('#article_thumb_input').val('N');
+    $('#article_thumb').html('无图');
+}
+</script>
+<style type="text/css">
+#article_thumb { height:120px; width:120px; text-align:center; margin:5px auto 20px; }
+#article_thumb img { max-height:120px; max-width:120px; 
+    _width: expression(this.width > 120 ? 120 : true); _height: expression(this.height > 120 ? 120 : true); }
+</style>
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{eval !$mymenu && $mymenu = 'mmenu';}-->
+        <!--{template $mymenu,'member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>发表文章</h3>
+            <div class="mainrail">
+                <form method="post" name="postform" id="postform" action="{url article/member/ac/article/op/save/rand/$_G[random]}" onsubmit="return validator(this);">
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                    <tr>
+                        <td align="right" width="80"><span class="font_1">*</span>标题:</td>
+                        <td width="*"><input type="text" name="subject" class="t_input" size="50" value="$detail['subject']" validator="{'empty':'N','errmsg':'请填写文章标题。'}" /></td>
+                        <td width="150" rowspan="5" style="text-align:center;border:1px solid #ddd;">
+                            <div id="article_thumb">
+                                {if $detail['thumb']}<a href="{URLROOT}/$detail[picture]" target="_blank"><img src="{URLROOT}/$detail[picture]" /></a>{else}无图{/if}
+                            </div>
+                            <button type="button" class="btn2" onclick="article_upload_thumb_ui('article_thumb');">上传封面
+                            </button>
+                            <button type="button" class="btn2" onclick="delete_article_thumb();">删除
+                            </button>
+                            <input type="hidden" name="picture" id="article_thumb_input" value="">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right"><span class="font_1">*</span>分类:</td>
+                        <td>
+                            <select name="pid" id="pid" style="width:180px;" onchange="article_select_category(this,'catid');">
+                                {print form_article_category(0,$detail['catid'])}
+                            </select>&nbsp;
+                            <select name="catid" id="catid" style="width:180px;" validator="{'empty':'N','errmsg':'请选择文章子分类。'}">
+                                {if $detail[catid]}
+                                {print form_article_category($detail['catid'])}
+                                {/if}
+                            </select>
+                        </td>
+                    </tr>
+                    <!--{if $MOD[select_city]}-->
+                    <tr>
+                        <td align="right">城市:</td>
+                        <td>
+                            <select name="city_id" style="width:180px;" >
+                                {print form_city($detail['city_id'],true)}
+                            </select>
+                        </td>
+                    </tr>
+                    <!--{/if}-->
+                    <tr>
+                        <td align="right">来源:</td>
+                        <td><input type="text" name="copyfrom" class="t_input" size="40" value="$detail[copyfrom]" /></td>
+                    </tr>
+                    <tr>
+                        <td align="right">关键字:</td>
+                        <td><input type="text" name="keywords" class="t_input" size="40" value="$detail[keywords]" /></td>
+                    </tr>
+                    <!--{if $_GET['role']=='member' && $MOD['member_bysubject']}-->
+                    <tr>
+                        <td align="right" valign="top">主题:</td>
+                        <td colspan="2">
+							<div id="subject_search"></div>
+							<script type="text/javascript">
+								$('#subject_search').item_subject_search({
+									input_class:'t_input',
+									btn_class:'btn2',
+									result_css:'item_search_result',
+									{if $detail[sid]}sid:'$detail[sid]',{/if}
+									hide_keyword:true,
+									myreviewed:true,
+									myfavorite:true,
+                                    multi:true
+								});
+							</script>
+                        </td>
+                    </tr>
+                    <!--{elseif $_GET['role']=='owner'}-->
+                    <tr>
+                        <td align="right" valign="top"><span class="font_1">*</span>关联主题:</td>
+                        <td colspan="2">
+                            <select id="mysubject" name="sid[]" style="min-width:300px;" multiple="true" validator="{'empty':'N','errmsg':'请选择“我的主题”。'}">
+                                <!--{eval $sids = explode(',', $detail[sid]);}-->
+                                <!--{print form_item_mysubject($user->uid, $sids)}-->
+                            </select>
+                        </td>
+                    </tr>
+                    <!--{/if}-->
+                    <tr>
+                        <td align="right" valign="top"><span class="font_1">*</span>简介:</td>
+                        <td><textarea name="introduce" style="width:99%;height:80px;" validator="{'empty':'N','errmsg':'请填写文章简介。'}">$detail[introduce]</textarea></td>
+                    </tr>
+                    <tr>
+                        <td align="right" valign="top"><span class="font_1">*</span>内容:</td>
+                        <td  colspan="2">$edit_html</td>
+                    </tr>
+                    <!--{if $op=='add' && $MOD[post_seccode]}-->
+                    <tr>
+                        <td align="right"><span class="font_1">*</span>验证码：</td>
+                        <td  colspan="2">
+                            <div id="seccode" class="seccode none"></div>
+                            <input type="text" name="seccode" onfocus="show_seccode();" class="t_input" onblur="check_seccode(this.value);" />
+                            <span id="msg_seccode" class="formmessage none"></span>
+                        </td>
+                    </tr>
+                    <!--{/if}-->
+                </table>
+                <div class="text_center">
+                    {if $op=='edit'}
+                    <input type="hidden" name="articleid" value="$articleid" />
+                    {/if}
+                    <input type="hidden" name="do" value="$op" />
+                    <input type="hidden" name="role" value="$_GET[role]" />
+                    <input type="hidden" name="forward" value="{print get_forward()}" />
+                    <!--
+                    <button type="submit" name="onsubmit" value="yes" onclick="KE.util.setData('content');">发布文章</button>&nbsp;
+                    -->
+                    <button type="button" class="btn" onclick="KE.util.setData('content');ajaxPost('postform', '', 'article_save_succeed');">提交</button>&nbsp;
+                    <button type="button" onclick="history.go(-1);">返回</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

@@ -1,0 +1,64 @@
+
+/*讨论组*/
+.discussion_left { float:left; width:690px; }
+.discussion_right { float:right; width:260px; }
+.discussion_post { width:98%; margin: 5px auto; }
+.discussion_post td { padding:5px; }
+
+/*侧边主题信息表格*/
+.side_subject { width:90%; margin:5px auto; line-height:18px; }
+.side_subject h2 { font-size:14px; margin:10px 0 5px; padding:0; }
+.side_subject h2 a{ color:red;  }
+.side_subject .start { margin:0; padding:0; height:15px;  }
+.side_subject_field_list { color:#808080; margin:5px 0 10px; }
+
+.topic-table { padding:0; margin:0 auto; width:99%; }
+	.topic-table th { color:#808080;font-size:12px;font-weight:bold;text-align:left;padding:2px 0; border-bottom:1px dashed #ddd; }
+	.topic-table td { padding:5px 1px; border-bottom:1px dashed #ddd; }
+	.topic-table .subject {  }
+	.topic-table .from div { width: 120px; white-space: nowrap; overflow-x: hidden; overflow-y: hidden; }
+	.topic-table .author {  }
+	.topic-table .dateline {  text-align:right; }
+	.topic-table .replies {  text-align:right; }
+
+.topiclist { margin:5px auto; padding:0; list-style:none; width:670px; }
+.topiclist-title { color: #808080; }
+	.topiclist li { border-bottom:1px dashed #ccc; padding:6px 2px; width:680px; }
+	.topiclist .subject { float:left; width:310px; }
+	.topiclist .ownerpost { color:red; }
+	.topiclist .author { float:left; width:100px; }
+	.topiclist .dateline { float:left; width:75px; }
+	.topiclist .replies { float:left;  width:90px; text-align:center; }
+
+.discussion_post { margin:0; padding:0; }
+	.discussion_post form { margin:0px; padding:0; }
+	.discussion_post table { width:98%; margin:5px auto;}
+	.discussion_post td { padding:5px 0; }
+	.discussion_post .t_input { width:96%; }
+	.discussion_post textarea { height:120px; width:99%; }
+	.discussion_post .smilies { min-height:100px; margin-left: 10px; _width:150px; }
+		.discussion_post .smilies img { margin:0 1px 2px 0; cursor:pointer; }
+    .discussion_post .update-img-ico, #frm_topic .update-img-ico { display: block; margin-bottom:5px; }
+    .discussion_post .upimg, #frm_topic .upimg { float:left; text-align:center; width:85px; height:90px; }
+        .discussion_post .upimg img, #frm_topic .upimg img{ display:block; max-width:75px; max-height:80px; padding:1px; border:1px solid #ccc;
+            _width:expression(this.width > 75 ? 75 : true); _height:expression(this.height > 80 ? 80 : true); }
+
+.topic_detail { padding: 5px 10px; }
+	.topic_detail h1 { font-size:16px; margin:5px 0 10px 0; padding:0; color:#323232; }
+
+.reply_detail { clear:both; }
+	.reply_detail h3 { font-size:14px; margin:0 0 10px 10px; color: #323232; }
+.replylist { margin:0; padding:0; list-style:none; }
+	.replylist li { margin: 5px 10px; clear:both;}
+
+.discussion_detail .face { float:left;width:55px; }
+	.discussion_detail .face img { padding:1px; border: 1px solid #ccc; }
+.discussion_detail .content { float: right; width:600px; margin-bottom:20px; }
+	.discussion_detail .content .user { background:#F7F7F7; padding:5px; margin-bottom:2px; }
+		.discussion_detail .content .user em { float:right; margin-top:-5px; }
+			.discussion_detail .content .user em a { margin:0 2px; }
+		.discussion_detail .content .user span {color:green; margin:0 5px;}
+	.discussion_detail .content p { padding:5px 5px; margin:0; color:#323232;line-height:180%;}
+		.discussion_detail .content p img { margin:0 1px; max-width:580px; _width:expression(this.width > 580 ? 580 : true); }
+		.discussion_detail .content p a { padding:0 1px; color:#26A2DA; }
+

@@ -1,0 +1,32 @@
+<!--{eval
+    $_HEAD['title'] = $_CITY[name].$MOD[name] . $_CFG['titlesplit'] . str_replace('&nbsp;&raquo;&nbsp;',$_CFG['titlesplit'],strip_tags($subtitle));
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+<div class="item-content">
+
+    <div class="item-left mt10">
+
+        <div class="item-rail">
+            <h3 class="railtitle">资讯</h3>
+            <div class="article-list">
+                <!--{dbres $list $val}-->
+                <div class="article_s">
+                    <em>{date $val[dateline]}</em>
+                    <h3><a href="{url article/detail/id/$val[articleid]}">$val[subject]</a></h3>
+                    <p>$val[introduce]...<a href="{url article/detail/id/$val[articleid]}">[阅读全文]</a></p>
+                    <div><span>作者：$val[author]</span>&nbsp;<span>来源：$val[copyfrom]</span>&nbsp;<span>评论：$val[comments]</span></div>
+                </div>
+                <!--{/dbres}-->
+                <!--{if $multipage}--><div class="multipage">$multipage</div><!--{/if}-->
+                <!--{if !$total}--><div class="messageborder">没有找到任何信息。</div><!--{/if}-->
+            </div>
+        </div>
+    </div>
+
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+    </div>
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

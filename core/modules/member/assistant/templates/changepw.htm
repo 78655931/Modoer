@@ -1,0 +1,24 @@
+<form method="post" action="{url member/index/ac/myset/op/changepw/in_ajax/1}" name="changepw_frm" id="changepw_frm">
+<table class="table" width="100%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td width="80" height="30" align="right">原密码：</td>
+        <td width="*"><input type="password" name="old" id="old" class="t_input" style="width:170px;" /></td>
+    </tr>
+    <tr>
+        <td height="30" align="right">新密码：</td>
+        <td><input type="password" name="new" id="new" class="t_input" style="width:170px;" /></td>
+    </tr>
+    <tr>
+        <td height="30" align="right">再次输入：</td>
+        <td><input type="password" name="new2" id="new2" class="t_input" style="width:170px;" /></td>
+    </tr>
+    <tr>
+        <td height="30"></td>
+        <td>
+            <input type="hidden" name="dosubmit" value="yes" />
+            <button type="button" class="button" onclick="ajaxPost('changepw_frm','',null);">修改</button>&nbsp;
+            <button type="button" class="button" onclick="dlgClose();">关闭</button>
+        </td>
+    </tr>
+</table>
+</form>

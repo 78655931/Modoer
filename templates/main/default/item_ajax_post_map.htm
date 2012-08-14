@@ -1,0 +1,13 @@
+<form method="post" action="{url item/ajax/do/subject/op/post_map/in_ajax/1}" class="post" id="frm_map" name="frm_map" target="ajaxiframe">
+    <input type="hidden" name="sid" value="$sid" />
+    <input type="hidden" name="pcatid" value="$pcatid" />
+    <input type="hidden" name="p1" value="" />
+    <input type="hidden" name="p2" value="" />
+    <input type="hidden" name="dosubmit" value="yes" />
+    <iframe src="{url modoer/index/act/map/mark/yes/width/500/height/315}" frameborder="0" scrolling="no" width="100%" height="315" id="ifupmap_map"></iframe>
+    <div style="text-align:center;margin-top:10px;">
+	    <button type="button" id="mapbtn1">设置标注点</button>&nbsp;
+        <button type="button" id="mapbtn2">提交标注</button>&nbsp;
+        <button type="button" class="button" onclick="dlgClose();">关闭</button>
+    </div>
+</form>

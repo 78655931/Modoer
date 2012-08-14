@@ -1,0 +1,152 @@
+{template modoer_header}
+<script type="text/javascript">
+function select_pay_type(obj) {
+    var r = $(obj).attr('ratio');
+    $('#dhprice').text(1*r);
+    $('#dhname').text($(obj).attr('title'));
+}
+function select_pay_tab(showId,hideId) {
+    $('#frm_'+showId).show();
+    $('#frm_'+hideId).hide();
+    $('#li_'+showId).addClass('active');
+    $('#li_'+hideId).removeClass('active');
+}
+window.onload = function() {
+{if $order[cztype]=='rmb'||$select=='rmb'}
+    select_pay_type(document.getElementById('type_rmb'));
+{/if}
+}
+</script>
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>在线充值</h3>
+
+			<div class="mainrail">
+				<table cellspacing="0" cellpadding="0" class="maintable">
+					<tr style="background:#F6F6F6">
+						<td width="12%"><center>现金</center></td>
+						{get:member val=point_groups()}
+						{if $val[enabled]}
+						<td width="12%"><center>$val[name]</center></td>
+						{/if}
+						{/get}
+					</tr>
+					<tr>
+						<td><center><span class="font_1">$user->rmb</span>&nbsp;元</center></td>
+						{get:member val=point_groups()}
+						{if $val[enabled]}
+						<td><center><span class="font_1" id="my_$val_k">{print $user->$val_k}</span>&nbsp;$val[unit]</center></td>
+						{/if}
+						{/get}
+					</tr>
+				</table>
+			</div>
+
+            <div class="mainrail">
+                <ul class="optabs">
+                    <li class="act"><a href="{url  pay/member/ac/log/op/pay}">我的订单</a></li>
+                    <!--{if $PAY->cz_enable}-->
+                    <li class="active" id="li_pay"><a href="###" onclick="select_pay_tab('pay','card');" onfocus="this.blur()">现金充值</a></li>
+                    <!--{/if}-->
+                    <!--{if $MOD[card]}-->
+                    <li{if !$PAY->cz_enable} class="active"{/if} id="li_card"><a href="###" onclick="select_pay_tab('card', 'pay');" onfocus="this.blur()">积分卡充值</a></li>
+                    <!--{/if}-->
+                </ul>
+                <div class="clear"></div>
+                <div style="border-top:1px solid #eee; height:1px; width:98%; margin:0 auto;"></div>
+                <!--{if $PAY->cz_enable}-->
+                <form method="post" action="{url pay/member/ac/$ac/rand/$_G[random]}" name="mysetfrm" id="frm_pay"{if !$PAY->cz_enable} style="display:none;"{/if}>
+                    <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                        <tr>
+                            <td align="right" width="80">充值目标：</td>
+                            <td width="*">
+								<select name="pay[cztype]" id="cztype" onchange="change_cztype();">
+									{if in_array('rmb', $LOG->cz_type)}
+                                    <option value="rmb" ratio="1" unit="元"{if $order[cztype]=='rmb'}selected="selected"{/if}>现金</option>
+                                    {/if}
+									{print form_pay_groups($order[cztype])}
+								</select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">兑换比率：</td>
+                            <td><span class="font_1">1</span> 元{$MOD[pricename]} 可兑换 <span id="dhprice1" class="font_1"></span> <span id="dhname1"></span></td>
+                        </tr>
+                        <tr>
+                            <td align="right">支付金额：</td>
+                            <td><input type="text" name="pay[czprice]" size="15" class="t_input" value="{if $order[price]}$order[price]{elseif $price}$price{else}$MOD[czmin]{/if}" />&nbsp;元&nbsp;<span class="font_3">单次最多可充值 $MOD[czmax] 元</span></td>
+                        </tr>
+                        <tr>
+                            <td align="right" valign="top">支付接口：</td>
+                            <td>
+                                <!--{loop $PAY->payments $v $k}-->
+                                <input type="radio" name="payapi" value="$k" id="pay_$k"{if !$v} checked="checked"{/if} /><label for="pay_$k">{print lang('pay_name_'.$k)}</label>&nbsp;
+                                <!--{/loop}-->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <!--{if $order}-->
+                            <input type="hidden" name="orderid" value="$order[orderid]" />
+                            <!--{/if}-->
+                            <td>
+                                <button type="submit" name="paysubmit" value="yes"> 提交充值 </button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+				<script type="text/javascript">
+				change_cztype();
+				function change_cztype() {
+					var cztype = $('#cztype option:selected');
+					$('#dhprice1').html(cztype.attr('ratio'));
+					$('#dhname1').html(cztype.attr('unit') + cztype.text());
+				}
+				</script>
+                <!--{/if}-->
+                <!--{if $MOD[card]}-->
+                <form method="post" action="{url pay/member/ac/$ac/rand/$_G[random]}" name="mysetfrm"  id="frm_card"{if !$PAY->cz_enable&&$MOD[card]} {else} style="display:none;"{/if}>
+                    <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                        <tr>
+                            <td align="right">充值类型：</td>
+                            <td>
+								<select name="type">
+									{if in_array('rmb', $LOG->cz_type)}<option value="rmb" selected="selected">现金</option>{/if}
+									{print form_pay_groups()}
+								</select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right" width="80">充值卡号：</td>
+                            <td width="*"><input type="text" name="card_no" style="width:200px;" class="t_input" />&nbsp;<input type="checkbox" name="no_password" id="no_password" value="1" /><label for="no_password">无密码</label></td>
+                        </tr>
+                        <tr>
+                            <td align="right">充值密码：</td>
+                            <td><input type="password" name="card_pw" style="width:200px;" class="t_input" /></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <input type="hidden" name="use_card" value="1" />
+                            <td>
+                                <button type="submit" name="cardsubmit" value="yes"> 提交充值 </button>&nbsp;
+                                <button type="button" onclick="document.location='{url pay/member/ac/log/op/card}';"> 查看记录 </button>&nbsp;
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+                <!--{/if}-->
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

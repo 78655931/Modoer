@@ -1,0 +1,47 @@
+<!--{if !defined('IN_AJAX')}-->
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>添加好友</h3>
+<!--{/if}-->
+            <div class="mainrail">
+                <form method="post" name="frm_friend" id="frm_friend" action="{url member/index/ac/friend/op/add/in_ajax/$_G['in_ajax']}">
+                <input type="hidden" name="friend_uid" value="$friend[uid]" />
+                <table width="100%" cellspacing="0" cellpadding="0" class="{if $_GET['in_ajax']}table{else}maintable{/if}" style="margin-top:10px;">
+                    <tr>
+                        <td align="right">好友名称：</td>
+                        <td><a href="{url space/index/uid/$friend[uid]}" target="_blank">$friend[username]</a></td>
+                    </tr>
+                    <tr>
+                        <td width="80" align="right" valign="top">打个招呼：</td>
+                        <td><textarea name="message" style="height:88px;width:98%;"></textarea></td>
+                    </tr>
+                </table>
+                <div class="text_center">
+                    <!--{if defined('IN_AJAX')}-->
+                    <input type="hidden" name="dosubmit" value="yes" />
+                    <button type="button" onclick="ajaxPost('frm_friend', '', null);">加好友</button>&nbsp;&nbsp;
+                    <button type="button" onclick="dlgClose();">关闭</button>
+                    <!--{else}-->
+                    <input type="hidden" name="forward" value="{print get_forward()}" />
+                    <button type="submit" name="dosubmit" value="yes">加好友</button>
+                    <!--{/if}-->
+                </div>
+                </form>
+            </div>
+<!--{if !defined('IN_AJAX')}-->
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->
+<!--{/if}-->

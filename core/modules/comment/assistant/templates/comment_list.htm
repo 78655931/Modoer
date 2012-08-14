@@ -1,0 +1,53 @@
+{template modoer_header}
+
+<div id="body">
+    <div class="myhead"></div>
+    <div class="mymiddle">
+        <div class="myleft">
+            <!--{template 'menu','member','member'}-->
+        </div>
+        <div class="myright">
+            <div class="myright_top"></div>
+            <div class="myright_middle">
+                <h3>我的评论($total)</h3>
+                <div class="mainrail">
+                    <form method="post" name="myform" action="{url comment/member/ac/$ac/rand/$_G[random]}">
+                    <table width="100%" cellspacing="0" cellpadding="0" class="maintable" trmouse="Y">
+                        <tr>
+                            <th width="25"><input type="checkbox" onclick="checkbox_checked('cids[]',this);" /></th>
+                            <th width="*">标题</th>
+                            <th width="80">状态</th>
+                            <th width="120">评论时间</th>
+                        </tr>
+                        <!--{if $total}-->
+                        <!--{dbres $list $val}-->
+                        <tr>
+                            <td width="25"><input type="checkbox" name="cids[]" value="$val[cid]" /></td>
+                            <td width="520"><a href="{print $CM->get_url($val['idtype'],$val['id'])}#comment" target="_blank">$val[title]</a></td>
+                            <td width="80">{print lang('global_status_'.$val['status'])}</td>
+                            <td width="120">{date $val[dateline],'Y-m-d H:i'}</td>
+                        </tr>
+                        <tr><td></td><td colspan="3" style="color:#808080;border-bottom:1px dashed #ccc;">{sublen $val[content],200,'...'}</td></tr>
+                        <!--{/dbres}-->
+                        <!--{else}-->
+                        <tr><td colspan="4">暂无信息。</td></tr>
+                        <!--{/if}-->
+                    </table>
+                    <!--{if $total}-->
+                    <div class="multipage">$multipage</div>
+                    <div class="text_center">
+                        <input type="hidden" name="dosubmit" value="yes" />
+                        <input type="hidden" name="op" value="delete" />
+                        <button type="button" onclick="easy_submit('myform','delete','cids[]');">删除所选</button>
+                    </div>
+                    <!--{/if}-->
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="mybottom"></div>
+</div>
+
+<!--{eval footer();}-->

@@ -1,0 +1,47 @@
+<!--{if !defined('IN_AJAX')}-->
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{eval !$mymenu && $mymenu = 'mmenu';}-->
+        <!--{template $mymenu,'member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>更换Banner</h3>
+<!--{/if}-->
+            <div class="mainrail">
+                <form method="post" name="frm_banner" id="frm_banner" action="{url item/member/ac/$ac/op/$op/rand/$_G[random]}" enctype="multipart/form-data">
+                    <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                        <tr>
+                            <td width="120" valign="top"><span class="font_1">*</span>选择横幅图片：</td>
+                            <td><input type="file" name="picture" class="f_input"><br /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <span class="font_3">
+                                横幅规定尺寸：{$banner_width}（宽） × {$banner_height}（高）<br />最大允许上传的图片大小<span class="font_2">$_CFG[picture_upload_size]KB</span>，
+                                允许上传的图片格式 $_CFG[picture_ext]
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="text_center">
+                        <input type="hidden" name="in_ajax" value="1" />
+                        <input type="hidden" name="dosubmit" value="yes">
+                        <input type="hidden" name="sid" value="$sid">
+                        <button type="button" onclick="ajaxPost('frm_banner','','document_reload');">提交</button>&nbsp;
+                        <button type="button" onclick="dlgClose();"> 关闭 </button>
+                    </div>
+                </form>
+            </div>
+<!--{if !defined('IN_AJAX')}-->
+        </div>
+    </div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->
+<!--{/if}-->

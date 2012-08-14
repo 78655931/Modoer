@@ -1,0 +1,84 @@
+<!--{eval
+    $_HEAD['title'] = $detail[subject];
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+<div class="item-content">
+
+    <div class="item-left mt10">
+
+        <div class="product-detail mainrail rail-border-3">
+
+            <h1 class="title">$detail[subject]</h1>
+            <p class="t">发布时间：{date $detail[dateline]}&nbsp;
+                人气：<span class="font_2">$detail[pageview]</span>&nbsp;
+                评论：<span class="font_2">$detail[comments]</span>
+            </p>
+            <div class="info">
+                <div class="thumb">
+                    <img src="{URLROOT}/$detail[thumb]" />
+                </div>
+                <div class="field">
+                    <table class="detail_field" border="0" cellspacing="0" cellpadding="0">
+                        $detail_field
+                        <!--{if $_CFG[sharecode]}-->
+                        <tr>
+                            <td align="right" class="key">分享内容：</td>
+                            <td width="*">$_CFG[sharecode]</td>
+                        </tr>
+                        <!--{/if}-->
+                    </table>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+            <div class="content">
+                <h3>详细介绍：</h3>
+                <p class="c">$detail[content]</p>
+            </div>
+
+            <!--{if check_module('comment')}-->
+            <div class="comment_foo">
+                <style type="text/css">@import url("{URLROOT}/{$_G[tplurl]}css_comment.css");</style>
+                <script type="text/javascript" src="{URLROOT}/static/javascript/comment.js"></script>
+                <!--{eval $comment_modcfg = $_G['loader']->variable('config','comment');}-->
+                <!--{if $detail[comments]}-->
+                <!--{/if}-->
+                <a name="comment"></a>
+                <h3>网友评论：</h3>
+                <!--{if !$comment_modcfg['hidden_comment']}-->
+                <div class="mainrail rail-border-3">
+                    <em>评论总数:<span class="font_2">$detail[comments]</span>条</em>
+                    <h1 class="rail-h-3 rail-h-bg-3">网友评论</h1>
+                    <div id="commentlist" style="margin-bottom:10px;"></div>
+                    <script type="text/javascript">
+                    $(document).ready(function() { get_comment('product',$pid,1); });
+                    </script>
+                </div>
+                <!--{/if}-->
+                {eval $_G['loader']->helper('form');}
+                <div id="comment_form">
+                    <!--{if $user->check_access('comment_disable', $_G['loader']->model(':comment'), false)}-->
+                        <!--{if $MOD[post_comment] && !$comment_modcfg['disable_comment'] && !$detail[closed_comment]}-->
+                        <!--{eval $idtype = 'product'; $id = $pid; $title = 'Re:' . $detail[subject];}-->
+                        {template comment_post}
+                        <!--{else}-->
+                        <div class="messageborder">评论已关闭</div>
+                        <!--{/if}-->
+                    <!--{else}-->
+                    <div class="messageborder">如果您要进行评论信息，请先&nbsp;<a href="{url member/login}">登录</a>&nbsp;或者&nbsp;<a href="{url member/reg}">快速注册</a>&nbsp;。</div>
+                    <!--{/if}-->
+                </div>
+            </div>
+            <!--{/if}-->
+
+        </div>
+
+    </div>
+
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+    </div>
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

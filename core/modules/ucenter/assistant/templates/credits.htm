@@ -1,0 +1,137 @@
+{template modoer_header}
+<script type="text/javascript">
+var ecredits = new Array();
+<!--{loop $outextcredits $id $ecredits}-->
+<!--{if $ecredits[ratio]}-->
+ecredits['$id'] = new Array();
+ecredits['$id']['creditsrc'] = "$ecredits['creditsrc']";
+ecredits['$id']['unit'] = "$ecredits['unit']";
+ecredits['$id']['title'] = "$ecredits['title']";
+ecredits['$id']['ratio'] = "$ecredits['ratio']";{LF}
+<!--{/if}-->
+<!--{/loop}-->
+
+function check_exchange(form) {
+    if(toInt(form.amount) <= 0) {
+        alert('支出的金币必须大于0.');
+        return false;
+    } else if(form.password_credits.value.length == 0) {
+        alert('未输入密码.');
+        return false;
+    }
+    return confirm('兑换操作不可恢复, 您确定进行本次兑换吗?');
+}
+
+function toInt(input) {
+    var s = parseInt(input.value);
+    return isNaN(s) ? 0 : s;
+}
+
+function uc_calc_rate() {
+	var in_point = $('#out_point').val();
+	var creditsrc = in_point.substr(5);
+	uc_init_tocredits(creditsrc);
+}
+
+function uc_init_tocredits(key) {
+	var tocredits = $('#tocredits');
+	tocredits.empty();
+	for (var i in ecredits)
+	{
+		if(i=='indexof') continue;
+		if(ecredits[i]['creditsrc'] != key) continue;
+		tocredits.append('<option value="'+i+'" unit="'+ecredits[i]['unit']+'" title="'+ecredits[i]['title']+'" ratio="'+ecredits[i]['ratio']+'">'+ecredits[i]['title']+'</option>');
+	}
+	uc_calcredit();
+}
+
+function uc_calcredit() {
+    var tocredits = document.getElementById('tocredits');
+    var tocredit = tocredits[tocredits.selectedIndex];
+    var ratio = Math.round(((1 / tocredit.getAttribute('ratio')) * 100)) / 100;
+    document.getElementById('amount').value = toInt(document.getElementById('amount'));
+    document.getElementById('amount_title').innerHTML = $('#out_point :selected').text();
+    document.getElementById('desamount_num').innerHTML = Math.floor(ratio);
+	document.getElementById('desamount_title').innerHTML = tocredit.getAttribute('title');
+    document.getElementById('desamount').value = Math.floor(1 / tocredit.getAttribute('ratio') * document.getElementById('amount').value);
+}
+
+$(document).ready(function(){
+	uc_calc_rate();
+});
+</script>
+<div id="body">
+    <div class="myhead"></div>
+    <div class="mymiddle">
+        <div class="myleft">
+            <!--{template 'menu','member','member'}-->
+        </div>
+        <div class="myright">
+            <div class="myright_top"></div>
+            <div class="myright_middle">
+                <h3>我的积分</h3>
+                <div class="mainrail">
+                    <table cellspacing="0" cellpadding="0" class="maintable">
+                        <tr style="background:#F6F6F6">
+                            {get:member val=point_groups()}
+                            {if $val[enabled]}
+                            <td width="12%"><center>$val[name]</center></td>
+                            {/if}
+                            {/get}
+                        </tr>
+                        <tr>
+                            {get:member val=point_groups()}
+                            {if $val[enabled]}
+                            <td><center><span id="my_$val_k">{print $user->$val_k}</span></center></td>
+                            {/if}
+                            {/get}
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="myright_middle">
+                <h3>积分兑换</h3>
+                <div class="mainrail">
+                    <form method="post" name="myform" action="{url ucenter/member/ac/$ac/rand/$_G[random]}" onsubmit="return check_exchange(this);">
+                    <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                        <tr>
+                            <td width="60" align="right">兑换比率：</td>
+                            <td width="*"><span class="font_1" id="amount_num">1</span>&nbsp;<span id="amount_title"></span>&nbsp;兑换&nbsp;<span class="font_1"><span id="desamount_num"></span></span>&nbsp;<span id="desamount_title"></span></td>
+                        </tr>
+                        <tr>
+                            <td align="right">支出：</td>
+                            <td><input type="text" class="text" size="15" name="amount" id="amount" value="0" onkeyup="uc_calcredit();" style="width:120px;" />
+								<select name="out_point" id="out_point" onchange="uc_calc_rate();">
+									{loop $POINT->group $key $val}
+									{if $val[enabled] && $val[out]}
+									<option value="$key">$val[name]</option>
+									{/if}
+									{/loop}
+								</select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">收入：</td>
+                            <td><input type="text" class="text" id="desamount" style="width:120px;" disabled />
+                                <select name="tocredits" id="tocredits" onChange="uc_calcredit();">
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">密码：</td>
+                            <td><input type="password" name="password_credits" class="text" /></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td><button type="submit" name="dosubmit" value="yes">&nbsp;兑&nbsp;换&nbsp;</button></td>
+                        </tr>
+                    </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

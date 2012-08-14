@@ -1,0 +1,40 @@
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>头像设置</h3>
+            <div class="mainrail">
+                <!--{if defined('IN_UC')}-->
+                <!--{print uc_avatar($user->uid)}-->
+                <!--{else}-->
+                <form method="post" action="{url member/index/ac/face/rand/$_G[random]}" enctype="multipart/form-data">
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable" style="margin-top:10px;">
+                    <tr>
+                        <td width="150" valign="top" align="center">
+                            <img src="{print get_face($user->uid)}" id="face" style="border:1px solid #ccc;padding:1px;margin-top:2px;">
+                        </td>
+                        <td width="*">
+                            <input type="file" size="40" name="face" /><br />
+                            <span class="font_3">允许上传jpg格式，上传后将自动缩小到48*48像素</span>
+                        </td>
+                    </tr>
+                </table>
+                <div class="text_center">
+                    <button type="submit" name="dosubmit" value="yes">上传头像</button>
+                </div>
+                </form>
+                <!--{/if}-->
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

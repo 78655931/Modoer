@@ -1,0 +1,47 @@
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{eval !$mymenu && $mymenu = 'mmenu';}-->
+        <!--{template $mymenu,'member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3><cite>当前操作的主题:<span class="font_2">$_G[manage_subject][name]{if $_G[manage_subject][subname]}($_G[manage_subject][subname]){/if}</span>[<a href="javascript:void(0);" onclick="item_subject_manage();">更换</a>]</cite>主题风格</h3>
+            <div class="mainrail">
+                <ul class="optabs">
+                    <li class="active"><a href="{url item/member/ac/style/op/my}">我的风格</a></li>
+                    <li class="act"><a href="{url item/member/ac/style/op/shop}">购买风格</a></li>
+                    <li><a href="javascript:;" onclick="item_use_style($_G[manage_subject][sid],0);">恢复系统默认</a></li>
+                </ul><div class="clear"></div>
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable" trmouse="Y">
+                    <tr>
+                        <th width="150">截图</th>
+                        <th width="*">风格标题/使用主题</th>
+                        <th width="120">购买时间</th>
+                        <th width="120">到期时间</th>
+                        <th width="100">操作</th>
+                    </tr>
+                    <!--{dbres $list $val}-->
+                    <tr>
+                        <td><img src="{URLROOT}/templates/item/$val[directory]/screenshot.png" width="100" /></td>
+                        <td><div>$val[name]</div><div><a href="{url item/detail/id/$_G[manage_subject][sid]}" target="_blank">$_G[manage_subject][name]</a></div></td>
+                        <td>{date $val[buytime]}</td>
+                        <td>{date $val[endtime]}</td>
+                        <td><a href="javascript:;" onclick="item_use_style($_G[manage_subject][sid],$val[templateid]);">使用</a>
+                        &nbsp;|&nbsp;
+                        <a href="javascript:;" onclick="item_style_buycheck($val[templateid]);">续费</a></td>
+                    </tr>
+                    <!--{/dbres}-->
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+
+<!--{eval footer();}-->

@@ -1,0 +1,82 @@
+{template modoer_header}
+
+<div id="body">
+    <div class="myhead"></div>
+    <div class="mymiddle">
+        <div class="myleft">
+        <!--{eval !$mymenu && $mymenu = 'mmenu';}-->
+        <!--{template $mymenu,'member','member'}-->
+        </div>
+        <div class="myright">
+            <div class="myright_top"></div>
+            <div class="myright_middle">
+                <h3>产品管理</h3>
+                <div class="mainrail">
+                    <div class="op">
+                    选择产品主题：<select id="mysubject" onchange="location.href=Url('product/member/ac/g_product/sid/'+this.value);">
+                        <option value="0" style="color:#CC0000;">全部主题</option>
+                        <!--{print form_item_mysubject($user->uid, $sid)}-->
+                    </select>&nbsp;
+                    <!--{if $sid}-->
+                    选择产品分类：<select id="catid" onchange="location.href=Url('product/member/ac/g_product/sid/$sid/catid/'+this.value);">
+                        <option value="0" style="color:#CC0000;">全部分类</option>
+                        <!--{print form_product_category($sid, $catid)}-->
+                    </select>&nbsp;
+                    <!--{if $catid}-->
+					<button type="button" onclick="return rename_category('catid');">重命名</button>&nbsp;
+					<button type="button" onclick="return delete_category('catid');">删除分类</button>
+					<!--{/if}-->
+                    <!--{/if}-->
+                    </div>
+                    <form method="post" name="myform" action="{url product/member/ac/$ac/rand/$_G[random]}">
+                    <table width="100%" cellspacing="0" cellpadding="0" class="maintable" trmouse="Y">
+                        <tr>
+                            <th width="25"><input type="checkbox" id="allcheck" onclick="checkbox_checked('pids[]',this);" /></th>
+                            <th width="*">名称</th>
+                            <th width="40">人气</th>
+                            <th width="40">评论</th>
+                            <th width="150">主题</th>
+                            <th width="115">添加时间</th>
+                            <th width="60">状态</th>
+                            <th width="60">操作</th>
+                        </tr>
+                        <!--{if $total}-->
+                        <!--{dbres $list $val}-->
+                        <tr>
+                            <td><input type="checkbox" name="pids[]" value="$val[pid]" /></td>
+                            <td><a href="{url product/detail/pid/$val[pid]}" target="_blank" src="{URLROOT}/$val[thumb]" onmouseover="tip_start(this,1);" >$val[subject]</a></td>
+                            <td>$val[pageview]</td>
+                            <td>$val[comments]</td>
+                            <td><a href="{url item/detail/id/$val[sid]}" target="_blank">$val[name].$val[subname]</a></td>
+                            <td>{date $val[dateline],'Y-m-d H:i'}</td>
+                            <td>{print lang('global_status_'.$val['status'])}</td>
+                            <td><a href="{url product/member/ac/g_product/op/edit/pid/$val[pid]}">编辑</a></td>
+                        </tr>
+                        <!--{/dbres}-->
+                        <!--{else}-->
+                        <tr><td colspan="3">暂无信息。</td></tr>
+                        <!--{/if}-->
+                    </table>
+                    <!--{if $total}-->
+                    <div class="multipage">$multipage</div>
+                    <!--{/if}-->
+                    <div class="text_center">
+                        <input type="hidden" name="forward" value="{print get_forward()}" />
+                        <!--{if $total}-->
+                        <input type="hidden" name="dosubmit" value="yes" />
+                        <input type="hidden" name="op" value="delete" />
+                        <button type="button" onclick="easy_submit('myform','delete','pids[]');">删除所选</button>&nbsp;
+                        <!--{/if}-->
+                        <button type="button" onclick="location.href='{url product/member/ac/g_product/op/add/sid/$sid}';">添加产品</button>
+                    </div>
+                    
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="mybottom"></div>
+</div>
+
+<!--{eval footer();}-->

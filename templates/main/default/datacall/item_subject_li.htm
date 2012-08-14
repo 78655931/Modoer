@@ -1,0 +1,6 @@
+<!--{eval $reviewcfg = $_G['loader']->variable('config','review');}-->
+<ul class="rail-list">
+<!--{loop $_QUERY[mydata] $key $val}-->
+<li><cite class="start{print get_star($val[avgsort], $reviewcfg[scoretype])}" style="height:16px;"></cite><a href="{url item/detail/id/$val[sid]}">{sublen $val[name].$val[subname],10}</a></li>
+<!--{/loop}-->
+</ul>

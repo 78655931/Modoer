@@ -1,0 +1,39 @@
+<!--{eval 
+    $_HEAD['title'] = '奖品:'.$detail[name];
+}-->
+{template modoer_header}
+<div id="body">
+
+    <div id="gift_left">
+
+        <div class="content">
+            <p class="i"><img src="{URLROOT}/$detail[picture]" alt="$detail[name]" /></p>
+            <h3>详细介绍：</h3>
+            <p class="c">$detail[description]</p>
+        </div>
+    </div>
+
+    <div id="gift_right">
+        <h1 class="title">$detail[name]</h1>
+        <p class="t">人气：<span class="font_2">$detail[pageview]</span>
+        </p>
+        <ul class="info">
+            <!--{if $detail[sid]}--><li>关联商家：<span class="font_2"><a href="{url item/detail/id/$detail[sid]}">{print:exchange itemname(sid/$detail[sid])}</a></span></li><!--{/if}-->
+            <li>所需积分：{print:member point(point/$detail[pointtype])}<span class="font_2">$detail[price]</span><!--{if $detail[point]}--> 或 <span class="item">{print:member point(point/$detail[pointtype2])}</span><span class="font_2">$detail[point]</span><!--{/if}--><!--{if $detail[point3]}--> 或 <span class="item">{print:member point(point/$detail[pointtype3])}+{print:member point(point/$detail[pointtype4])}</span><span class="font_2">$detail[point3]+$detail[point4]</span><!--{/if}--></li>
+            <li>当前库存：<span class="font_2">$detail[num]</span></li>
+            <li>已&nbsp;&nbsp;兑&nbsp;&nbsp;换：<span class="font_2">$detail[salevolume]</span></li>
+            <!--{if $detail[reviewed] == 1}--><li><!--{if $detail[pattern] == 1}-->兑换<!--{else}-->抽奖<!--{/if}-->条件：<span class="font_2">需点评后才能<!--{if $detail[pattern] == 1}-->兑换<!--{else}-->抽奖<!--{/if}-->，请点商家名称点评</span></li><!--{/if}-->
+            <!--{eval $allowtime = trim($detail[allowtime],",");}-->
+            <li><!--{if $detail[pattern] == 1}-->兑换<!--{else}-->抽奖<!--{/if}-->时段：<span class="font_2"><!--{if !$allowtime || $allowtime=="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23"}-->全天候不限制<!--{else}-->$allowtime<!--{/if}--></span></li>
+            <li>允许<!--{if $detail[pattern] == 1}-->兑换<!--{else}-->抽奖<!--{/if}-->用户组：<span class="font_2">{print:exchange group(giftid/$detail[giftid])}</span></li>
+            <!--{if $_CFG[sharecode]}--><li><div class="float_left">分享礼品：</div><div>$_CFG[sharecode]<div class="clear"></div></div></li><!--{/if}-->
+        </ul>
+        <div class="submit">
+            <!--{if $detail[pattern] == 1}-->{if !$allowtime || $allowtime=="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23"}<a class="abtn1" href="{url exchange/member/ac/exchange/giftid/$giftid}"><span>立即兑换</span></a>{elseif in_array((int) date("H"),explode(',',$allowtime))}<a class="abtn1" href="{url exchange/member/ac/exchange/giftid/$giftid}"><span>立即兑换</span></a>{/if}<!--{elseif $detail[pattern] == 2}--><a class="abtn1" href="javascript:compare_randcode($giftid)"><span>立即抽奖</span></a><!--{/if}-->
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    <div class="clear"></div>
+</div>
+<!--{eval footer();}-->

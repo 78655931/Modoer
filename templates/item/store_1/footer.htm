@@ -1,0 +1,24 @@
+</div>
+<!-- 主题内容结束 -->
+{LF}
+<div class="item-footer">
+    <!--{eval $foot_menus = $_CFG['foot_menuid'] ? $_G['loader']->variable('menu_' . $_CFG['foot_menuid']) : '';}-->
+    <div class="links">
+        <!--{loop $foot_menus $val}-->
+        <a href="{url $val[url]}"{if $val[target]} target="$val[target]"{/if}>$val[title]</a>&nbsp;|
+        <!--{/loop}-->
+        <a href="javascript://;" onclick="window.scrollTo(0,0);">返回顶部</a><!--{if $_CFG[icpno]}-->&nbsp;|
+        <a href="http://www.miibeian.gov.cn/" target="_blank">$_CFG[icpno]</a><!--{/if}--><!--{if $_CFG[statistics]}-->&nbsp;|
+        $_CFG[statistics]<!--{/if}-->
+    </div>
+    <div>
+         Powered by <span class="product"><a href="http://www.modoer.com/" target="_blank">Modoer</a></span> <span class="version">$_G[modoer][version]<!--{if $_CFG['buildinfo']}-->&nbsp;($_G[modoer][build])<!--{/if}--></span>&nbsp;$_CFG[copyright]<br />$_CFG[statement]
+    </div>
+    <!--{if $sitedebug}--><div class="bottom">$sitedebug</div><!--{/if}-->
+</div>
+<!--{if DEBUG}-->
+{print $_G['db']->debug_print();}
+{print $_G['loader']->debug_print();}
+<!--{/if}-->
+</body>
+</html>

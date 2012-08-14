@@ -1,0 +1,56 @@
+<form method="post" name="frm_login" id="frm_login" action="{url member/login/op/ajax_login/in_ajax/1/rand/$_G[random]}">
+    <table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td valign="top"width="340">
+                <table class="maintable" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td align="right" width="70">用户名：</td>
+                        <td width="*"><input type="text" name="username" class="t_input" style="width:200px;" /></td>
+                    </tr>
+                    <tr>
+                        <td align="right">密码：</td>
+                        <td><input type="password" name="password" class="t_input" style="width:200px;"></td>
+                    </tr>
+                    <!--{if $MOD['seccode_login']}-->
+                    <tr>
+                        <td align="right" valign="top">验证码：</td>
+                        <td>
+                            <div style="float:left;margin-right:5px;">
+                                <input type="text" name="seccode" class="t_input" style="width:118px;" onfocus="show_seccode('seccode2');" />
+                            </div>
+                            <div id="seccode2" class="none" style="float:left;width:80px;position:relative;top:-3px;"></div>
+                        </td>
+                    </tr>
+                    <!--{/if}-->
+                    <tr>
+                        <td align="right"></td>
+                        <td><input type="checkbox" name="life" id="life" value="2592000" /><label for="life">记住密码(30天) [ <script type="text/javascript" src="/data/js/info.js"></script> ]</label></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="hidden" name="forward" value="$forward" />
+                            <input type="hidden" name="dosubmit" value="yes" />
+                        </td>
+                        <td>
+                            <button type="button" onclick="ajaxPost('frm_login','','document_reload');">登录</button>&nbsp;&nbsp;
+                            <button type="button" onclick="dlgClose();">关闭</button>
+                        </td>
+                    </tr>
+                </table>
+                </td>
+            <td valign="top"width="*"style="color:#808080;">
+                <div style="margin:5px 5px 5px 0;">还没有帐号？<a href="{url member/reg}">现在注册</a></div>
+                <div style="margin:0 5px 5px 0;">忘记密码了？<a href="{url member/login/op/forget}">找回密码</a></div>
+                <!--{if $_G['passport_apis']}-->
+                <span>使用合作网站帐号登录：</span>
+                <ul style="list-style:none;margin:5px 0 0 5px;padding:0;">
+                    <!--{loop $_G['passport_apis'] $passport_name $passport_title}-->
+                    <li style="margin:0 5px 5px 0;float:left;"><span style="cursor:pointer; display:block; margin-top:5px;">
+                            <span onclick="document.location='{url member/login/op/passport_login/type/$passport_name}';"><img src="{URLROOT}/static/images/passport/{$passport_name}_n.png" style="margin-right:2px;" title="$passport_title" /></span></span></li>
+                    <!--{/loop}-->
+                </ul>
+                <!--{/if}-->
+            </td>
+        </tr>
+    </table>
+</form>

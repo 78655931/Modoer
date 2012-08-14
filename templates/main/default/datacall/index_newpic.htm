@@ -1,0 +1,7 @@
+<ul class="index_pic">
+<!--{loop $_QUERY[mydata] $key $val}-->
+<li>
+    <div><a href="{url item/detail/id/$val[sid]}"><img src="{URLROOT}/$val[thumb]" alt="$val[title]" title="$val[title]" /></a></div>
+</li>
+<!--{/loop}-->
+</ul>

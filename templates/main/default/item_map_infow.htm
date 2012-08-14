@@ -1,0 +1,21 @@
+<div class="mapsearch-subject-infow">
+    <table>
+        <tr>
+            <td class="picture" valign="top">
+                <!--{if !$subject[thumb]}-->
+                <img src="{URLROOT}/static/images/noimg.gif" />
+                <!--{else}-->
+                <a href="{url item/album/sid/$subject[sid]}"><img src="{URLROOT}/$subject[thumb]" /></a>
+                <!--{/if}-->
+            </td>
+            <td class="subjectfield" valign="top">
+                <table border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td><h3><a href="{url item/detail/id/$subject[sid]}">$subject[name]{if $subject[subname]}($subject[subname]){/if}</a></h3></td>
+                    </tr>
+                    $subject_field_table_tr
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>

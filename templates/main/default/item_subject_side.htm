@@ -1,0 +1,32 @@
+<!--{eval 
+    if(isset($object)) $subject =& $object;
+    if(isset($object_field_table_tr)) $subject_field_table_tr =& $object_field_table_tr;
+}-->
+<script type="text/javascript">loadscript('item');</script>
+<style type="text/css">
+.subject { width:90%; margin:5px auto; line-height:18px; }
+.subject h2 { font-size:14px; margin:10px 0 5px; padding:0; }
+.subject h2 a{ color:red;  }
+.subject .start { margin:0; padding:0; height:15px;  }
+.subject_field_list { color:#808080; margin:5px 0 10px; }
+</style>
+<div class="mainrail rail-border-3">
+    <h2 class="rail-h-2"><b><a href="{url item/detail/id/$subject[sid]}"><span class="font_2">$subject[name]&nbsp;$subject[subname]</span></a></b></h2>
+    <div class="subject">
+        <!--{eval $reviewcfg = $_G['loader']->variable('config','review');}-->
+        <p class="start start{print get_star($subject[avgsort], $reviewcfg[scoretype])}"></p>
+        <table class="subject_field_list" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td colspan="2"><span class="font_2">$subject[reviews]</span>µ„∆¿,
+                <span class="font_2">$subject[favorites]</span>πÿ◊¢,
+                <span class="font_2">$subject[guestbooks]</span>¡Ù—‘,
+                <span class="font_2">$subject[pageviews]</span>‰Ø¿¿</td>
+            </tr>
+            $subject_field_table_tr
+        </table>
+        <a class="abtn1" href="{url review/member/ac/add/type/item_subject/id/$subject[sid]}"><span>µ„∆¿</span></a>
+        <a class="abtn2" href="javascript:add_favorite($subject[sid]);"><span>πÿ◊¢</span></a>
+        <a class="abtn2" href="{url item/detail/id/$subject[sid]/view/guestbook}#guestbook"><span>¡Ù—‘</span></a>
+        <div class="clear"></div>
+    </div>
+</div>

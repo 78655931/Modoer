@@ -1,0 +1,108 @@
+<!--{eval 
+    $_HEAD['title'] = $detail[subject];
+}-->
+{template modoer_header}
+<script type="text/javascript">
+loadscript('item');
+</script>
+<div id="body">
+
+    <div id="product_left">
+
+        <h1 class="title">$detail[subject]</h1>
+        <p class="t">发布时间：{date $detail[subject]}&nbsp;
+            人气：<span class="font_2">$detail[pageview]</span>&nbsp;
+            评论：<span class="font_2">$detail[comments]</span></p>
+        <div class="info">
+            <div class="field">
+                <table class="detail_field" border="0" cellspacing="0" cellpadding="0">
+                    $detail_field
+                    <!--{if $_CFG[sharecode]}-->
+                    <tr>
+                        <td align="right" class="key">分享内容：</td>
+                        <td width="*">$_CFG[sharecode]</td>
+                    </tr>
+                    <!--{/if}-->
+                </table>
+            </div>
+            <div class="thumb">
+                <img src="{URLROOT}/$detail[thumb]" />
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="content">
+            <h3>详细介绍：</h3>
+            <p class="c">$detail[content]</p>
+        </div>
+
+        <!--{if check_module('comment')}-->
+        <div class="comment_foo">
+            <style type="text/css">@import url("{URLROOT}/{$_G[tplurl]}css_comment.css");</style>
+            <script type="text/javascript" src="{URLROOT}/static/javascript/comment.js"></script>
+            <!--{eval $comment_modcfg = $_G['loader']->variable('config','comment');}-->
+            <!--{if $detail[comments]}-->
+            <!--{/if}-->
+            <a name="comment"></a>
+            <h3>网友评论：</h3>
+            {eval $_G['loader']->helper('form');}
+            <div id="comment_form">
+                <!--{if $user->check_access('comment_disable', $_G['loader']->model(':comment'), false)}-->
+                    <!--{if $MOD[post_comment] && !$comment_modcfg['disable_comment'] && !$detail[closed_comment]}-->
+                    <!--{eval $idtype = 'product'; $id = $pid; $title = 'Re:' . $detail[subject];}-->
+                    {template comment_post}
+                    <!--{else}-->
+                    <div class="messageborder">评论已关闭</div>
+                    <!--{/if}-->
+                <!--{else}-->
+                <div class="messageborder">如果您要进行评论信息，请先&nbsp;<a href="{url member/login}">登录</a>&nbsp;或者&nbsp;<a href="{url member/reg}">快速注册</a>&nbsp;。</div>
+                <!--{/if}-->
+            </div>
+            <!--{if !$comment_modcfg['hidden_comment']}-->
+            <div class="mainrail rail-border-3">
+                <em>评论总数:<span class="font_2">$detail[comments]</span>条</em>
+                <h1 class="rail-h-3 rail-h-bg-3">网友评论</h1>
+                <div id="commentlist" style="margin-bottom:10px;"></div>
+                <script type="text/javascript">
+                $(document).ready(function() { get_comment('product',$pid,1); });
+                </script>
+            </div>
+            <!--{/if}-->
+        </div>
+        <!--{/if}-->
+
+    </div>
+
+    <div id="product_right">
+        <div class="mainrail rail-border-3">
+            <h1 class="rail-h-3 rail-h-bg-3">基本信息</h1>
+            <div class="subject">
+                <h2><a href="{url item/detail/id/$subject[sid]}" src="$subject[thumb]" onmouseover="tip_start(this,1);">$subject[name]&nbsp;$subject[subname]</a></h2>
+                <!--{eval $reviewcfg = $_G['loader']->variable('config','review');}-->
+                <p class="start start{print get_star($subject[avgsort],$reviewcfg[scoretype])}"></p>
+                <table class="subject_field_list" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td colspan="2"><span class="font_2">$subject[reviews]</span>点评,
+                        <span class="font_2">$subject[guestbooks]</span>留言,
+                        <span class="font_2">$subject[pageviews]</span>浏览</td>
+                    </tr>
+                    $subject_field_table_tr
+                </table>
+                <a class="abtn1" href="{url review/member/ac/add/type/item_subject/id/$subject[sid]}"><span>我要点评</span></a>
+                <a class="abtn2" href="javascript:add_favorite($subject[sid]);"><span>关注</span></a>
+                <a class="abtn2" href="{url item/detail/id/$subject[sid]/view/guestbook}#guestbook"><span>留言</span></a>
+                <div class="clear"></div>
+            </div>
+        </div>
+
+        <div class="mainrail rail-border-3">
+            <em><span class="arrow-ico"><a href="{url product/list/sid/$subject[sid]}">查看全部</a></span></em>
+            <!--{eval $sid=$detail[sid];}-->
+            <h1 class="rail-h-3 rail-h-bg-3">其他产品</h1>
+            <!--{datacallname:产品_主题产品}-->
+        </div>
+
+    </div>
+    <div class="clear"></div>
+</div>
+<!--{eval footer();}-->

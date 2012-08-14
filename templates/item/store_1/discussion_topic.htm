@@ -1,0 +1,116 @@
+<!--{eval
+    $_HEAD['title'] = $subject[name] . '的交流区——话题：' . $topic[subject];
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+<script type="text/javascript" src="{URLROOT}/static/dialog/lhgdialog.min.js"></script>
+<div class="item-content">
+
+    <div class="item-left mt10">
+        <div class="mainrail rail-border-3">
+            <div class="topic_detail">
+                <h1>$topic[subject]</h1>
+                <div class="discussion_detail">
+                    <div class="face"><a href="{url space/index/uid/$topic[uid]}" target="_blank"><img src="{print get_face($topic[uid])}" /></a></div>
+                    <div class="content">
+                        <div class="user">
+                            <!--{if $user->uid==$topic[uid]}-->
+                            <em>
+                                <a href="javascript:discussion_topic_edit($topic[tpid]);">编辑</a>
+                                <a href="javascript:discussion_topic_delete($topic[tpid]);">删除</a>
+                            </em>
+                            <!--{/if}-->
+                            <span>{date $topic[dateline]}</span> <a href="{url space/index/uid/$topic[uid]}" target="_blank">$topic[username]</a>
+                        </div>
+                        <p id="topic_$topic[tpid]">{print msubb::pares($topic[content], $topic)}</p>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <div class="reply_detail">
+                <h3>回复</h3>
+                <ul class="replylist">
+                <!--{dbres $list $val}-->
+                    <li class="discussion_detail">
+                        <div class="face"><a href="{url space/index/uid/$val[uid]}" target="_blank"><img src="{print get_face($val[uid])}" /></a></div>
+                        <div class="content">
+                            <div class="user">
+                                <em>
+                                    <!--{if $user->uid==$val[uid]}-->
+                                    <a href="javascript:discussion_reply_edit($val[rpid]);">编辑</a>
+                                    <a href="javascript:discussion_reply_delete($val[rpid]);">删除</a>
+                                    <!--{elseif $user->uid!=$val[uid]}-->
+                                    <a href="javascript:discussion_reply_at('reply_content','$val[username]');">回复</a>
+                                    <!--{/if}-->
+                                </em>
+                                <span>{date $val[dateline]}</span> <a href="{url space/index/uid/$val[uid]}" target="_blank">$val[username]</a>
+                            </div>
+                            <p id="reply_$val[rpid]">{print msubb::pares($val[content])}</p>
+                        </div>
+                    </li>
+                <!--{/dbres}-->
+                <!--{if !$list}-->
+                <li>暂无回复</li>
+                <!--{/if}-->
+                </ul>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <!--{if $topic[status]}-->
+        <div class="item-rail mt10">
+            <h3 class="railtitle">回复话题</h3>
+            <div class="discussion_post" style="margin-top:10px;">
+                <script type="text/javascript" src="{URLROOT}/static/javascript/validator.js"></script>
+                <form action="{url discussion/member/ac/reply/op/post}" method="post" name="myform" onsubmit="return validator(this);">
+                    <input type="hidden" name="tpid" value="$tpid">
+                    <table border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td width="550"><textarea name="content" id="reply_content" validator="{'empty':'N','errmsg':'请填写回复内容'}"{if !$user->isLogin} onfocus="dialog_login();"{elseif $MOD[reply_seccode]}onfocus="show_seccode();"{/if}></textarea></td>
+                            <td width="*" valign="top">
+                                <div class="smilies">
+                                    <!--{loop $smilies $value}-->
+                                    <img src="{URLROOT}/static/images/smilies/{$value}.gif" width="20" height="20" onclick="insert_smilies('reply_content','$value');" />
+                                    <!--{/loop}-->
+                                </div>
+                            </td>
+                        </tr>
+                        <!--{if $MOD[reply_seccode] && $user->isLogin}-->
+                        <tr>
+                            <td><div id="seccode" class="none" style="float:left;width:80px;position:relative;top:-3px;"></div>
+                                <input type="text" name="seccode" class="t_input" style="width:118px;" onblur="check_seccode(this.value);" onfocus="show_seccode();" validator="{'empty':'N','errmsg':'请输入注册验证码'}" />
+                                <span id="msg_seccode" class="formmessage none"></span>
+                            </td>
+                        </tr>
+                        <!--{/if}-->
+                        <!--{if $user->isLogin}-->
+                        <tr>
+                            <td colspan="2"><button type="submit" name="dosubmit">加上去</button></td>
+                        </tr>
+                        <!--{/if}-->
+                    </table>
+                </form>
+            </div>
+        </div>
+        <!--{/if}-->
+    </div>
+
+    <!--{eval $hidemap=true;}-->
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+        <div class="mainrail rail-border-3">
+            <div class="sub-mainrail">
+                <h3 class="sub-title">热门话题</h3>
+                <ul class="rail-list" style="margin-bottom:10px;">
+                    <!--{get:modoer val=table(table/dbpre_discussion_topic/where/sid=$topic[sid] And status=1/orderby/replies DESC/rows/10)}-->
+                    <li><cite>{$val[replies]}回复</cite><a title="$val[subject]" href="{url discussion/topic/id/$val[tpid]}">{sublen $val[subject],11}</a></li>
+                    <!--{getempty(val)}-->
+                    <li>暂无信息</li>
+                    <!--{/get}-->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

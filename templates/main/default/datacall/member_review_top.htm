@@ -1,0 +1,6 @@
+<ul class="rail-list">
+<!--{loop $_QUERY[mydata] $key $val}-->
+<li><img src="{print get_face($val[uid]);}" width="20" height="20" /><cite>$val[reviews]&nbsp;µ„∆¿</cite><a href="{url space/index/uid/$val[uid]}">$val[username]</a></li>
+<!--{/loop}-->
+</ul>
+<div class="clear"></div>

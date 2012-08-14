@@ -1,0 +1,43 @@
+{template modoer_header}
+<style type="text/css">
+.noticetable td { border-bottom:1px dashed #ccc; color:#808080; }
+.noticetable .time { padding-right:5px; text-align:right; }
+.noticetable .note { color:#323232; padding:0px; margin:0px; padding-left:5px; }
+.noticetable .note a { color:#006699; padding:0 2px; }
+
+</style>
+<div id="body">
+    <div class="myhead"></div>
+    <div class="mymiddle">
+        <div class="myleft">
+            <!--{template 'menu','member','member'}-->
+        </div>
+        <div class="myright">
+            <div class="myright_top"></div>
+            <div class="myright_middle">
+                <h3>我的提醒</h3>
+                <div class="mainrail">
+                    <ul class="optabs"><li{if !$isread} class="active"{/if}><a href="{url member/index/ac/$ac}">未读提醒</a></li><li{if $isread} class="active"{/if}><a href="{url member/index/ac/$ac/isread/1}">已读提醒</a></li></ul><div class="clear"></div>
+                    <table width="100%" cellspacing="0" cellpadding="0" class="maintable noticetable">
+                        <!--{eval $ids=array();}-->
+                        <tr class="thbg"><th colspan="4" style="height:1px;*height:2px;_font-size:1px;"></th></tr>
+                        <!--{dbres $list $val}-->
+                        <tr>
+                             <td class="note" width="*">$val[note]</td>
+                            <td class="time" width="100">{date $val[dateline]}</td>
+                            <!--{eval $ids[] = $val[id];}-->
+                        </tr>
+                        <!--{/dbres}-->
+                        <!--{if !$total}-->
+                        <tr><td>暂无信息。</td></tr>
+                        <!--{/if}-->
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="mybottom"></div>
+</div>
+<!--{eval if($ids) $N->update_note($ids);}-->
+<!--{eval footer();}-->

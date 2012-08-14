@@ -1,0 +1,84 @@
+{template modoer_header}
+
+<div id="body">
+    <div class="myhead"></div>
+    <div class="mymiddle">
+        <div class="myleft">
+        <!--{eval !$mymenu && $mymenu = 'mmenu';}-->
+        <!--{template $mymenu,'member','member'}-->
+        </div>
+        <div class="myright">
+            <div class="myright_top"></div>
+            <div class="myright_middle">
+                <h3>$path_title</h3>
+                <div class="mainrail">
+                    <div class="op">
+                        <!--{if $pid}-->
+                        选择主分类：<select id="mysubject" onchange="location.href=Url('item/member/ac/$ac/pid/'+this.value);">
+                            <!--{loop $mycate $_pid $_count}-->
+                            <option value="$_pid"{if $_pid==$pid} selected="selected"{/if}>{print:item category(catid/$_pid)} ($_count)</option>
+                            <!--{/loop}-->
+                        </select>&nbsp;
+                        <button type="button" onclick="jslocation('{url item/member/ac/subject_add/pid/$pid}');">增加{$model[item_name]}</button>
+                        <!--{/if}-->
+                    </div>
+                    <table width="100%" cellspacing="0" cellpadding="0" class="maintable" trmouse="Y">
+                        <tr>
+                            <th width="*">$title $subtitle</th>
+                            <th width="85">$cattitle</th>
+                            <th width="35"><center>点评</center></th>
+                            <th width="35"><center>留言</center></th>
+                            <th width="35"><center>图片</center></th>
+                            <th width="35"><center>关注</center></th>
+                            <th width="115">登记时间</th>
+                            <!--{if $ac=='g_subject'}-->
+                            <th width="100">管理有效期至</th>
+                            <!--{/if}-->
+                            <th width="60">状态</th>
+                        </tr>
+                        <!--{if $total}-->
+                        <!--{dbres $list $val}-->
+                        <tr>
+                            <td>
+                                <div>{if $val[city_id]}<span class="font_3">[{print:modoer area(aid/$val[city_id])}]</span>{/if}<a href="{url item/detail/id/$val[sid]}" target="_blank">$val[name].$val[subname]</a><div>
+                                <div>
+                                    操作：
+                                    <!--{if $ac=='g_subject' || ($access_edit && !$val[owner])}-->
+                                    [<a href="{url item/member/ac/subject_edit/sid/$val[sid]}">编辑</a>]
+                                    <!--{/if}-->
+                                    <!--{if $ac=='g_subject'}-->
+                                    [<a href="{url item/member/ac/subject_edit/op/delete/sid/$val[sid]}" onclick="return confirm('您确定要进行删除操作吗？');">删除</a>]
+                                    <!--{/if}-->
+                                    [<a href="{url review/member/ac/add/type/item_subject/id/$val[sid]}">点评</a>]
+                                    [<a href="{url item/member/ac/pic_upload/sid/$val[sid]}">传图</a>]
+                                </div>
+                            </td>
+                            <td><a href="{url item/list/catid/$val[catid]}" target="_blank">{print:item category(catid/$val[catid])}</a></td>
+                            <td><center>$val[reviews]</center></td>
+                            <td><center>$val[guestbooks]</center></td>
+                            <td><center>$val[pictures]</center></td>
+                            <td><center>$val[favorites]</center></td>
+                            <td>{date $val[addtime],'Y-m-d H:i'}</td>
+                            <!--{if $ac=='g_subject'}-->
+                            <td>{if $val[expirydate]}{date $val[expirydate],'Y-m-d'}{else}无期限{/if}</td>
+                            <!--{/if}-->
+                            <td>{if $val[status]}已审核{else}<span class="font_1">未审核</span>{/if}</td>
+                        </tr>
+                        <!--{/dbres}-->
+                        <!--{else}-->
+                        <tr>
+                            <td colspan="8">暂无信息。</td>
+                        </tr>
+                        <!--{/if}-->
+                    </table>
+                    </form>
+                    <div class="multipage">$multipage</div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="mybottom"></div>
+</div>
+
+<!--{eval footer();}-->

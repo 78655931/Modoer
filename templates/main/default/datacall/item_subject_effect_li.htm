@@ -1,0 +1,5 @@
+<ul class="rail-list">
+<!--{loop $_QUERY[mydata] $key $val}-->
+<li><cite>$val[effect]&nbsp;»À</cite><a href="{url item/detail/id/$val[sid]}" title="$val[name].$val[subname]">{sublen trim($val[name].' '.$val[subname]),15}</a></li>
+<!--{/loop}-->
+</ul>

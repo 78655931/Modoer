@@ -1,0 +1,51 @@
+{template modoer_header}
+<script type="text/javascript">
+function show_style() {
+    var id = $('#space_styleid').val();
+    if(id == 0) { 
+        alert('未选择一个有效的风格。'); return; 
+    }
+    window.open("{url space/index}?templateid="+id);
+}
+</script>
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>个人空间</h3>
+            <div class="mainrail">
+                <form method="post" action="{url space/member/ac/$ac/rand/$_G[random]}" name="mysetfrm">
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                    <tr>
+                        <td align="right">空间名称：</td>
+                        <td><input type="text" name="spacename" class="t_input" size="50" value="$detail[spacename]" /></td>
+                    </tr>
+                    <tr>
+                        <td width="80" align="right">空间描述：</td>
+                        <td><input type="text" name="spacedescribe" class="t_input" size="50" value="$detail[spacedescribe]" /></td>
+                    </tr>
+                    <tr>
+                        <td align="right">空间风格：</td>
+                        <td>
+                            <select name="space_styleid" id="space_styleid">
+                            <option value="0">无(不使用风格)</option>
+                            <!--{print form_template('space', $detail['space_styleid'])}-->
+                            </select>&nbsp;<button type="button" onclick="show_style();">预览效果</button>
+                        </td>
+                    </tr>
+                </table>
+                <div class="text_center"><button type="submit" name="dosubmit" value="yes"> 提交 </button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

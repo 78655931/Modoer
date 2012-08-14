@@ -1,0 +1,78 @@
+#space_left { float: left; width: 200px; }
+#space_right { float: right; width: 755px; }
+
+.active { color:#CC0000; text-decoration:underline; }
+
+.myface { text-align:center; }
+.myface img { border:1px solid #ddd; padding:1px; }
+
+.gbook  { border-bottom:1px dashed #ccc; margin: 0 5px;}
+.gbook .header { line-height:25px; padding:0 5px; }
+.gbook .header { margin:0;padding:0;font-size:12px; }
+.gbook .header a { margin-right:2px; }
+.gbook p { margin:2px; padding:0; line-height:18px; color:#666; }
+.gbookpost { margin:5px; }
+
+.myfriends { list-style:none; margin:5px 10px;padding:0;}
+.myfriends li { width:210px; margin:5px 0;}
+.myfriends li .face { clear:left; }
+.myfriends li .face img { border:1px solid #ccc; padding:1px; }
+.myfriends li .info { float:right; }
+.myfriends li h5 { margin:0 0 5px 0;padding:0; }
+
+/*--- subject ---*/
+.subject_list { list-style:none; padding:0; margin:0; }
+.subject_list li { line-height:28px; margin:1px 2px; padding:0 5px; }
+.subject_list li a { margin:0 2px; }
+.subject_list li cite { float:right; color:#808080; font-style:normal; }
+
+/*--- review ---*/
+.review { clear:both; width:100%; margin:0 auto 10px auto; border-bottom:1px dashed #ccc; }
+.review .field { width:99%; margin:0 auto; }
+.review .feed { background:#FFF8F0; padding:0 5px; line-height:25px; margin-bottom:5px; }
+.review .feed em { margin-top:-6px; }
+.review .feed h3 { display:inline;font-size:12px; color:#CC0000; padding:0; margin:0; }
+.review .feed h3 a { color:#CC3300; }
+.review .feed span a { color:#0099FF; }
+.review .info { }
+.review .info .score { clear:both; list-style:none; margin:5px 0 0 5px; padding:0; }
+.review .info .score li { float:left; margin:0 2px 0 0; line-height:20px; height:16px;}
+.review .info .pictures { padding-left:5px; }
+.review .info .pictures img { max-width:100px; max-height:100px; padding:1px; border:1px solid #ccc;
+_width:expression(this.width > 100 ? 100 : true); _height:expression(this.height > 100 ? 100 : true); }
+.review .info h4.title { font-size:12px; color:#282828; margin:10px 5px 5px; padding:0; }
+.review .info .params { clear:both;list-style:none; margin:0px 5px; padding:0; }
+.review .info .params li { margin:8px 0; }
+.review .info p { clear:both; padding:0; margin:5px 5px 5px; line-height:20px; color:#666; overflow:auto; *overflow:hidden; }
+.review .info .operation { margin:0 0 5px 5px; text-align:right; }
+.review-digest { background:url("img/jing.png") no-repeat 480px 5px; }
+.review-digest-message { border:1px solid #ddd; color:#323232; background:#f5f5f5; margin:10px; padding: 10px; }
+
+/*--- respond ---*/
+.resplods_list { width:95%; margin: 0 10px; }
+.resplods_list h3 { font-size:12px; margin:0; padding:0 0 5px 0; border-bottom:1px solid #ccc; }
+.resplods_list em { margin-top:-6px; }
+.resplods_list em a { padding:0 2px; }
+.resplods_list ul { list-style:none; margin:0 0 10px 0; padding:0; }
+.resplods_list li { min-height:50px; clear:both; border-bottom:1px dashed #ccc; padding:10px 0; }
+.resplods_list li .face { float:left; width:50px; border:1px solid #ccc; padding:2px; text-align:center; margin-right:10px;}
+.resplods_list li .content { width:620px; clear:right; }
+.resplods_list li .title { clear:both; }
+.resplods_list li .detail { clear:both; margin: 10px 0; color:#808080; }
+
+/*--- flower ---*/
+.flowers_list { width:95%; margin: 0 10px; }
+.flowers_list h3 { font-size:12px; margin:0; padding:0 0 5px 0; border-bottom:1px solid #ccc; }
+.flowers_list em { margin-top:-6px; }
+.flowers_list em a { padding:0 2px; }
+.flowers_list ul { list-style:none; margin:0 0 10px 0; padding:0; }
+.flowers_list li { float:left; margin:5px 5px 5px 0; width:54px; text-align:center;}
+.flowers_list li .face { border:1px solid #ccc; padding:2px;  }
+.flowers_list li .title a { color:#0000FF; }
+
+/*--- friend ---*/
+.friend_list { list-style:none; padding:0; margin:0 0 0 10px; }
+.friend_list li { float:left; width:33%; margin:5px 0 }
+.friend_list li div { float:left; width:60px; height:60px; }
+.friend_list li div img { border:1px solid #ddd; padding:1px; }
+.friend_list li p { line-height:20px; clear:right; padding:0; margin:0; }

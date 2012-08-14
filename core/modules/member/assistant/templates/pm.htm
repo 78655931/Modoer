@@ -1,0 +1,95 @@
+{template modoer_header}
+<script type="text/javascript">
+var show_pmid = 0;
+function readmsg(pmid) {
+    if(show_pmid) {
+        var c = $("#pmid_"+show_pmid+'_content');
+        c.css("display","none");
+    }
+	var n = $("#pmid_"+pmid+'_content');
+	if(n[0]) {
+        n.css("display","");
+		show_pmid = pmid;
+		return;
+	}
+
+	$.post(Url('member/index/ac/pm/op/read'), {in_ajax:1, pmid:pmid }, function(result) {
+        if (result.match(/<.+id="readmsg".*>/)) {
+            var c_row = document.getElementById('pmid_'+pmid);
+            var m_table = c_row.parentNode;
+            var n_row = m_table.insertRow(c_row.rowIndex + 1);
+            n_row.id = 'pmid_'+pmid+'_content';
+            var n_cell1 = n_row.insertCell(0);
+            n_cell1.innerHTML = '&nbsp;';
+            var n_cell2 = n_row.insertCell(1);
+            n_cell2.colSpan = 4;
+            n_cell2.innerHTML = result;
+            show_pmid = pmid;
+        } else {
+            myAlert(result);
+        }
+	});
+}
+
+function deletemsg(pmid) {
+    if(pmid == '') {
+        alert('无效的短信息。');
+        return;
+    }
+    $(document.body).append('<form method="post" id="deletemsg" action="{url member/index/ac/$ac/op/delete}" style="display:none;"></form>');
+    $('#deletemsg').append('<input type="hidden" name="folder" value="$folder" />');
+    $('#deletemsg').append('<input type="hidden" name="pmids[]" value="'+pmid+'" />');
+    $('#deletemsg').append('<input type="submit" name="dosubmit" value="yes" />');
+    $("#deletemsg").submit();
+}
+</script>
+
+<div id="body">
+    <div class="myhead"></div>
+    <div class="mymiddle">
+        <div class="myleft">
+            <!--{template 'menu','member','member'}-->
+        </div>
+        <div class="myright">
+            <div class="myright_top"></div>
+            <div class="myright_middle">
+            <!--{if defined('IN_UC')}-->
+            <iframe src="{url member/index/ac/pm/op/uc}" id="ucpm" style="width:100%;height:550px;border:0;" frameBorder="0"></iframe>
+            <!--{else}-->
+                <h3>我的短信箱</h3>
+                <div class="mainrail">
+                    <ul class="optabs"><li{if $folder==inbox} class="active"{/if}><a href="{url member/index/ac/$ac/folder/inbox}">收件箱</a></li><li{if $folder==outbox} class="active"{/if}><a href="{url member/index/ac/$ac/folder/outbox}">发件箱</a></li><li class="act"><a href="{url member/index/ac/$ac/op/write}">发送短信息</a></li></ul><div class="clear"></div>
+                    <form method="post" action="{url member/index/ac/$ac/op/delete}" onsubmit="return checkbox_check();">
+                    <input type="hidden" name="folder" value="$folder" />
+                    <table width="100%" cellspacing="0" cellpadding="0" class="maintable" trmouse="Y">
+                        <tr class="thbg">
+                            <th width="20" align="center"><input type="checkbox" onclick="checkbox_checked('pmids[]',this);" /></th>
+                            <th>短信主题</th>
+                            <!--{if $folder == 'inbox'}-->
+                            <th width="100">发件人</th>
+                            <th width="50">状态</th>
+                            <!--{else}-->
+                            <th width="150">收件人</th>
+                            <!--{/if}-->
+                            <th width="120">发送时间</th>
+                        </tr>
+                        <!--{template 'pm_message_tr', 'member', MOD_FLAG}-->
+                    </table>
+                    <!--{if $total}-->
+                    <div class="multipage">$multipage</div>
+                    <div class="text_center">
+                        <button type="button" onclick="allchecked();">反选</button>&nbsp;&nbsp;
+                        <button type="submit" name="mysubmit" value="yes">提交</button>
+                    </div>
+                    <!--{/if}-->
+                    </form>
+                </div>
+            </div>
+            <!--{/if}-->
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="mybottom"></div>
+</div>
+
+<!--{eval footer();}-->

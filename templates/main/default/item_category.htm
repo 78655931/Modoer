@@ -1,0 +1,61 @@
+{template modoer_header}
+<div id="body">
+	<div id="class_left">
+		<div class="mainrail">
+			{get:item val=category(pid/0)}
+            <div class="mainrail rail-border-3">
+                <h3 class="rail-h-3 rail-h-bg-3"><b><a href="{url item/list/catid/$val[catid]}">$val[name]</a></b></h3>
+                <ul class="class-ul">
+                    {get:item val2=category(pid/$val[catid])}
+                    <li><a href="{url item/list/catid/$val2[catid]}">$val2[name]</a></li>
+                    {/get}
+                </ul>
+                <div class="class-finer">
+                    <ul class="class-finer-ul">
+                        {get:item val3=subject(select/sid,name,subname,reviews,thumb,best,description/city_id/_NULL_CITYID_/pid/$val[catid]/rand/1/rows/2/cachetime/500)}
+                        <li class="class-finer-subject">
+                            <div class="class-finer-subject-img">
+                                <a href="{url item/detail/id/$val3[sid]}" title="$val3[name]"><img src="{URLROOT}/{if $val3[thumb]}$val3[thumb]{else}static/images/noimg.gif{/if}" /></a>
+                             </div>
+                            <div class="class-finer-subject-info">
+                                {if $val3[reviews]}<em>好评率<span class="font_1">{print round($val3[best]/$val3[reviews]*100)}%</span></em>{/if}
+                                <h3><a href="{url item/detail/id/$val3[sid]}">{sublen $val3[name].$val3[subname],8,'...'}</a></h3>
+                                <p>{sublen $val3[description],33,'...'}<br /><a href="{url item/detail/id/$val3[sid]}#review">共$val3[reviews]条点评</a></p>
+                            </div>
+                            <div class="clear"></div>
+                        </li>
+                        {/get}
+                    </ul>
+                    <div class="clear"></div>
+                </div>
+            </div>
+			{/get}
+		</div>
+	</div>
+
+    <div id="class_right">
+        <div class="mainrail rail-border-3">
+            <h3 class="rail-h-3 rail-h-bg-3">最新点评</h3>
+            <ul class="rail-list">
+				<!--{get:review val=review(city_id/_NULL_CITYID_/orderby/posttime DESC/rows/8/cachetime/500)}-->
+				<li style="border-bottom:1px dashed #ddd;">
+					<div class="category-review-title">
+					<!--{if $val[uid]}-->
+							<span class="member-ico"><a href="{url space/index/uid/$val[uid]}">{sublen $val[username],6}</a></span>
+					<!--{else}-->
+							<span class="font_3">游客({print preg_replace("/^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$/","\\1.\\2.*.*", $val[ip])})</span>
+					<!--{/if}-->
+					<span class="font_2">{if $val[best]}好评{else}差评{/if}</span>&nbsp;<a href="{url item/detail/id/$val[id]}">$val[subject]</a>
+					</div>
+					<div class="category-review-info">
+                        {if $val[title]}<h3><a href="{url review/detail/id/$val[rid]}">{sublen $val[title], 20}</a></h3>{/if}
+						{sublen $val[content],35,'...'}
+					</div>
+				</li>
+				<!--{/get}-->
+            </ul>
+        </div>
+	</div>
+    <div class="clear"></div>
+</div>
+<!--{eval footer();}-->

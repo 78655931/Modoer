@@ -1,0 +1,56 @@
+{template modoer_header}
+<script type="text/javascript" src="{URLROOT}/static/javascript/item.js"></script>
+<div id="body">
+    <div class="link_path">
+        <a href="{url modoer/index}">{lang global_index}</a>&nbsp;&raquo;&nbsp;{lang discussion_title}</span>
+    </div>
+
+    <div class="discussion_left">
+        <div class="mainrail rail-border-3">
+            <h3 class="rail-h-3 rail-h-bg-3">共有 <span class="font_2">$total</span> 个话题</h3>
+                <table class="topic-table">
+                    <tr>
+                        <th class="subject" width="*">话题</th>
+                        <th class="from" width="120">来自</th>
+                        <th class="author" width="70">作者</th>
+                        <th class="replies" width="75">回复</th>
+                        <th class="dateline" width="95">最后回复</th>
+                    </tr>
+                <!--{dbres $list $val}-->
+                <tr>
+                    <td class="subject{if $val[isownerpost]} ownerpost{/if}"><a title="$val[subject]" href="{url discussion/topic/id/$val[tpid]}">{sublen $val[subject],25,'...'}</a></td>
+                    <td class="from"><div><a href="{url item/detail/id/$val[sid]}" target="_blank">$val[subjectname]{if $val[subname]}($val[subname]){/if}</a></div></td>
+                    <td class="author"><a href="{url space/index/uid/$val[uid]}" target="_blank">$val[username]</a></td>
+                    <td class="replies">{$val[replies]}个回复</td>
+                    <td class="dateline">{date $val[replytime],'m-d H:i'}</td>
+                </tr>
+                <!--{/dbres}-->
+                </table>
+            <div class="clear"></div>
+            <!--{if $multipage}--><div class="multipage">$multipage</div><!--{/if}-->
+            <!--{if !$total}-->
+            <div class="messageborder">没有任何讨论话题。</div>
+            <!--{/if}-->
+        </div>
+
+    </div>
+
+    <div class="discussion_right">
+        <div class="mainrail rail-border-3">
+            <h2 class="rail-h-3 rail-h-bg-3">热门话题</h2>
+            <ul class="rail-list">
+                <!--{get:modoer val=sql(sql/select tp.tpid,tp.subject,tp.replies from dbpre_discussion_topic tp left join dbpre_subject s on(tp.sid=s.sid) where s.city_id in (0,$_CITY[aid]) and tp.status=1/orderby/replies DESC/rows/10/cachetime/1200)}-->
+                <li><cite>{$val[replies]}回复</cite><a title="$val[subject]" href="{url discussion/topic/id/$val[tpid]}">{sublen $val[subject],14}</a></li>
+                <!--{getempty(val)}-->
+                <li>暂无信息</li>
+                <!--{/get}-->
+            </ul>
+            <div class="clear"></div>
+        </div>
+
+    </div>
+
+    <div class="clear"></div>
+
+</div>
+<!--{eval footer();}-->

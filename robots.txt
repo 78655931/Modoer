@@ -1,0 +1,10 @@
+#
+# robots.txt for Modoer
+# Version 2.0
+#
+
+User-agent: *
+
+Disallow: /api/
+Disallow: /core/
+Disallow: /data/

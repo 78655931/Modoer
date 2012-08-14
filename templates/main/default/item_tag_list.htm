@@ -1,0 +1,20 @@
+<!--{eval 
+    $_HEAD['title'] = '热门标签';
+}-->
+{template modoer_header}
+<div id="body">
+    <div class="link_path"><a href="{url modoer/index}">$_CITY[name]</a>&nbsp;&raquo;&nbsp;热门标签</div>
+    <div class="mainrail rail-border-1">
+    <h1 class="rail-h-1 rail-h-bg-1">热门标签</h1>
+        <div class="taglist">
+            <!--{if $list}-->
+            <!--{eval while($val=$list->fetch_array()):}-->
+            <li><a href="{url item/tag/tagid/$val[tagid]}">$val[tagname]</a>($val[total])</li>
+            <!--{eval endwhile;}-->
+            <!--{else}-->
+            <li>暂时没有</li>
+            <!--{/if}-->
+        </div>
+    </div>
+</div>
+<!--{eval footer();}-->

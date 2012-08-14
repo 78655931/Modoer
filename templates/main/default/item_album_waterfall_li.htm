@@ -1,0 +1,20 @@
+<!--{eval $i=0;}-->
+<!--{dbres $list $val}-->
+<div class="wf-container">
+    <div class="thumb">
+        <div class="picnumber">{$val[num]}图</div>
+        <a href="{url item/album/id/$val[albumid]}" target="_blank">
+            <img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" alt="$val[name]" />
+        </a>
+    </div>
+    <div class="info">
+        <h3><a href="{url item/album/id/$val[albumid]}" title="$val[name]">{sublen $val[name],10}</a></h3>
+        <p>
+            <span class="bl">关联主题：<a href="{url item/detail/id/$val[sid]}">{sublen $val[sname],10}</a></span>
+            <span class="bl">最后更新：{date $val[lastupdate],'m-d H:i'}</span>
+        </p>
+    </div>
+</div>
+<!--{/dbres}-->
+<!--{if $multipage}--><div class="multipage" id="multipage">$multipage</div><!--{/if}-->
+<!--{if $wf_multipage}--><div class="multipage" id="wf_multipage">$wf_multipage</div><!--{/if}-->

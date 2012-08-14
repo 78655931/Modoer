@@ -1,0 +1,56 @@
+<!--{eval 
+    $_HEAD['title'] = '主题/标签搜索';
+}-->
+{template modoer_header}
+<div id="body">
+<div class="link_path"><a href="{url modoer/index}">首页</a>&nbsp;&raquo;&nbsp;搜索</div>
+<div class="mainrail rail-border-1">
+<h1 class="rail-h-1 rail-h-bg-1">本地搜索</h1>
+	<form method="get" action="{URLROOT}/item.php" id="form_search">
+    <input type="hidden" name="act" value="search" />
+	<table class="maintable" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td width="80">关键字</td>
+			<td><input type="text" name="keyword" size="50" class="t_input" /></td>
+		</tr>
+		<tr>
+			<td>搜索类型</td>
+			<td>
+                <input type="radio" name="searchsort" id="searchsort_subject" value="subject" checked="checked" onclick="$('#option').css('display','');" /><label for="searchsort_subject">主题</label>&nbsp;&nbsp;
+                <input type="radio" name="searchsort" id="searchsort_tag" value="tag" onclick="$('#option').css('display','none');" /><label for="searchsort_tag">标签</label>
+            </td>
+		</tr>
+	</table>
+	<table class="maintable" border="0" cellspacing="0" cellpadding="0" id="option">
+		<tr>
+			<td colspan="2" style="background:#f5f5f5;"><span class="font_3">搜索选项</span></td>
+		</tr>
+		<tr>
+			<td width="80">搜索范围</td>
+			<td><select name="catid">
+				<option value="0">全部分类</option>
+				<!--{loop $category $key $val}-->
+                <!--{eval if($val[pid]) continue;}-->
+				<option value="$key">$val[name]</option>
+				<!--{/loop}-->
+			</select></td>
+		</tr>
+		<tr>
+			<td>排序类型</td>
+			<td><select name="ordersort">
+				<option value="addtime">登记时间</option>
+				<option value="reviews">点评量</option>
+				<option value="pageviews">浏览量</option>
+				<option value="avgsort">会员评分</option>
+			    </select>&nbsp;&nbsp;
+                <input type="radio" name="ordertype" id="ordertype_asc" value="asc" checked="checked" /><label for="ordertype_asc">升序</label>&nbsp;&nbsp;
+                <input type="radio" name="ordertype" id="ordertype_desc" value="desc" /><label for="ordertype_desc">降序</label></td>
+		</tr>
+	</table>
+    <div style="margin:10px 0 10px 110px;"><button type="submit" name="searchsubmit" value="yes">搜索</button></div>
+	</form>
+</div>
+<div class="multipage">$multipage</div>
+</div>
+
+<!--{eval footer();}-->

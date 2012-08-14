@@ -1,0 +1,163 @@
+<!--{eval
+    $_HEAD['title'] = $detail[subject] . $_CFG['titlesplit'] . $MOD[name];
+}-->
+{template modoer_header}
+<script type="text/javascript">
+function coupon_effect(couponid) {
+	$.post(Url('coupon/detail/do/effect/id/'+couponid), 
+	{ effect:'effect1',in_ajax:1 },
+	function(result) {
+        if(result == null) {
+			alert('信息读取失败，可能网络忙碌，请稍后尝试。');
+        } else if (result.match(/\{\s+caption:".*",message:".*".*\s*\}/)) {
+            myAlert(result);
+		} else if (result == 'OK') {
+            $('#btn_effect1').html('对我有用!');
+        } 
+	});
+}
+</script>
+<div id="body">
+
+    <div class="link_path">
+        <em>优惠券编号：$couponid</em>
+        <a href="{url modoer/index}">$_CITY[name]</a>&nbsp;&raquo;&nbsp;{print implode('&nbsp;&raquo;&nbsp;', $urlpath)}
+    </div>
+
+    <div class="mainrail rail-border-3">
+
+        <div id="coupon_left">
+
+            <div class="detail">
+                <h1 class="subject">[{$category[$detail[catid]][name]}]&nbsp;$detail[subject]</h1>
+                <div class="info">发布时间：{date $detail[dateline],'Y-m-d'}&nbsp;&nbsp;&nbsp;&nbsp;人气：$detail[pageview]&nbsp;&nbsp;&nbsp;&nbsp;打印：$detail[prints]&nbsp;&nbsp;&nbsp;&nbsp;评论：$detail[comments]</div>
+                <ul class="des">
+                    <li>有效时间：{date $detail[starttime],'Y-m-d'} ~ {date $detail[endtime],'Y-m-d'}</li>
+                    <li>优惠说明：$detail[des]</li>
+                    <!--{if $_CFG[sharecode]}--><li><div class="float_left">分享信息：</div>$_CFG[sharecode]<div class="clear"></div></li><!--{/if}-->
+                </ul>
+                <div class="print">
+                    <a class="abtn1" href="{url coupon/print/id/$couponid}"><span>打印此券</span></a>
+                    <span id="btn_effect1"><a class="abtn2" href="javascript:coupon_effect($couponid);"><span>对我有用</span></a></span>
+                    <div class="clear"></div>
+                </div>
+                <div class="content">
+                    <p style="text-align:center;"><img src="{URLROOT}/$detail[picture]" alt="$detail[subject]" /></p>
+                    <p>$detail[content]</p>
+                </div>
+
+                <!--{if check_module('comment')}-->
+                <div class="comment_foo">
+                    <style type="text/css">@import url("{URLROOT}/{$_G[tplurl]}css_comment.css");</style>
+                    <script type="text/javascript" src="{URLROOT}/static/javascript/comment.js"></script>
+                    <!--{eval $comment_modcfg = $_G['loader']->variable('config','comment');}-->
+                    <!--{if $detail[comments]}-->
+                    <!--{/if}-->
+                    <a name="comment"></a>
+                    {eval $_G['loader']->helper('form');}
+                    <div id="comment_form">
+                        <!--{if $user->check_access('comment_disable', $_G['loader']->model(':comment'), false)}-->
+                            <!--{if $MOD[post_comment] && !$comment_modcfg['disable_comment'] && !$detail[closed_comment]}-->
+                            <!--{eval $idtype = 'coupon'; $id = $couponid; $title = 'Re:' . $detail[subject];}-->
+                            {template comment_post}
+                            <!--{else}-->
+                            <div class="messageborder">评论已关闭</div>
+                            <!--{/if}-->
+                        <!--{else}-->
+                        <div class="messageborder">如果您要进行评论信息，请先&nbsp;<a href="{url member/login}">登录</a>&nbsp;或者&nbsp;<a href="{url member/reg}">快速注册</a>&nbsp;。</div>
+                        <!--{/if}-->
+                    </div>
+                    <!--{if !$comment_modcfg['hidden_comment']}-->
+                    <div class="mainrail rail-border-3">
+                        <em>评论总数:<span class="font_2">$detail[comments]</span>条</em>
+                        <h1 class="rail-h-3 rail-h-bg-3">网友评论</h1>
+                        <div id="commentlist" style="margin-bottom:10px;"></div>
+                        <script type="text/javascript">
+                        $(document).ready(function() { get_comment('coupon',$couponid,1); });
+                        </script>
+                    </div>
+                    <!--{/if}-->
+                </div>
+                <!--{/if}-->
+
+            </div>
+
+        </div>
+
+        <div id="coupon_right">
+
+            <script type="text/javascript">loadscript('item');</script>
+            <div class="mainrail">
+                <h2 class="rail-h-2"><b><a href="{url item/detail/id/$subject[sid]}"><span class="font_2">$subject[name]&nbsp;$subject[subname]</span></a></b></h2>
+                <div class="subject">
+                    <!--{eval $reviewcfg = $_G['loader']->variable('config','review');}-->
+                    <p class="start start{print get_star($subject[avgsort],$reviewcfg[scoretype])}"></p>
+                    <table class="subject_field_list" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td colspan="2"><span class="font_2">$subject[reviews]</span>点评,
+                            <span class="font_2">$subject[guestbooks]</span>留言,
+                            <span class="font_2">$subject[pageviews]</span>浏览</td>
+                        </tr>
+                        $subject_field_table_tr
+                    </table>
+                    <a class="abtn1" href="{url review/member/ac/add/type/item_subject/id/$subject[sid]}"><span>我要点评</span></a>
+                    <a class="abtn2" href="javascript:add_favorite($subject[sid]);"><span>关注</span></a>
+                    <a class="abtn2" href="{url item/detail/id/$subject[sid]/view/guestbook}#guestbook"><span>留言</span></a>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <!--{eval $model=$I->get_model($subject[catid],1);}-->
+            <!--{if $model[usearea]}-->
+            <div class="mainrail">
+                <!--{eval $mapparam = array(
+                    'width' => '295',
+                    'height' => '245',
+                    'title' => $subject[name] . $subject[subname],
+                    'p' => $subject[mappoint],
+                    'show' => $subject[mappoint]?1:0,
+                );}-->
+                <iframe src="{URLROOT}/index.php?act=map&{print url_implode($mapparam)}" frameborder="0" scrolling="no" height="245" width="295"></iframe>
+                <div style="text-align:center;margin:5px 0;">
+                    <!--{if !$subject['mappoint']}-->
+                    <a href="javascript:post_map($subject[sid], $subject[pid]);">地图未标注，我来标注</a>
+                    <!--{else}-->
+                    <a href="javascript:show_bigmap();">查看大图</a>&nbsp;
+                    <a href="javascript:post_map($subject[sid], $subject[pid]);">报错</a>
+                    <!--{/if}-->
+                </div>
+            </div>
+            <script type="text/javascript">
+                function show_bigmap() {
+                    <!--{eval $mapparam = array(
+                        'width' => '600',
+                        'height' => '400',
+                        'title' => $subject[name] . $subject[subname],
+                        'p' => $subject[mappoint],
+                        'show' => $subject[mappoint]?1:0,
+                    );}-->
+                    var src = "{URLROOT}/index.php?act=map&{print url_implode($mapparam)}";
+                    var html = '<iframe src="' + src + '" frameborder="0" scrolling="no" width="100%" height="400" id="ifupmap_map"></iframe>';
+                    dlgOpen('查看大图', html, 600, 450);
+                }
+            </script>
+            <!--{/if}-->
+
+            <div style="border-bottom:1px dashed #ccc;margin:5px;"></div>
+            <div class="mainrail">
+                <em><span class="arrow-ico"><a href="{url coupon/list/sid/$subject[sid]}">查看全部</a></span></em>
+                <h2 class="rail-h-2"><b>其他优惠券</b></h2>
+                <ul class="rail-list2">
+                    {get:coupon val=list_new(sid/$val[sid]/row/10)}
+                    <li><cite>{date $val[dateline],'m-d'}</cite><a href="{url coupon/detail/id/$val[couponid]}" title="$val[subject]">{sublen $val[subject],23}</a></li>
+                    {/get}
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="clear"></div>
+
+    </div>
+
+</div>
+<!--{eval footer();}-->

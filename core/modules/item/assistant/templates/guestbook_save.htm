@@ -1,0 +1,77 @@
+<!--{if !defined('IN_AJAX')}-->
+{template modoer_header}
+<div id="body">
+    <div class="myhead"></div>
+    <div class="mymiddle">
+        <div class="myleft">
+        <!--{eval !$mymenu && $mymenu = 'mmenu';}-->
+        <!--{template $mymenu,'member','member'}-->
+        </div>
+        <div class="myright">
+            <div class="myright_top"></div>
+            <div class="myright_middle">
+                <h3>增加/编辑/回复留言</h3>
+<!--{/if}-->
+                <div class="mainrail">
+                    {eval $nextop = $op=='reply' ? 'reply' : 'save';}
+                    <form method="post" name="frm_guestbook" id="frm_guestbook" action="{url item/member/ac/$ac/op/$nextop/rand/$_G[random]}">
+                    <table width="100%" cellspacing="0" cellpadding="0" class="{if $_G[in_ajax]}table{else}maintable{/if}">
+                        <!--{if $op != 'reply'}-->
+                        <tr>
+                            <td>回复{$model[item_name]}：<a href="{url item/detail/id/$subject[sid]}" target="_blank">$subject[name].$subject[subname]</a></td>
+                        </tr>
+                        <!--{/if}-->
+                        <tr>
+                            <td>
+                            <!--{if $op == 'reply'}-->
+                            <!--{if defined('IN_AJAX')}-->
+                            回复对象：<a href="{url space/index/uid/$detail[uid]}" target="_blank">$detail[username]</a><br />
+                            <!--{else}-->
+                            留言内容：<span style="color:#808080;">{print nl2br($detail[content])}</span>
+                            <!--{/if}-->
+                            <!--{else}-->
+                            留言内容：(字数限制：$MOD[guestbook_min] - $MOD[guestbook_max]，当前字数：<span id="guestbook_content" class="font_1">{print strlen($detail[content])}</span>)<br />
+                            <textarea name="content" style="width:99%;height:130px;" onkeyup="record_charlen(this,$MOD[guestbook_max],'guestbook_content');">$detail[content]</textarea>
+                            <!--{/if}-->
+                            </td>
+                        </tr>
+                        <!--{if $op == 'reply'}-->
+                        <tr>
+                            <td>回复内容：<br />
+                            <textarea name="reply" style="width:99%;height:130px;">$detail[reply]</textarea></td>
+                        </tr>
+                        <!--{/if}-->
+                    </table>
+                    <div class="text_center">
+                        <input type="hidden" name="do" value="$op" />
+                        <input type="hidden" name="forward" value="{print get_forward()}" />
+                        <!--{if $op == 'add'}-->
+                            <input type="hidden" name="sid" value="$sid" />
+                        <!--{else}-->
+                            <input type="hidden" name="guestbookid" value="$guestbookid" />
+                        <!--{/if}-->
+                        <!--{if defined('IN_AJAX')}-->
+                            <input type="hidden" name="in_ajax" value="1" />
+                            <input type="hidden" name="dosubmit" value="yes">
+                            <!--{if $op == 'reply'}-->
+                                <button type="button" onclick="ajaxPost('frm_guestbook','$guestbookid','insert_reply');">提交</button>&nbsp;
+                            <!--{else}-->
+                                <button type="button" onclick="ajaxPost('frm_guestbook','$subject[sid]','get_guestbook');">提交</button>&nbsp;
+                            <!--{/if}-->
+                            <button type="button" onclick="dlgClose();"> 关闭 </button>&nbsp;
+                        <!--{else}-->
+                            <button type="submit" name="dosubmit" value="yes"> 提交 </button>&nbsp;
+                            <button type="button" onclick="history.go(-1);"> 返回 </button>&nbsp;
+                        <!--{/if}-->
+                    </div>
+                    </form>
+                </div>
+<!--{if !defined('IN_AJAX')}-->
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->
+<!--{/if}-->

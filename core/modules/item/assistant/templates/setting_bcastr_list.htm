@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=$_G[charset]" />
+<script type="text/javascript" src="{URLROOT}/data/cachefiles/config.js"></script>
+<script type="text/javascript" src="{URLROOT}/static/javascript/jquery.js"></script>
+<script type="text/javascript" src="{URLROOT}/static/javascript/common.js"></script>
+<link rel="stylesheet" type="text/css" href="{URLROOT}/{$_G[tplurl]}css_common.css" />
+<link rel="stylesheet" type="text/css" href="{URLROOT}/static/images/mdialog.css" />
+</head>
+<body>
+<style type="text/css">@import url("{URLROOT}/{$_G[tplurl]}css_assistant.css");</style>
+<script type="text/javascript" src="{URLROOT}/static/javascript/mdialog.js"></script>
+<script type="text/javascript" src="{URLROOT}/static/javascript/member.js"></script>
+<style type="text/css">
+body,.mainrail{padding:0;margin:0;}
+.mainrail td{padding:auto 0;}
+.mainrail td img { max-width:270px; max-height:80px; _width:expression(this.width > 270 ? 270 : true); _height:expression(this.height > 80 ? 80 : true); }
+</style>
+<script type="text/javascript">
+function item_bcastr_delete(sid,flag) {
+    if(!window.confirm('您确定要删除吗？')) return false;
+	if(!is_numeric(sid)) { alert('无效的sid'); return false; }
+	if(flag=='') { alert('无效的flag'); return false; }
+	$.post(Url("item/member/ac/setting/op/bcastr_delete"), { sid:sid,flag:flag,in_ajax:1 }, function (data) {
+        if(data == null) {
+			alert('信息读取失败，可能网络忙碌，请稍后尝试。');
+        } else if (is_message(data)) {
+            myAlert(data);
+		} else if(data == 'OK') {
+			$('#f_'+flag).remove();
+		}
+	});
+    return false;
+}
+</script>
+<div class="mainrail">
+    <form method="post" name="myform" action="{url item/member/ac/$ac/op/bcastr_list/in_iframe/1/rand/$_G[random]}">
+        <div style="height:320px;overflow-x:auto;">
+            <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                <tr>
+                    <th width="65">排序</th>
+                    <th width="270">图片</th>
+                    <th width="*">标题/链接</th>
+                    <th width="40">操作</th>
+                </tr>
+                <!--{loop $bcastrs $flag $val}-->
+                <tr id="f_$flag">
+                    <td><input type="text" name="bcastrs[$flag][listorder]" value="$val[listorder]" class="t_input" size="1"></td>
+                    <td><img src="{URLROOT}/$val[picture]" /></td>
+                    <td>$val[title]<br />$val[url]</td>
+                    <td><a href="{url item/member/ac/$ac/op/bcastr_save/sid/$sid/flag/$flag}">编辑</a><br />
+                    <a href="javascript:;" onclick="item_bcastr_delete($sid,'$flag');">删除</a></td>
+                </tr>
+                <!--{/loop}-->
+            </table>
+        </div>
+        <div class="text_center">
+            <input type="hidden" name="sid" value="$sid" />
+            <button type="submit" name="dosubmit" value="yes">提交</button>&nbsp;
+            <button type="button" onclick="document.location='{url item/member/ac/$ac/op/bcastr_save/sid/$sid}';">添加</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!--{eval
+    $_HEAD['title'] = ($subject ? ($subject[name]  . ',' . $subject[subname] . ',') : '') . (isset($catid)?$category[$catid][name]:'') . $_CITY[name].$MOD[name] . $_CFG['titlesplit'] . $MOD[subtitle];
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+<div class="item-content">
+
+    <div class="item-left mt10">
+
+        <div class="item-rail">
+            <h3 class="railtitle">优惠券</h3>
+            <div class="coupon-list">
+                {dbres $list $val}
+                <div class="il_coupon">
+                    <h2>[<a href="{url coupon/index/catid/$val[catid]}">$category[$val[catid]][name]</a>]&nbsp;<a href="{url coupon/detail/id/$val[couponid]}">$val[subject]</a></h2>
+                    <div class="thumb"><a href="{url coupon/detail/id/$val[couponid]}"><img src="{URLROOT}/$val[thumb]" alt="$val[subject]" /></a></div>
+                    <ul class="info">
+                        <li class="full">商户：<a href="{url item/detail/id/$val[sid]}">$val[name]{if $val[subname]}($val[subname]){/if}</a></li>
+                        <li>开始日期：{date $val[starttime], 'Y-m-d'}</li>
+                        <li>截止日期：{date $val[endtime], 'Y-m-d'}</li>
+                        <li class="full">现有<span class="font_2">$val[pageview]</span>次浏览，<span class="font_2">$val[comments]</span>个评论，其中有<span class="font_2">$val[effect1]</span>人认为有用</li>
+                        <li class="full">优惠：$val[des]</li>
+                    </ul>
+                    <div class="clear"></div>
+                </div>
+                {/dbres}
+                <!--{if $multipage}--><div class="multipage">$multipage</div><!--{/if}-->
+                <!--{if !$total}--><span class="font_1">抱歉，暂时没有符合条件的信息</span><!--{/if}-->
+            </div>
+        </div>
+    </div>
+
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+    </div>
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

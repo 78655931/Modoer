@@ -1,0 +1,67 @@
+{template modoer_header}
+
+<div id="body">
+    <div class="myhead"></div>
+    <div class="mymiddle">
+        <div class="myleft">
+        <!--{eval !$mymenu && $mymenu = 'mmenu';}-->
+        <!--{template $mymenu,'member','member'}-->
+        </div>
+        <div class="myright">
+            <div class="myright_top"></div>
+            <div class="myright_middle">
+                <h3><!--{if $mymenu=='mmenu'}--><cite>当前操作的主题:<span class="font_2">$_G[manage_subject][name]{if $_G[manage_subject][subname]}($_G[manage_subject][subname]){/if}</span>[<a href="javascript:void(0);" onclick="item_subject_manage();">更换</a>]</cite><!--{/if}-->$path_title</h3>
+                <div class="mainrail">
+                    <form method="post" name="myform" action="{url item/member/ac/$ac/rand/$_G[random]}">
+                    <table width="100%" cellspacing="0" cellpadding="0" class="maintable" trmouse="Y">
+                        <tr>
+                            <th width="20" align="center"><input type="checkbox" onclick="checkbox_checked('guestbookids[]',this);" /></th>
+                            <!--{if $mymenu!='mmenu'}--><th width="120">$title $subtitle</th><!--{/if}-->
+                            <th width="*">内容</th>
+                            <th width="50">状态</th>
+                            <th width="110">发布/回复时间</th>
+                            <!--{if $ac == 'g_guestbook'}-->
+                            <th width="50">编辑</th>
+                            <!--{/if}-->
+                        </tr>
+                        <!--{if $total}-->
+                        <!--{dbres $list $val}-->
+                        <tr>
+                            <td><input type="checkbox" name="guestbookids[]" value="$val[guestbookid]" /></td>
+                            <!--{if $mymenu!='mmenu'}--><td><a href="{url item/detail/id/$val[sid]}" target="_blank">$val[name].$val[subname]</a><br />{if $val[city_id]}<span class="font_3">[{print:modoer area(aid/$val[city_id])}]</span>{/if}</td><!--{/if}-->
+                            <td>
+                                <div>$val[content]</div>
+                                {if $val[reply]}<div class="font_2">回复:$val[reply]</div>{/if}
+                            </td>
+                            <td>{if $val[status]}已审核{else}未审核{/if}</td>
+                            <td>
+                                <div>{date $val[dateline],'Y-m-d H:i'}</div>
+                                {if $val[reply]}<div class="font_2">{date $val[replytime],'Y-m-d H:i'}</div>{/if}
+                            </td>
+                            <!--{if $ac == 'g_guestbook'}-->
+                            <td><a href="{url item/member/ac/g_guestbook/op/reply/guestbookid/$val[guestbookid]}">回复</a></td>
+                            <!--{/if}-->
+                        </tr>
+                        <!--{/dbres}-->
+                        <!--{else}-->
+                        <tr><td colspan="7">暂无信息。</td></tr>
+                        <!--{/if}-->
+                    </table>
+                    <!--{if $total}-->
+                    <div class="multipage">$multipage</div>
+                    <div class="text_center">
+                        <input type="hidden" name="dosubmit" value="yes" />
+                        <input type="hidden" name="op" value="delete" />
+                        <button type="button" onclick="easy_submit('myform','delete','guestbookids[]');">删除所选</button>
+                    </div>
+                    <!--{/if}-->
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="mybottom"></div>
+</div>
+
+<!--{eval footer();}-->

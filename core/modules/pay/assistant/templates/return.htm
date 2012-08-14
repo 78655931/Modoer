@@ -1,0 +1,33 @@
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>充值完毕</h3>
+            <div class="mainrail">
+                <table width="90%" cellspacing="0" cellpadding="0" class="maintable">
+                    <tr>
+                        <td width="80" align="right">充值信息：</td>
+                        <td>$message</td>
+                    </tr>
+                    <tr>
+                        <td align="right">订单号：</td>
+                        <td><span class="font_1">$orderid</span></td>
+                    </tr>
+                </table>
+                <div class="text_center">
+                    <button type="button" onclick="location.href='{url pay/member/ac/log}';" />查看充值记录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

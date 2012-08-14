@@ -1,0 +1,158 @@
+<!--{eval
+    $SS =& $_G['loader']->model('item:subjectsetting');
+    $tplsetting = $SS->read($subject[sid]);
+    $_HEAD[title] = ($_HEAD[title] ? $_HEAD[title] : $MOD[name]) . $_CFG[titlesplit] . $_CFG[sitename];
+}-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=$_G[charset]" />
+<meta http-equiv="x-ua-compatible" content="ie=7" />
+<title>$_HEAD[title] - Powered by Modoer</title>
+<meta name="keywords" content="$_HEAD[keywords]" />
+<meta name="description" content="$_HEAD[description]" />
+<script type="text/javascript" src="{URLROOT}/data/cachefiles/config.js"></script>
+<script type="text/javascript">
+    var sid = $subject[sid];
+    var mod = modules['{$MOD[flag]}'];
+    var navscript = '{SUB_NAVSCRIPT}';
+</script>
+<script type="text/javascript" src="{URLROOT}/static/javascript/jquery.js"></script>
+<script type="text/javascript" src="{URLROOT}/static/javascript/common.js"></script>
+<script type="text/javascript" src="{URLROOT}/static/javascript/mdialog.js"></script>
+<!--{if $_CFG[headhtml]}-->$_CFG[headhtml]<!--{/if}-->
+</head>
+<body>
+<link rel="stylesheet" type="text/css" href="{URLROOT}/{$_G[tplurl]}css_common.css" />
+<link rel="stylesheet" type="text/css" href="{URLROOT}/static/images/mdialog.css" />
+<style type="text/css">@import url("{ITEM_TPL_DIR}/style.css");</style>
+<script type="text/javascript" src="{URLROOT}/static/javascript/member.js"></script>
+<script type="text/javascript" src="{URLROOT}/static/javascript/item.js"></script>
+</head>
+<body>
+<div id="ajax_loading"></div>
+<!--{if !empty($MOD) && $MOD['flag']!='member' && is_file(MUDDER_ROOT . 'static/javascript/' . $MOD['flag'] . '.js')}-->
+<script type="text/javascript" src="{URLROOT}/static/javascript/$MOD[flag].js"></script>
+<!--{/if}--><!--{if $user->isLogin && $subject[owner]==$user->username && !$is_preview}-->
+<script type="text/javascript" src="{URLROOT}/static/javascript/item_setting.js"></script>
+<script type="text/javascript" src="{URLROOT}/static/javascript/jquery.colorpicker.js"></script>
+<!--{/if}-->
+<!--{if $is_preview}-->
+<div class="head-preview">
+    <a href="javascript:item_preview_exit($sid);">退出预览模式</a>
+</div>
+<!--{/if}-->
+<div class="head-top">
+    <div class="head-top-center">
+        <div class="head-top-logo"><a href="{url modoer/index}" title="$_CFG[sitename]"><img src="{URLROOT}/static/images/logo_s.png" alt="$_CFG[sitename]" /></a></div>
+        <div class="head-top-menu">
+            <!--{eval 
+                $main_menus = $_CFG['main_menuid'] ? $_G['loader']->variable('menu_' . $_CFG['main_menuid']) : '';
+                $menu_count = count($main_menus);
+                $menu_index = 0;
+            }-->
+            <ul class="topmenu">
+                <!--{loop $main_menus $val}-->
+                <li><a href="{url $val[url]}"{if $val[target]} target="$val[target]"{/if} onfocus="this.blur()">$val[title]</a></li>
+                <!--{eval if(++$menu_index>=6) break;}-->
+                <!--{/loop}-->
+                <!--{if $menu_index>=6 && $menu_count>6}-->
+                <li class="topmenu-more"><a href="#" id="head_topmenu_src" rel="head_topmenu_box"><span class="arrwd-ico">更多&nbsp;</span></a></li>
+                <!--{/if}-->
+                <div class="clear"></div>
+            </ul>
+        </div>
+        <div class="head-top-op">
+            <ul class="topmenu">
+            <!--{if $user->isLogin}-->
+                <li><a href="{url member/login/op/logout}">退出</a></li>
+                <li><a href="{url member/index/ac/pm/folder/inbox}">短信箱<span id="login_newmsg" style="display:none;">(0)</span></a></li>
+                <li><a href="{url member/index/ac/task}">任务<span id="login_task" style="display:none;"></span></a></li>
+                <li><a href="{url member/index}" id="assistant_menu" rel="assistant_menu_box"><span class="arrwd-ico">我的助手</span></a></li>
+            <!--{else}-->
+                <li><a href="{url member/login}">忘记密码?</a></li>
+                <li><a href="{url member/login}">注册</a></li>
+                <li><a href="{url member/login}">登录</a></li>
+            <!--{/if}-->
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <!--主菜单 - 更多菜单 -->
+    <!--{if $menu_index>=6 && $menu_count>6}-->
+    <div id="head_topmenu_box" class="topmenu-more-list">
+        <ul>
+            <!--{eval $menu_index=0;}-->
+            <!--{loop $main_menus $val}-->
+            <!--{if ++$menu_index>6}-->
+            <li><a href="{url $val[url]}"{if $val[target]} target="$val[target]"{/if} onfocus="this.blur()">$val[title]</a></li>
+            <!--{/if}-->
+            <!--{/loop}-->
+        </ul>
+        <!--{if $index>9}--><div class="morecitys"><a href="{url index/city/forward/$forward}">全部城市</a></div><!--{/if}-->
+    </div>
+    <script type="text/javascript">
+    $("#head_topmenu_src").powerFloat({
+        position:"3-2",
+        offsets:{x:0,y:-1},
+        showCall: function() {
+            $(this).addClass("hover");    
+        },
+        hideCall: function() {
+            $(this).removeClass("hover");
+        }
+    });
+    </script>
+    <!--{/if}-->
+    <!-- 我的助手 下拉菜单 -->
+    <div id="assistant_menu_box" class="topmenu-more-list">
+        <ul>
+            <li><a href="{url member/index/ac/point}">我的积分</a></li>
+            <li><a href="{url member/index/ac/follow}">我的关注</a></li>
+            <li><a href="{url member/index/ac/task}">我的任务</a></li>
+            <li><a href="{url member/index/ac/myset}">个人设置</a></li>
+            <li><a href="{url member/index/ac/face}">修改头像</a></li>
+        </ul>
+    </div>
+    <script type="text/javascript">
+    $("#assistant_menu").powerFloat({
+        position:"3-2",
+        offsets:{x:0,y:-1},
+        showCall: function() {
+            $(this).addClass("hover");    
+        },
+        hideCall: function() {
+            $(this).removeClass("hover");
+        }
+    });
+    </script>
+</div>
+<!-- 主题内容 开始-->
+<div class="item-body" id="item-body">
+    <div class="item-nav">
+        <a href="{url modoer/index}">{if $subject[aid]}$_CITY[name]{else}首页{/if}</a>&nbsp;&gt;&nbsp;<a href="{url item/list/catid/$subject[catid]}">{print:item category(catid/$subject[catid])}</a>&nbsp;&gt;&nbsp;$subject[name]{if $subject[subname]}($subject[subname]){/if}
+    </div>
+    <div class="item-banner" id="item_banner" style="background:url('{if $tplsetting[banner]}{URLROOT}/$tplsetting[banner]{else}{ITEM_TPL_DIR}/images/banner.png{/if}')">
+        <!--{eval 
+            $title_offset = $tplsetting[title_offset]?$tplsetting[title_offset]:'30,20';
+            list($t,$l) = explode(',',$title_offset);
+        }-->
+        <div class="item-title" id="item_title" style="top:{$t}px;left:{$l}px;">
+            <h1{if $tplsetting[title_color]} style="color:$tplsetting[title_color];"{/if}>$subject[name]{if $subject[subname]}($subject[subname]){/if}</h1>
+        </div>
+    </div>
+    <ul class="item-menu">
+        <!--{loop $links $i $link}-->
+        <!--{if $i==0}-->
+        <li class="index"><p{if $link[flag]==SUB_NAVSCRIPT} class="selected"{/if}><a href="$link[url]">$link[title]</a></p></li>
+        <!--{else}-->
+        <li><p{if $link[flag]==SUB_NAVSCRIPT} class="selected"{/if}><a href="$link[url]">$link[title]</a></p></li>
+        <!--{/if}-->
+        <!--{/loop}-->
+        <li class="manage">
+            <p><a id="item_manage_menu" rel="item_manage_menu_box" href="{url item/member/ac/g_subject}">管理主题</a></p>
+        </li>
+    </ul>
+    <div class="clear"></div>
+

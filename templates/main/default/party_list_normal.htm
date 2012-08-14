@@ -1,0 +1,29 @@
+<!--{if $total}-->
+<!--{dbres $list $val}-->
+<div class="partylist">
+    <div class="thumb"><a href="{url party/detail/id/$val[partyid]}"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/noimg.gif{/if}" alt="$val[subject]"/></a><b></b></div>
+    <div class="info">
+        <ul>
+            <h3><a href="{url party/detail/id/$val[partyid]}">$val[subject]</a></h3>
+            <li>活动地址：$val[address]</li>
+            <li>活动时间：{date $val[begintime], 'm月d日H:i'} ~ {date $val[endtime], 'm月d日H:i'}</li>
+            <li>活动介绍：{sublen strip_tags($val[des]), 30}</li>
+        </ul>
+    </div>
+    <div class="num">
+        <p class="applynum">$val[num]</p>
+        <div>
+            <!--{if $val[flag]==1}-->
+            <a href="{url party/member/ac/apply/op/apply/id/$val[partyid]}" alt="我要报名"><img src="{URLROOT}/{$_G[tplurl]}images/party/party_apply.gif" /></a>
+            <!--{else}-->
+            <img src="{URLROOT}/{$_G[tplurl]}images/party/party_apply_stop.gif" />
+            <!--{/if}-->
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<!--{/dbres}-->
+<div class="multipage">$multipage</div>
+<!--{else}-->
+    <div class="messageborder">暂时没有信息。</div>
+<!--{/if}-->

@@ -1,0 +1,113 @@
+<!--{eval 
+    $_HEAD['title'] = $subject['name'].$subject['subname'] . '的产品' . ($catid ? $_CFG['titlesplit'] . $category[$catid]['name'] : '');
+}-->
+{template modoer_header}
+<script type="text/javascript">
+loadscript('item');
+</script>
+<div id="body">
+    <div class="link_path">
+        <em class="font_3">
+            <!--{loop $links $i $link}-->
+            {if $i} | {/if}<a href="$link[url]"{if $link[flag]=='product'} style="color:#ff6600;"{/if}>$link[title]</a>
+            <!--{/loop}-->
+        </em>
+        <a href="{url modoer/index}">首页</a>&nbsp;&raquo;&nbsp;{print implode('&nbsp;&raquo;&nbsp;', $urlpath)}<span class="font_3">($total)</span>
+    </div>
+    <div id="product_list_left">
+        <div class="mainrail rail-border-3">
+            <h1 class="rail-h-3 rail-h-bg-3">基本信息</h1>
+            <div class="subject">
+                <h2><a href="{url item/detail/id/$sid}" src="$subject[thumb]" onmouseover="tip_start(this,1);">$subject[name]&nbsp;$subject[subname]</a></h2>
+                <!--{eval $reviewcfg = $_G['loader']->variable('config','review');}-->
+                <p class="start start{print get_star($subject[avgsort],$reviewcfg[scoretype]);}"></p>
+                <table class="subject_field_list" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td colspan="2"><span class="font_2">$subject[reviews]</span>点评,
+                        <span class="font_2">$subject[guestbooks]</span>留言,
+                        <span class="font_2">$subject[pageviews]</span>浏览</td>
+                    </tr>
+                    $subject_field_table_tr
+                </table>
+                <a class="abtn1" href="{url review/member/ac/add/type/item_subject/id/$sid}"><span>我要点评</span></a>
+                <a class="abtn2" href="javascript:add_favorite($sid);"><span>关注</span></a>
+                <a class="abtn2" href="{url item/detail/id/$sid/view/guestbook}#guestbook"><span>留言</span></a>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <!--{if $model[usearea]}-->
+        <div class="mainrail rail-border-3">
+            <!--{eval $mapparam = array(
+                'width' => '255',
+                'height' => '245',
+                'title' => $subject[name] . $subject[subname],
+                'p' => $subject[mappoint],
+                'show' => $subject[mappoint]?1:0,
+            );}-->
+            <iframe class="map" src="{URLROOT}/index.php?act=map&{print url_implode($mapparam)}" frameborder="0" scrolling="no" height="245"></iframe>
+            <div style="text-align:center;margin:5px 0;">
+                <!--{if !$subject['mappoint']}-->
+                <a href="javascript:post_map($subject[sid], $subject[pid]);">地图未标注，我来标注</a>
+                <!--{else}-->
+                <a href="javascript:show_bigmap();">查看大图</a>&nbsp;
+                <a href="javascript:post_map($subject[sid], $subject[pid]);">报错</a>
+                <!--{/if}-->
+            </div>
+        </div>
+        <script type="text/javascript">
+            function show_bigmap() {
+                <!--{eval $mapparam = array(
+                    'width' => '600',
+                    'height' => '400',
+                    'title' => $subject[name] . $subject[subname],
+                    'p' => $subject[mappoint],
+                    'show' => $subject[mappoint]?1:0,
+                );}-->
+                var src = "{URLROOT}/index.php?act=map&{print url_implode($mapparam)}";
+                var html = '<iframe src="' + src + '" frameborder="0" scrolling="no" width="100%" height="400" id="ifupmap_map"></iframe>';
+                dlgOpen('查看大图', html, 600, 450);
+            }
+        </script>
+        <!--{/if}-->
+    </div>
+    <div id="product_list_right">
+        <div class="mainrail rail-border-3 product_category">
+            <ul class="cat">
+                <li{if !$catid} class="selected"{/if}><a href="{url product/list/sid/$sid}">全部</a></li>
+                {loop $category $val}
+                <li{if $catid==$val[catid]} class="selected"{/if}><a href="{url product/list/sid/$sid/catid/$val[catid]}">$val[name]</a></li>
+                {eval $cats[$val[catid]] = $val[name];}
+                {/loop}
+            </ul>
+            <div class="clear"></div>
+        </div>
+        {if !$list}<span class="font_1">抱歉，暂时没有符合条件的信息</span>{/if}
+        <div class="product_list">
+        {dbres $list $val}
+        <ul class="plist">
+            <div class="thumb"><a href="{url product/detail/pid/$val[pid]}"><img src="{URLROOT}/$val[thumb]" onmouseover="tip_start(this);" /></a></div>
+            <div class="info">
+                <p class="start start{print get_star($val[grade],5);}"></p>
+                <h3><a href="{url product/detail/pid/$val[pid]}">$val[subject]</a></h3>
+                <table class="product_field_list" border="0" cellspacing="0" cellpadding="0">
+                    <!--{loop $product_field $_val}-->
+                        <!--{print $PFD->detail($_val, $val[$_val['fieldname']])."\r\n"}-->
+                    <!--{/loop}-->
+                </table>
+                <p>简介：{sublen $val[description],42,'...'}</p>
+                <div>
+                    分类：<a href="{url product/list/sid/$val[sid]/catid/$val[catid]}">{$cats[$val[catid]]}</a>&nbsp;
+                    浏览：<span class="font_2">$val[pageview]</span>&nbsp;
+                    评论：<span class="font_2">$val[comments]</span>&nbsp;
+                    添加：{date $val[dateline]}
+                </div>
+            </div>
+            <div class="clear"></div>
+        </ul>
+        {/dbres}
+        </div>
+        {if multipage}<div class="multipage">$multipage</div>{/if}
+    </div>
+    <div class="clear"></div>
+</div>
+<!--{eval footer();}-->

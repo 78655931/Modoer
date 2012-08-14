@@ -1,0 +1,201 @@
+{template modoer_header}
+<div id="body">
+    <div id="list_left">
+    <div class="catefoot">
+        <div class="link_path">
+            <em><a href="{url item/map}">{$model[item_name]}地图</a>&nbsp;-&nbsp;<a href="{url review/list/type/item_subject/catid/$catid}">最新点评</a>&nbsp;-&nbsp;<a href="{url item/album/catid/$catid}">{$pcat[$pid][name]}相册</a>&nbsp;-&nbsp;<a href="{url item/top/catid/$catid}">最佳排行</a>&nbsp;-&nbsp;<a href="{url item/detail/random/1}">随便看看</a></em>
+            <a href="{url modoer/index}">$_CITY[name]</a>&nbsp;&raquo;&nbsp;{print implode('&nbsp;&raquo;&nbsp;', $urlpath)}<span class="font_3">($total)</span>
+        </div>
+        <div class="list-filter">
+            <div class="list-filter-item">
+                <dl>
+                    <dt>分类<b>:</b></dt>
+                    <dd>
+                        <ul>
+                            <!--{eval $ix=0;}-->
+                            <!--{if $category_level<=2 && $subcats}-->
+                                <!--{get:item val=category(pid/$catid)}-->
+                                <li{if ++$ix>$MOD[list_filter_li_collapse_num]} hide="Y" style="display:none;"{/if}><span{if $val[catid]==$catid} class="selected"{/if}><a href="{url item/list/catid/$val[catid]/aid/$aid}">$val[name]</a></span></li>
+                                <!--{/get}-->
+                            <!--{else}-->
+                                <!--{get:item val=category(pid/$category[$catid][pid])}-->
+                                <li{if $ix++>$MOD[list_filter_li_collapse_num]} hide="Y" style="display:none;"{/if}><span{if $val[catid]==$catid} class="selected"{/if}><a href="{url item/list/catid/$val[catid]/aid/$aid}">$val[name]</a></span></li>
+                                <!--{/get}-->
+                            <!--{/if}-->
+                        </ul>
+                        {if $ix>$MOD[list_filter_li_collapse_num]}<a href="#" hidefocus="Y" class="more close">更多</a>{/if}
+                    </dd>
+                    <div class="clear"></div>
+                </dl>
+            </div>
+            <!--{if $model['usearea']}-->
+            <div class="list-filter-item">
+                <dl>
+                    <dt>地区<b>:</b></dt>
+                    <dd>
+                        <ul>
+                            <!--{eval $ix=0;}-->
+                            <!--{loop $boroughs $key $val}-->
+                            <li{if ++$ix>$MOD[list_filter_li_collapse_num]} hide="Y" style="display:none;"{/if}><span{if $aid==$key||$paid==$key} class="selected"{/if}><a href="{url item/list/catid/$catid/aid/$key}">$val</a></span></li>
+                            <!--{/loop}-->
+                        </ul>
+                        {if $ix>$MOD[list_filter_li_collapse_num]}<a href="#" hidefocus="Y" class="more close">更多</a>{/if}
+                    </dd>
+                    <div class="clear"></div>
+                </dl>
+            </div>
+            <!--{/if}-->
+            <!--{if $model['usearea'] && $streets}-->
+            <div class="list-filter-item">
+                <dl>
+                    <dt>街道<b>:</b></dt>
+                    <dd>
+                        <ul>
+                            <!--{eval $ix=0;}-->
+                            <!--{loop $streets $key $val}-->
+                                <li{if ++$ix>$MOD[list_filter_li_collapse_num]} hide="Y" style="display:none;"{/if}><span{if $aid==$key} class="selected"{/if}><a href="{url item/list/catid/$catid/aid/$key}">$val</a></span></li>
+                            <!--{/loop}-->
+                        </ul>
+                        {if $ix>$MOD[list_filter_li_collapse_num]}<a href="#" hidefocus="Y" class="more close">更多</a>{/if}
+                    </dd>
+                    <div class="clear"></div>
+                </dl>
+            </div>
+            <!--{/if}-->
+            <!--{if $attcats}-->
+                <!--{eval $att_cats = $_G['loader']->variable('att_cat','item');}-->
+                <!--{loop $attcats $att_catid}-->
+                <!--{if $att_cats[$att_catid]}-->
+                <div class="list-filter-item">
+                    <dl>
+                        <dt>{$att_cats[$att_catid][name]}<b>:</b></dt>
+                        <dd>
+                            <!--{eval $att_url = item_att_url($att_catid,0,1);}-->
+                            <ul>
+                                <!--{eval $ix=0;}-->
+                                <!--{get:item val=attlist(catid/$att_catid)}-->
+                                <!--{eval $att_url = item_att_url($att_catid,$val_k);}-->
+                                <li{if ++$ix>$MOD[list_filter_li_collapse_num]} hide="Y" style="display:none;"{/if} {if $val[icon]}class="att_icon"{/if}>
+                                    {if $val[icon]}<img src="{URLROOT}/static/images/att/$val[icon]" />{/if}
+                                    <span{if $atts[$att_catid]==$val_k} class="selected"{/if}><a href="{url item/list/catid/$catid/aid/$aid/att/$att_url}">$val[name]</a></span>
+                                </li>
+                                <!--{/get}-->
+                            </ul>
+                            {if $ix>$MOD[list_filter_li_collapse_num]}<a href="#" hidefocus="Y" class="more close">更多</a>{/if}
+                        </dd>
+                        <div class="clear"></div>
+                    </dl>
+                </div>
+                <!--{/if}-->
+                <!--{/loop}-->
+            <!--{/if}-->
+        </div>
+    </div>
+
+    <div class="subrail">
+        显示: <!--{loop $typelist $key $val}-->
+        <span$active[type][$key]><a href="javascript:;" onclick="list_display('item_subject_type','$key')">$val</a></span>
+        <!--{/loop}-->&nbsp;|&nbsp;
+        数量: <!--{loop $numlist $val}-->
+        <span$active[num][$val]><a href="javascript:;" onclick="list_display('item_subject_num','$val')">$val</a></span>
+        <!--{/loop}-->&nbsp;|&nbsp;
+        排序:<!--{loop $orderlist $key $val}-->
+        <span$active[orderby][$key]><a href="javascript:;" onclick="list_display('item_subject_orderby','$key')">$val</a></span>
+        <!--{/loop}-->
+    </div>
+
+    <div class="mainrail">
+        <!--{if $type == 'pic'}-->
+        {template item_subject_list_pic}
+        <!--{else}-->
+        {template item_subject_list_normal}
+        <!--{/if}-->
+        </div>
+        <!--{if $multipage}--><div class="multipage">$multipage</div><!--{/if}-->
+    </div>
+
+    <div id="list_right">
+
+        <div class="mainrail">
+            <em>
+                <span class="selected" id="btn_subject1" onclick="tabSelect(1,'subject')">热门</span>
+                <!--{if $catcfg[useeffect]}-->
+                {if $catcfg[effect1]}<span class="unselected" id="btn_subject2" onclick="tabSelect(2,'subject')">$catcfg[effect1]</span>{/if}
+                {if $catcfg[effect1]}<span class="unselected" id="btn_subject3" onclick="tabSelect(3,'subject')">$catcfg[effect2]</span>{/if}
+                <!--{/if}-->
+            </em>
+            <h3 class="rail-h-1 rail-h-bg-5">热门$model[item_name]</h3>
+            <div id="subject1">
+                <!--{eval $reviewcfg = $_G['loader']->variable('config','review');}-->
+                <ul class="rail-pic">
+                    {get:modoer val=table(table/dbpre_subject/select/sid,pid,catid,name,subname,reviews,avgsort,pageviews,thumb/where/city_id IN (_NULL_CITYID_) AND pid='$pid' AND pageviews>0/orderby/pageviews DESC/rows/5/cachetime/1000)}
+                    <li>
+                        <div class="pic">
+                            <a href="{url item/detail/id/$val[sid]}"><img src="{URLROOT}/{if $val[thumb]}$val[thumb]{else}static/images/s_noimg.gif{/if}" alt="$val[name] $val[subname]" /></a>
+                        </div>
+                        <div class="info">
+                            <a href="{url item/detail/id/$val[sid]}" title="$val[name] $val[subname]">{sublen $val[name].$val[subname],12}</a><br />
+                            <span class="font_2"><b>$val[pageviews]</b></span>浏览,<span class="font_2"><b>$val[reviews]</b></span>点评
+                            <p class="start{print get_star($val[avgsort], $reviewcfg[scoretype])}" style="margin:0;padding:0;height:15px;"></p>
+                        </div>
+                        <div class="clear"></div>
+                    </li>
+                    {/get}
+                </ul>
+            </div>
+            <!--{if $catcfg[useeffect]}-->
+            <div class="none" id="subject2" datacallname="主题_会员参与" params="{'pid':'$pid','idtype':'$model[tablename]','effect':'effect1','city_id':'{_NULL_CITYID_}'}"></div>
+            <div class="none" id="subject3" datacallname="主题_会员参与" params="{'pid':'$pid','idtype':'$model[tablename]','effect':'effect2','city_id':'{_NULL_CITYID_}'}"></div>
+            <!--{/if}-->
+        </div>
+        <div class="mainrail">
+            <h3 class="rail-h-1 rail-h-bg-5">热门分类</h3>
+            <div id="hot_category">
+                <ul class="rail-list">
+                    {get:modoer val=table(table/dbpre_category/select/catid,pid,name,total/where/pid=$pid AND total>0/orderby/total DESC/rows/10)}
+                    <li><cite>$val[total]&nbsp;个</cite><a href="{url item/list/catid/$val[catid]}">$val[name]</a></li>
+                    {/get}
+                </ul>
+            </div>
+        </div>
+
+        <!--{if $cookie_subjects}-->
+        <div class="mainrail" id="cookieitems">
+            <em><a href="javascript:clear_cookie_subject($pid);">清除记录</a></em>
+            <h3 class="rail-h-1 rail-h-bg-5">历史浏览</h3>
+            <ul class="rail-list">
+                <!--{loop $cookie_subjects $key $val}-->
+                <li><a href="{url item/detail/id/$key}" title="$val">$val</a></li>
+                <!--{/loop}-->
+            </ul>
+        </div>
+        <!--{/if}-->
+
+    </div>
+
+    <div class="clear"></div>
+
+</div>
+<div id="adv_1_content" style="display:none;">
+<!--{include display('adv:show','name/主题列表页_列表间广告')}-->
+</div>
+<script type="text/javascript">
+//加载广告
+replace_content('adv_1=adv_1_content');
+//初始化
+$(document).ready(function() {
+    //分类之更多链接
+    $("a[hidefocus]").each(function(i) {
+        $(this).attr('hidefocus','Y').click(function() {
+            var a = $(this);
+            var hf = a.attr('hidefocus')=='Y' ? 'N' : 'Y';;
+            a.attr('hidefocus',hf).removeClass(hf=='N'?'close':'open').addClass(hf=='N'?'open':'close');
+            a.parent().find("ul li").each(function(j) {
+                if($(this).attr('hide')=='Y') $(this).css('display',hf=='N'?'':'none');
+            });
+            return false;
+        });
+    })
+});
+</script>
+<!--{eval footer();}-->

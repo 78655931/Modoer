@@ -1,0 +1,14 @@
+<!--{if $subjects}-->
+<!--{eval $category=$_G['loader']->variable('category','item');$i=0;}-->
+<ul class="subject_list">
+<!--{dbres $subjects $val}-->
+<li style="{if $i%2==0}background:#FFF{else}background:#EEE{/if}"><cite>{date $val[addtime],'Y-m-d H:i:s'}</cite>[<a href="{url item/list/catid/$val[pid]}">{print $category[$val[pid]][name]}</a>]<a href="{url item/detail/id/$val[sid]}">$val[name]&nbsp;$val[subname]</a></li>
+<!--{eval $i++;}-->
+<!--{/dbres}-->
+</ul>
+<!--{if $multipage}--><div class="multipage">$multipage</div><!--{/if}-->
+<!--{else}-->
+<div class="messageborder">
+    <span class="msg-ico">暂时没有信息。</span>
+</div>
+<!--{/if}-->

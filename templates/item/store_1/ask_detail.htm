@@ -1,0 +1,157 @@
+<!--{eval
+    $_HEAD['title'] = $detail[subject] . $_CFG[titlesplit] . $MOD[name];
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+<div class="item-content">
+
+    <div class="item-left mt10">
+
+            <div class="rail-border-3 ask-detail">
+                <!--{if $detail[success] == 0}-->
+                <h1 class="subject">$detail[subject]</h1>
+                <!--{else}-->
+                <h1 class="subject2">$detail[subject]</h1>
+                <!--{/if}-->
+                <div class="content">
+                    <p>$detail[content]<p>
+                    <!--{if $detail[extra]}-->问题补充：$detail[extra]<br /><br /><!--{/if}-->
+                    <!--{if !$detail[success] && !$detail[bestanswer] && $detail[uid] != $user->uid && !$answered}-->
+                    <a onclick="location.hash='reply';" href="#answer" class="answerbutton">回答这个问题</a>
+                    <!--{/if}-->
+                    <!--{if !$detail[success] && $user->isLogin && $detail[uid] == $user->uid}-->
+                    <a href='javascript:ask_extra($detail[askid]);'><b>问题补充</b></a>：可以对您的提问补充细节，以得到更准确的答案；<br />
+                    <a href='javascript:ask_up_reward($detail[askid]);'><b>提高悬赏</b></a>：提高悬赏分，以提高问题的关注度；<br />
+                    <a href='javascript:ask_close($detail[askid]);'><b>无满意答案</b></a>：没有满意的回答，还可直接结束提问，关闭问题。<br /><!--{/if}-->
+                </div>
+                <div class="info">
+                    提问者：<a href="{url space/index/username/$detail[author]}">$detail[author]</a>&nbsp;
+                    <!--{if $detail[groupid]}-->等级：{print:member group(groupid/$detail[groupid])}&nbsp;<!--{/if}-->
+                    时间：{date $detail[dateline]}&nbsp;
+                    悬赏金币：$detail[reward]&nbsp;
+                    {if $detail[success]==0}离问题结束还有 $question['toendday'] 天 $question['toendhour'] 小时{else}解决时间：{date $detail[solvetime]}{/if}
+                </div>
+            </div>
+
+            <!--{if $bestanswer}-->
+            <div class="mainrail rail-border-1 mt">
+                <div class="rail-h-bg-shop header">
+                    <h2 class="rail-h-1 rail-h-bg-1"><b>最佳答案</b></h2>
+                </div>
+                <div class="answer">
+                    <p>$bestanswer[content]{if $bestanswer[brief]}<br />$bestanswer[brief]{/if}</p>
+                </div>
+                <div class="answer_info">
+                    时间：<span>{date $bestanswer[dateline]}</span>&nbsp;&nbsp;
+                    等级：<span>{print:member group(groupid/$answertotal[groupid])}</span>&nbsp;&nbsp;
+                    回答者：<a href="{url space/index/uid/$bestanswer[uid]}">$bestanswer[username]</a>
+                </div>
+
+                <div class="answer-rebetter">
+                    <dl>
+                        <dt>提问者对最佳回答的评论：</dt>
+                        <dd>$bestanswer[feel]</dd>
+                    </dl>
+                </div>
+
+                <!--评分-->
+                <div class="answer-mark" id="mark">
+                    <dl>
+                        <dt><strong>您觉得最佳答案好不好？ </strong></dt>
+                        <!--{eval
+                            $goodrates = $bestanswer['goodrate'];
+                            $badrates = $bestanswer['badrate'];
+                            $ratenum = $goodrates + $badrates;
+                            $goodrateper = @ceil($goodrates*100/$ratenum);
+                            $badrateper = 100-$goodrateper;
+                        }-->
+                        <dd> <a href="javascript:;" id="rate_click" onclick="ask_goodrate($askid);"><img src="{URLROOT}/{$_G[tplurl]}images/ask/mark_g.gif" width="14" height="16" />好</a> <span id="goodrate_num">$goodrateper% ($goodrates)</span></dd>
+                        <dd> <a href="javascript:;" id="rate_click2" onclick="ask_badrate($askid);"><img src="{URLROOT}/{$_G[tplurl]}images/ask/mark_b.gif" width="14" height="16" />不好</a> <span id="badrate_num">$badrateper% ($badrates)</span></dd>
+                        <script type="text/javascript">
+                            if(get_cookie('ask_rate_$askid')) {
+                                $('#rate_click').html('谢谢支持');
+                                $('#rate_click2').html('谢谢支持');
+                            }
+                        </script>
+                    </dl>
+                </div>
+            </div>
+            <!--{/if}-->
+
+            <!--{if $answerlist}-->
+            <div class="mainrail rail-border-3">
+                <h3 class="rail-h-3 rail-h-bg-3">回答列表</h3>
+
+                    <!--{dbres $answerlist $val}-->
+                    <div class="answer">
+                        <p>$val[content]{if $val[brief]}<br />参考资料：$val[brief]{/if}</p>
+                        <!--{if !$bestanswer}-->
+                            <!--{if $user->isLogin && $val[uid] == $user->uid}-->
+                            <a href='javascript:ask_edit_answer($val[answerid]);' class="psub">修改回答</a>
+                            <!--{/if}-->
+                            <!--{if $user->isLogin && $detail[uid] == $user->uid}-->
+                            <a href='javascript:ask_psup_answer($val[answerid]);' class="psub">采纳为答案</a>
+                            <!--{/if}-->
+                        <!--{/if}-->
+                    </div>
+                    <div class="answer_info">
+                        时间：<span>{date $val[dateline]}</span>&nbsp;&nbsp;
+                        等级：<span>{print:member group(groupid/$val[groupid])}</span>&nbsp;&nbsp;
+                        回答者：<a href="{url space/index/uid/$bestanswer[uid]}">$val[username]</a>
+                    </div>
+                    <!--{/dbres}-->
+                    <!--{if $multipage}--><div class="multipage">$multipage</div><!--{/if}-->
+            </div>
+            <!--{/if}-->
+
+            <!--{if !$detail[success] && !$detail[bestanswer] && $detail[uid] != $user->uid && !$answered}-->
+            <a name="answer"></a>
+            <div class="rail-border-3 answerbox">
+                <form method="post" name="myform" action="{url ask/member/ac/answer/op/add/rand/$_G[random]}" onsubmit="return validator(this);">
+                <input type="hidden" name="dosubmit" value="yes" />
+                <table class="table" width="100%" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td width="80" valign="top">我也来回答：</td>
+                      <td>
+                        <textarea name="content" cols="50" rows="10" style="width:97%;" validator="{'empty':'N','errmsg':'请输入回答内容。'}"></textarea><br>
+                        <p>回答即可获得积分，回答被采纳则获得悬赏分以及奖励 {$MOD['bestanswer']} 分。</p>
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td valign="top">参考资料：</td>
+                      <td>
+                        <input name="brief" type="text" size="50" class="t_input">
+                        <p>如果您的回答是从其他地方引用，请表明出处。</p>
+                      </td>
+                      <td> </td>
+                    </tr>
+                    <!--{if ($user->isLogin && $MOD['answer_seccode'])}-->
+                    <tr>
+                        <td><span class="font_1">*</span>验证码：</td>
+                        <td height="36">
+                            <div id="seccode" class="seccode none"></div>
+                            <input type="text" name="seccode" class="t_input" onfocus="show_seccode();" validator="{'empty':'N','errmsg':'请输入登录验证码。'}" /> 请正确输入验证码,如果看不清,请点击验证码刷新。
+                        </td>
+                    </tr>
+                    <!--{/if}-->
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>
+                            <input type="hidden" name="askid" value="$askid" />
+                            <input type="submit" name="onsubmit" value="提 交" class="upbtn">
+                        </td>
+                    </tr>
+                </table>
+                </form>
+            </div>
+            <!--{/if}-->
+
+    </div>
+
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+    </div>
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

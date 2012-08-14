@@ -1,0 +1,122 @@
+{template modoer_header}
+<script type="text/javascript">
+var myprice = $myprice;
+function group_upgrade_select() {
+    var group = $('#groupid').find("option:selected");
+    var useday = parseInt($('#useday').val());
+    var price = parseInt(group.attr('price')) * useday;
+    $('#price').html(price);
+    if(!group.val()) {
+        $('#dosubmit').text('无法兑换').attr('disabled',true);
+    } else if(myprice<price) {
+        $('#dosubmit').text('对不起，您的余额不足').attr('disabled',true);
+    } else {
+        $('#dosubmit').text('下一步').attr('disabled',false);
+    }
+}
+$(document).ready(function(){
+    group_upgrade_select();
+});
+</script>
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>升级会员组</h3>
+            <div class="mainrail">
+                <!--{if $op=='buy'}-->
+                <form method="post" action="{url member/index/ac/$ac/op/pay/rand/$_G[random]}" onsubmit="return confirm('您确定要提交吗？');">
+                    <table width="100%" cellspacing="0", cellpadding="0" class="maintable">
+                        <tr>
+                            <td width="100" align="right">当前会员组：</td>
+                            <td width="*">{print:member group(groupid/$user->groupid)}</td>
+                        </tr>
+                        <tr>
+                            <td align="right">升级会员组：</td>
+                            <td>{print:member group(groupid/$groupid)}</td>
+                        </tr>
+                        <tr>
+                            <td align="right">购买天数：</td>
+                            <td>$useday&nbsp;天</td>
+                        </tr>
+                        <tr>
+                            <td align="right">所需费用：</td>
+                            <td><span class="font_1">$price</span>&nbsp;{print:member point(point/$pt/keyname/u|n)}</td>
+                        </tr>
+                        <tr>
+                            <td align="right">购买类型：</td>
+                            <td>
+                                {if $user->groupid==$groupid}
+                                续费 <span class="font_3">(续费后到期日：{date $user->nexttime+$useday*3600*24,'Y-m-d'})</span>
+                                {else}
+                                升级<span class="font_3">(升级后到期：{date $_G[timestamp]+$useday*3600*24,'Y-m-d'})</span>
+                                {/if}</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>
+                                <button type="submit" name="dosubmit">确定提交</button>
+                                &nbsp;<a href="javascript:history.go(-1);">返回，修改订单</a>
+                            </td>
+                        </tr>
+                    </table>
+                    <input type="hidden" name="groupid" value="$groupid">
+                    <input type="hidden" name="day" value="$day">
+                </form>
+                <!--{else}-->
+                <form method="post" action="{url member/index/ac/$ac/op/buy/rand/$_G[random]}">
+                    <table width="100%" cellspacing="0" cellpadding="0" class="maintable">
+                        <tr>
+                            <td width="100" align="right">当前会员组：</td>
+                            <td width="*">{print:member group(groupid/$user->groupid)}</td>
+                        </tr>
+                        <tr>
+                            <td align="right">升级会员组：</td>
+                            <td>
+                                <select name="groupid" id="groupid" onchange="group_upgrade_select()">
+                                    <!--{dbres $list $val}-->
+                                    <option value="$val[groupid]" price="$val[price]">$val[groupname]{if $user->groupid==$val[groupid]}(续费){/if}</option>
+                                    <!--{/dbres}-->
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">购买天数：</td>
+                            <td>
+                                <select name="day" id="useday" onchange="group_upgrade_select()">
+                                    <option value="1">{print $MOD[sellgroup_useday]}天</option>
+                                    <option value="2">{print $MOD[sellgroup_useday]*2}天</option>
+                                    <option value="3">{print $MOD[sellgroup_useday]*3}天</option>
+                                    <option value="5">{print $MOD[sellgroup_useday]*5}天</option>
+                                    <option value="10">{print $MOD[sellgroup_useday]*10}天</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">需要费用：</td>
+                            <td><span class="font_1" id="price">0</span>&nbsp;{print:member point(point/$pt/keyname/u|n)}</td>
+                        </tr>
+                        <tr>
+                            <td align="right">我的家当：</td>
+                            <td>$myprice&nbsp;{print:member point(point/$pt/keyname/u|n)}</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td><button type="submit" name="dosubmit" id="dosubmit">下一步</button></td>
+                        </tr>
+                    </table>
+                </form>
+                <!--{/if}-->
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

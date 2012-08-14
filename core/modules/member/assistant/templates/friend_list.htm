@@ -1,0 +1,47 @@
+{template modoer_header}
+<div id="body">
+<div class="myhead"></div>
+<div class="mymiddle">
+    <div class="myleft">
+        <!--{template 'menu','member','member'}-->
+    </div>
+    <div class="myright">
+        <div class="myright_top"></div>
+        <div class="myright_middle">
+            <h3>我的好友</h3>
+            <div class="mainrail">
+                <ul class="optabs"><li class="active"><a href="{url member/index/ac/friend}">我的好友</a></li><li><a href="{url member/index/ac/follow}">我的关注</a></li><li><a href="{url member/index/ac/follow/op/fans}">我的粉丝</a></li></ul><div class="clear"></div>
+                <form method="post" name="myform" action="{url member/index/ac/$ac/rand/$_G[random]}">
+                <table width="100%" cellspacing="0" cellpadding="0" class="maintable" trmouse="Y">
+                    <tr class="thbg">
+                        <th width="25" align="center"><input type="checkbox" onclick="checkbox_checked('friendids[]',this);" /></th>
+                        <th width="*">好友名称</th>
+                        <th width="100">操作</th>
+                    </tr>
+                    <!--{if !$total}-->
+                    <tr><tr><td colspan="5">暂无信息。</td></tr></tr>
+                    <!--{/if}-->
+                    <!--{loop $list $val}-->
+                    <tr>
+                        <td><input type="checkbox" name="friendids[]" value="$val[friend_uid]" /></td>
+                        <td class="pic"><a href="{url space/index/uid/$val[friend_uid]}" target="_blank"><img src="{print get_face($val[friend_uid])}" /></a><div><a href="{url space/index/uid/$val[friend_uid]}" target="_blank">$val[username]</a></div></td>
+                        <td><a href="javascript:send_message($val[friend_uid]);">发短信</a></td>
+                    </tr>
+                    <!--{/loop}-->
+                </table>
+                <!--{if $total}-->
+                <div class="text_center">
+                    <input type="hidden" name="dosubmit" value="yes" />
+                    <input type="hidden" name="op" value="delete" />
+                    <button type="button" onclick="easy_submit('myform','delete','friendids[]');">删除所选</button>
+                </div>
+                <!--{/if}-->
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

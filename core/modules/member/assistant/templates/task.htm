@@ -1,0 +1,78 @@
+{template modoer_header}
+<div id="body">
+    <div class="myhead"></div>
+    <div class="mymiddle">
+        <div class="myleft">
+            <!--{template 'menu','member',MOD_FLAG}-->
+        </div>
+        <div class="myright">
+            <div class="myright_top"></div>
+            <div class="myright_middle">
+                <h3>网站任务</h3>
+                <div class="mainrail">
+                    <!--{eval $ops = array('new'=>'新任务','doing'=>'进行中的任务','done'=>'已完成的任务','failed'=>'失败的任务');}-->
+                    <ul class="optabs"><!--{loop $ops $k $v}--><li{if $op==$k} class="active"{/if}><a href="{url member/index/ac/$ac/op/$k}">$v</a></li><!--{/loop}--></ul><div class="clear"></div>
+                    <table cellspacing="0" cellpadding="0" class="maintable tasklisttable" trmouse="Y">
+                        <tr class="thbg"><th colspan="4" style="height:1px;*height:2px;_font-size:1px;"></th></tr>
+                        <!--{loop $list $val}-->
+                        <tr>
+                            <td class="info" width="*">
+                                <span class="t"><a href="{url member/index/ac/task/op/view/taskid/$val[taskid]}">$val[title]</a> (人气<b>:</b> <span class="font_2">$val[applys]</span>)</span>
+                                <p class="p">$val[des]</p>
+                                <!--{if $op=='doing'}-->
+                                <!--{eval
+                                    $pp = 380*($val[progress]/100);
+                                }-->
+                                <div class="progress"><p style="width:{$pp}px;"></p></div>
+                                <div class="progress_num">{$val[progress]}%</div>
+                                <div class="clear"></div>
+                                <!--{/if}-->
+                            </td>
+                            <td width="120" align="center">
+                                <span class="font_2">奖励&nbsp;{print:member point(point/$val[pointtype])}&nbsp;$val[point]</span>
+                            </td>
+                            <td width="180">
+                                <!--{if $op=='new'}-->
+                                <center>
+                                    {if $val[access]}<button type="button" onclick="document.location='{url member/index/ac/task/op/apply/taskid/$val[taskid]}'">申请任务</button>{else}<button type="button" class="disable" disabled="disabled">申请任务</button>{/if}
+                                </center>
+                                <!--{elseif $op=='doing'}-->
+                                <center>
+                                    <!--{if $val['progress']==100}-->
+                                    <button type="button" onclick="document.location='{url member/index/ac/task/op/finish/taskid/$val[taskid]}';">领取奖励</button>
+                                    <!--{else}-->
+                                    <button type="button" class="disable" disabled="disabled">领取奖励</button>
+                                    <!--{/if}-->
+                                    <button type="button" onclick="if(confirm('您确定要放弃这个任务吗?')) document.location='{url member/index/ac/task/op/delete/taskid/$val[taskid]}';">放弃任务</button>
+                                </center>
+                                <!--{elseif $op=='done'}-->
+                                    <span class="done">完成于 {date $val[dateline],'w2style'}</span>
+                                    <!--{if isset($val[apply_again]) && $val[apply_again]>=0}-->
+                                    <span class="done">
+                                        <!--{if $val[apply_again]<=1}-->
+                                        <a href="{url member/index/ac/task}">现在可以再次申请</a>
+                                        <!--{else}-->
+                                        {print nextapplytime($val[apply_again])} 后可再次申请
+                                        <!--{/if}-->
+                                    </span>
+                                    <!--{/if}-->
+                                <!--{else}-->
+                                    
+                                <!--{/if}-->
+                            </td>
+                        </tr>
+                        <!--{/loop}-->
+                        <!--{if !$list}-->
+                        <tr>
+                            <td colspan="4">暂无信息</td>
+                        </tr>
+                        <!--{/if}-->
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

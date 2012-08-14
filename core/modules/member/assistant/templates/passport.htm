@@ -1,0 +1,40 @@
+{template modoer_header}
+<style type="text/css">
+.pslist { margin:0 0 0 10px; padding:0; list-style:none; } 
+.pslist li { float:left; width:200px; margin: 10px 0; }
+.pslist li div { float:left; margin-right:5px; }
+.pslist li span { float:left; margin-top:1px;  }
+</style>
+<div id="body">
+    <div class="myhead"></div>
+    <div class="mymiddle">
+        <div class="myleft">
+            <!--{template 'menu','member','member'}-->
+        </div>
+        <div class="myright">
+            <div class="myright_top"></div>
+            <div class="myright_middle">
+                <h3>绑定第三方网站账号</h3>
+                <div class="mainrail">
+                    <ul class="pslist">
+                        <!--{loop $passportlist $psk}-->
+                        <li>
+                            <div>
+                                <img src="{URLROOT}/static/images/passport/{$psk}_n.png">
+                            </div>
+                            <!--{if $passport[$psk]}-->
+                            <span style="color:green;">已绑定，<a href="{url member/index/ac/passport/op/unbind/psname/$psk}" onclick="return confirm('您确定要解除绑定吗？');">解除绑定</a></span>
+                            <!--{else}-->
+                            <span style="color:#808080;">未绑定，<a href="{url member/index/ac/passport/op/get_token/psname/$psk}">立刻绑定</a></span>
+                            <!--{/if}-->
+                        </li>
+                        <!--{/loop}-->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="mybottom"></div>
+</div>
+<!--{eval footer();}-->

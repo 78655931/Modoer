@@ -1,0 +1,54 @@
+<!--{eval
+    $_HEAD['title'] = $subject['name'].$subject['subname'] . '的产品' . ($catid ? $_CFG['titlesplit'] . $category[$catid]['name'] : '');
+}-->
+<!--{template 'header', 'item', $subject[templateid]}-->
+<div class="item-content">
+
+    <div class="item-left mt10">
+
+        <div class="mainrail rail-border-3 category">
+            <ul class="cat">
+                <li{if !$catid} class="selected"{/if}><a href="{url product/list/sid/$sid}">全部</a></li>
+                {loop $category $val}
+                <li{if $catid==$val[catid]} class="selected"{/if}><a href="{url product/list/sid/$sid/catid/$val[catid]}">$val[name]</a></li>
+                {eval $cats[$val[catid]] = $val[name];}
+                {/loop}
+            </ul>
+            <div class="clear"></div>
+        </div>
+        {if !$list}<span class="font_1">抱歉，暂时没有符合条件的信息</span>{/if}
+        <div class="product-list">
+            {dbres $list $val}
+            <ul class="plist">
+                <div class="thumb"><a href="{url product/detail/pid/$val[pid]}"><img src="{URLROOT}/$val[thumb]" onmouseover="tip_start(this);" /></a></div>
+                <div class="info">
+                    <p class="start start{print get_star($val[grade],5);}"></p>
+                    <h3><a href="{url product/detail/pid/$val[pid]}">$val[subject]</a></h3>
+                    <table class="product_field_list" border="0" cellspacing="0" cellpadding="0">
+                        <!--{loop $product_field $_val}-->
+                            <!--{print $PFD->detail($_val, $val[$_val['fieldname']])."\r\n"}-->
+                        <!--{/loop}-->
+                    </table>
+                    <p>简介：{sublen $val[description],42,'...'}</p>
+                    <div class="total">
+                        分类：<a href="{url product/list/sid/$val[sid]/catid/$val[catid]}">{$cats[$val[catid]]}</a>&nbsp;
+                        浏览：<span class="font_2">$val[pageview]</span>&nbsp;
+                        评论：<span class="font_2">$val[comments]</span>&nbsp;
+                        添加：{date $val[dateline]}
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </ul>
+            {/dbres}
+        </div>
+        {if multipage}<div class="multipage">$multipage</div>{/if}
+
+    </div>
+
+    <div class="item-right mt10">
+        <!--{template 'part_side', 'item', $subject[templateid]}-->
+    </div>
+    <div class="clear"></div>
+
+</div>
+<!--{template 'footer', 'item', $subject[templateid]}-->

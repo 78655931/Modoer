@@ -1,0 +1,15 @@
+<!--{if $total}-->
+<div class="flowers_list" id="resplod">
+<h3><em>[<a href="javascript:add_flower($rid);">我要献花</a>]</em>鲜花 ( 共 $total 朵 )</h3>
+<ul id="flower_ul">
+<!--{eval if($list) while($val = $list->fetch_array()):}-->
+    <li id="flower_$val[fid]_li">
+        <div class="face"><a href="{url space/index/uid/$val[uid]}" target="_blank"><img src="{print get_face($val[uid])}"></a></div>
+        <div class="title"><a href="{url space/index/uid/$val[uid]}" target="_blank">$val[username]</a></div>
+    </li>
+<!--{eval endwhile;}-->
+</ul>
+<div class="clear"></div>
+<!--{else}-->
+&nbsp;
+<!--{/if}-->
